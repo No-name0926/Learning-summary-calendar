@@ -3,48 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>学習集計カレンダー</title>
+    <title>学習集計カレンダー Firebase版</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
     <style>
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; margin: 0; color: #333; display: flex; flex-direction: column; align-items: center; -webkit-tap-highlight-color: transparent; }
         .container { width: 100%; max-width: 450px; padding: 40px 15px; box-sizing: border-box; }
-
-        /* 連続表示 */
         .achievement-header { text-align: center; margin-bottom: 20px; font-weight: bold; display: flex; justify-content: center; align-items: baseline; gap: 8px; }
         .pink-sparkle { color: #ff85a2; font-size: 24px; font-weight: normal; }
         .days-count { font-size: 42px; font-family: 'Arial Black', sans-serif; color: #333; margin: 0 4px; border-bottom: 3px solid #ff85a2; line-height: 1; }
         .unit { font-size: 16px; }
-
-        /* カレンダー本体 */
         .calendar-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px; }
         .header-nav { background: #0070bc; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px; }
         .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; }
         .current-month { font-size: 18px; font-weight: bold; }
-
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e0e0; gap: 1px; }
         .day-label { background: #f8f8f8; padding: 10px 0; text-align: center; font-size: 11px; font-weight: bold; color: #666; }
         .sun { color: #eb4d4b; } .sat { color: #30336b; }
-        
         .day { background: white; min-height: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .date-num { width: 100%; padding: 5px 8px; font-size: 12px; box-sizing: border-box; }
         .stamp { font-size: 28px; height: 40px; line-height: 40px; }
-
-        /* 凡例エリア (復活！) */
         .legend-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 12px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
-        .legend-grid { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 12px; font-size: 12px; font-weight: bold; }
-        .legend-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-
-        /* 集計エリア */
+        .legend-grid { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; font-weight: bold; }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
         .stats-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
         .stats-title { font-weight: bold; border-left: 5px solid #0070bc; padding-left: 10px; margin-bottom: 12px; font-size: 15px; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 20px; }
         .stat-item { background: #f9f9f9; padding: 10px 2px; border-radius: 8px; border: 1px solid #eee; }
         .stat-count { font-weight: bold; font-size: 16px; color: #0070bc; display: block; }
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; font-weight: bold; }
     </style>
 </head>
 <body>
+
+<div id="loading">接続中...</div>
 
 <div class="container">
     <div class="achievement-header">
@@ -64,11 +57,11 @@
 
     <div class="legend-container">
         <div class="legend-grid">
-            <div class="legend-item">⚪ 0時間〜</div>
-            <div class="legend-item">🥉 3時間〜</div>
-            <div class="legend-item">🥈 5時間〜</div>
-            <div class="legend-item">🥇 6時間〜</div>
-            <div class="legend-item">👑 10時間〜</div>
+            <div class="legend-item">⚪ 0h〜</div>
+            <div class="legend-item">🥉 3h〜</div>
+            <div class="legend-item">🥈 5h〜</div>
+            <div class="legend-item">🥇 6h〜</div>
+            <div class="legend-item">👑 10h〜</div>
         </div>
     </div>
 
@@ -80,12 +73,41 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
+        authDomain: "study-summary-calendar.firebaseapp.com",
+        projectId: "study-summary-calendar",
+        storageBucket: "study-summary-calendar.firebasestorage.app",
+        messagingSenderId: "621917521841",
+        appId: "1:621917521841:web:dbf6eb5ab9f67d33af5f90",
+        measurementId: "G-DF7DYRGLFZ",
+        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com/" 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const logsRef = ref(db, 'logs');
+
     const STAMPS = ['', '⚪', '🥉', '🥈', '🥇', '👑'];
     const VALID = ['🥉', '🥈', '🥇', '👑'];
-    let curr = new Date();
-    let viewY = curr.getFullYear();
-    let viewM = curr.getMonth() + 1;
+    let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1;
+    let remoteData = {};
+
+    // クラウドからデータ取得
+    onValue(logsRef, (snapshot) => {
+        remoteData = snapshot.val() || {};
+        document.getElementById('loading').style.display = 'none';
+        render();
+    });
+
+    window.moveMonth = (n) => {
+        viewM += n; if(viewM>12){viewM=1;viewY++;}else if(viewM<1){viewM=12;viewY--;}
+        render();
+    };
 
     function render() {
         document.getElementById('monthDisplay').innerText = `${viewY}年${String(viewM).padStart(2, '0')}月`;
@@ -109,61 +131,39 @@
             const day = document.createElement('div');
             day.className = 'day';
             const key = `log-${viewY}-${viewM}-${i}`;
-            const s = localStorage.getItem(key) || '';
+            const s = remoteData[key] || '';
             day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
             day.onclick = () => {
                 let next = STAMPS[(STAMPS.indexOf(s) + 1) % STAMPS.length];
-                if (next) localStorage.setItem(key, next); else localStorage.removeItem(key);
-                render();
+                // Firebaseへ保存
+                set(ref(db, `logs/${key}`), next);
             };
             grid.appendChild(day);
         }
-        updateAll();
+        updateStats();
     }
 
-    function updateAll() {
-        let streak = 0;
-        let today = new Date();
-        today.setHours(0,0,0,0);
-        
-        const getS = (dt) => localStorage.getItem(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`);
-        
-        // 連続計算ロジック
-        if (getS(today) === '⚪') {
-            streak = 0;
-        } else {
-            let check = new Date(today);
-            if (!VALID.includes(getS(check))) check.setDate(check.getDate() - 1);
-            while (VALID.includes(getS(check))) {
-                streak++;
-                check.setDate(check.getDate() - 1);
-            }
+    function updateStats() {
+        let streak = 0, today = new Date(); today.setHours(0,0,0,0);
+        const getS = (dt) => remoteData[`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`];
+        if (getS(today) !== '⚪') {
+            let chk = new Date(today);
+            if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1);
+            while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
         }
         document.getElementById('streakDisplay').innerText = streak;
-
-        // 集計ロジック
-        const mLog = {}, yLog = {};
-        VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
-
-        for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            if (k && k.startsWith('log-')) {
-                const s = localStorage.getItem(k);
-                if (VALID.includes(s)) {
-                    yLog[s]++;
-                    if (k.startsWith(`log-${viewY}-${viewM}-`)) mLog[s]++;
-                }
+        const mLog = {}, yLog = {}; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
+        Object.keys(remoteData).forEach(k => {
+            const s = remoteData[k];
+            if (VALID.includes(s)) {
+                yLog[s]++;
+                if (k.startsWith(`log-${viewY}-${viewM}-`)) mLog[s]++;
             }
-        }
-
-        const makeGrid = (data) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-count">${data[v]}</span></div>`).join('');
-        document.getElementById('monthStatsGrid').innerHTML = makeGrid(mLog);
-        document.getElementById('yearStatsGrid').innerHTML = makeGrid(yLog);
+        });
+        const mk = (data) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-count">${data[v]}</span></div>`).join('');
+        document.getElementById('monthStatsGrid').innerHTML = mk(mLog);
+        document.getElementById('yearStatsGrid').innerHTML = mk(yLog);
     }
-
-    function moveMonth(n) { viewM += n; if(viewM>12){viewM=1;viewY++;}else if(viewM<1){viewM=12;viewY--;} render(); }
-    
-    render();
 </script>
 </body>
 </html>
