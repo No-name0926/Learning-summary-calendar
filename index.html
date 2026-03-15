@@ -14,7 +14,6 @@
         .pink-sparkle { color: #ff85a2; font-size: 24px; font-weight: normal; }
         .days-count { font-size: 42px; font-family: 'Arial Black', sans-serif; color: #333; margin: 0 4px; border-bottom: 3px solid #ff85a2; line-height: 1; }
         .unit { font-size: 16px; }
-        .user-badge { font-size: 12px; background: #333; color: white; padding: 2px 10px; border-radius: 10px; margin-bottom: 10px; }
         .calendar-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px; }
         .header-nav { background: #0070bc; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px; }
         .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; }
@@ -40,7 +39,6 @@
 <div id="loading">読み込み中...</div>
 
 <div class="container">
-    <div id="userNameBadge" class="user-badge">User: guest</div>
     <div class="achievement-header">
         <span class="pink-sparkle">\\</span>
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">日 達成中！</span></span>
@@ -91,13 +89,8 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    // URLからユーザー名を取得 (例: ?id=kame)
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('id') || 'guest';
-    document.getElementById('userNameBadge').innerText = `User: ${userId}`;
-    
-    const logsRef = ref(db, `users/${userId}/logs`);
+    // 保存場所を「my_logs」に固定（誰がアクセスしてもここを読み書きする）
+    const logsRef = ref(db, `my_logs`);
 
     const STAMPS = ['', '⚪', '🥉', '🥈', '🥇', '👑'];
     const VALID = ['🥉', '🥈', '🥇', '👑'];
@@ -137,7 +130,7 @@
             day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
             day.onclick = () => {
                 let next = STAMPS[(STAMPS.indexOf(s) + 1) % STAMPS.length];
-                set(ref(db, `users/${userId}/logs/${key}`), next);
+                set(ref(db, `my_logs/${key}`), next);
             };
             grid.appendChild(day);
         }
