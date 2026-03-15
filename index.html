@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>学習集計カレンダー Firebase版</title>
+    <title>学習集計カレンダー Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
@@ -31,13 +31,12 @@
         .stats-title { font-weight: bold; border-left: 5px solid #0070bc; padding-left: 10px; margin-bottom: 12px; font-size: 15px; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 20px; }
         .stat-item { background: #f9f9f9; padding: 10px 2px; border-radius: 8px; border: 1px solid #eee; }
-        .stat-count { font-weight: bold; font-size: 16px; color: #0070bc; display: block; }
-        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; font-weight: bold; }
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="loading">接続中...</div>
+<div id="loading">Firebase 接続中...<br><span style="font-size:12px; font-weight:normal;">(動かない場合はルール設定を確認してください)</span></div>
 
 <div class="container">
     <div class="achievement-header">
@@ -57,11 +56,11 @@
 
     <div class="legend-container">
         <div class="legend-grid">
-            <div class="legend-item">⚪ 0h〜</div>
-            <div class="legend-item">🥉 3h〜</div>
-            <div class="legend-item">🥈 5h〜</div>
-            <div class="legend-item">🥇 6h〜</div>
-            <div class="legend-item">👑 10h〜</div>
+            <div class="legend-item">⚪ 0時間〜</div>
+            <div class="legend-item">🥉 3時間〜</div>
+            <div class="legend-item">🥈 5時間〜</div>
+            <div class="legend-item">🥇 6時間〜</div>
+            <div class="legend-item">👑 10時間〜</div>
         </div>
     </div>
 
@@ -77,6 +76,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // 取得済みの設定を適用
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
         authDomain: "study-summary-calendar.firebaseapp.com",
@@ -85,7 +85,7 @@
         messagingSenderId: "621917521841",
         appId: "1:621917521841:web:dbf6eb5ab9f67d33af5f90",
         measurementId: "G-DF7DYRGLFZ",
-        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com/" 
+        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com" // 末尾の / を削除済み
     };
 
     const app = initializeApp(firebaseConfig);
@@ -102,6 +102,9 @@
         remoteData = snapshot.val() || {};
         document.getElementById('loading').style.display = 'none';
         render();
+    }, (error) => {
+        console.error(error);
+        alert("Firebaseエラー: ルール設定が正しく公開されているか確認してください。");
     });
 
     window.moveMonth = (n) => {
@@ -135,7 +138,6 @@
             day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
             day.onclick = () => {
                 let next = STAMPS[(STAMPS.indexOf(s) + 1) % STAMPS.length];
-                // Firebaseへ保存
                 set(ref(db, `logs/${key}`), next);
             };
             grid.appendChild(day);
@@ -146,12 +148,14 @@
     function updateStats() {
         let streak = 0, today = new Date(); today.setHours(0,0,0,0);
         const getS = (dt) => remoteData[`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`];
+        
         if (getS(today) !== '⚪') {
             let chk = new Date(today);
             if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1);
             while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
         }
         document.getElementById('streakDisplay').innerText = streak;
+        
         const mLog = {}, yLog = {}; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
         Object.keys(remoteData).forEach(k => {
             const s = remoteData[k];
@@ -160,7 +164,7 @@
                 if (k.startsWith(`log-${viewY}-${viewM}-`)) mLog[s]++;
             }
         });
-        const mk = (data) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-count">${data[v]}</span></div>`).join('');
+        const mk = (data) => VALID.map(v => `<div class="stat-item">${v}<span style="display:block; font-weight:bold; color:#0070bc;">${data[v]}</span></div>`).join('');
         document.getElementById('monthStatsGrid').innerHTML = mk(mLog);
         document.getElementById('yearStatsGrid').innerHTML = mk(yLog);
     }
