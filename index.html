@@ -31,8 +31,14 @@
         .date-num { width: 100%; padding: 5px 8px; font-size: 12px; box-sizing: border-box; }
         .stamp { font-size: 28px; height: 40px; line-height: 40px; }
 
-        /* 凡例と集計 */
-        .stats-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        /* 凡例エリア (復活！) */
+        .legend-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 12px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
+        .legend-label { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .legend-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 12px; font-weight: bold; }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+
+        /* 集計エリア */
+        .stats-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
         .stats-title { font-weight: bold; border-left: 5px solid #0070bc; padding-left: 10px; margin-bottom: 12px; font-size: 15px; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 20px; }
         .stat-item { background: #f9f9f9; padding: 10px 2px; border-radius: 8px; border: 1px solid #eee; }
@@ -55,6 +61,17 @@
             <button class="nav-btn" onclick="moveMonth(1)">＞</button>
         </div>
         <div class="grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="legend-container">
+        <div class="legend-label">＜通常＞</div>
+        <div class="legend-grid">
+            <div class="legend-item">⚪ 0時間〜</div>
+            <div class="legend-item">🥉 3時間〜</div>
+            <div class="legend-item">🥈 5時間〜</div>
+            <div class="legend-item">🥇 6時間〜</div>
+            <div class="legend-item">👑 10時間〜</div>
+        </div>
     </div>
 
     <div class="stats-container">
@@ -107,16 +124,17 @@
     }
 
     function updateAll() {
-        // 連続日数計算
         let streak = 0;
-        let check = new Date();
-        check.setHours(0,0,0,0);
+        let today = new Date();
+        today.setHours(0,0,0,0);
         
         const getS = (dt) => localStorage.getItem(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`);
         
-        if (getS(check) === '⚪') {
+        // 連続計算ロジック
+        if (getS(today) === '⚪') {
             streak = 0;
         } else {
+            let check = new Date(today);
             if (!VALID.includes(getS(check))) check.setDate(check.getDate() - 1);
             while (VALID.includes(getS(check))) {
                 streak++;
@@ -125,13 +143,13 @@
         }
         document.getElementById('streakDisplay').innerText = streak;
 
-        // 集計
+        // 集計ロジック
         const mLog = {}, yLog = {};
         VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
 
         for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (k.startsWith('log-')) {
+            if (k && k.startsWith('log-')) {
                 const s = localStorage.getItem(k);
                 if (VALID.includes(s)) {
                     yLog[s]++;
@@ -147,7 +165,6 @@
 
     function moveMonth(n) { viewM += n; if(viewM>12){viewM=1;viewY++;}else if(viewM<1){viewM=12;viewY--;} render(); }
     
-    // 起動時に実行
     render();
 </script>
 </body>
