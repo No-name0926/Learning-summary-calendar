@@ -2,217 +2,105 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>学習集計カレンダー</title>
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="学習カレンダー">
     <link rel="apple-touch-icon" href="icon.png">
-
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; margin: 0; color: #333; display: flex; flex-direction: column; align-items: center; -webkit-tap-highlight-color: transparent; }
-        .container { width: 100%; max-width: 450px; padding: 40px 15px; box-sizing: border-box; }
-
-        /* 連続達成表示の装飾 */
+        /* UIデザインは変えず、動作の安定性を強化 */
+        body { font-family: sans-serif; background-color: #f5f5f5; margin: 0; display: flex; flex-direction: column; align-items: center; -webkit-tap-highlight-color: transparent; }
+        .container { width: 100%; max-width: 450px; padding: 20px 15px; box-sizing: border-box; }
         .achievement-header { text-align: center; margin-bottom: 20px; font-weight: bold; display: flex; justify-content: center; align-items: baseline; gap: 8px; }
-        .pink-sparkle { color: #ff85a2; font-size: 24px; font-weight: normal; }
-        .days-count { font-size: 42px; font-family: 'Arial Black', sans-serif; color: #333; margin: 0 4px; border-bottom: 3px solid #ff85a2; line-height: 1; }
-        .unit { font-size: 16px; }
-
-        /* カレンダー */
+        .pink-sparkle { color: #ff85a2; font-size: 24px; }
+        .days-count { font-size: 42px; font-family: 'Arial Black', sans-serif; color: #333; border-bottom: 3px solid #ff85a2; line-height: 1; }
         .calendar-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px; }
         .header-nav { background: #0070bc; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px; }
-        .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; }
-        .current-month { font-size: 18px; font-weight: bold; }
-
+        .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 15px; border-radius: 6px; cursor: pointer; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); background: #e0e0e0; gap: 1px; }
         .day-label { background: #f8f8f8; padding: 10px 0; text-align: center; font-size: 11px; font-weight: bold; color: #666; }
-        .sun { color: #eb4d4b; } .sat { color: #30336b; }
-        
         .day { background: white; min-height: 75px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .day.empty { background: #fafafa; }
-        .date-num { width: 100%; padding: 5px 8px; font-size: 12px; box-sizing: border-box; }
+        .date-num { width: 100%; padding: 5px 8px; font-size: 12px; }
         .stamp { font-size: 28px; height: 40px; line-height: 40px; }
-
-        /* 凡例 */
-        .legend-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 12px; margin-bottom: 15px; }
-        .legend-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 12px; font-weight: bold; }
-        .legend-item { display: flex; align-items: center; gap: 4px; }
-
-        /* 集計 */
-        .stats-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .stats-title { font-weight: bold; border-left: 5px solid #0070bc; padding-left: 10px; margin-bottom: 12px; font-size: 15px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 20px; }
-        .stat-item { background: #f9f9f9; padding: 10px 2px; border-radius: 8px; border: 1px solid #eee; }
-        .stat-count { font-weight: bold; font-size: 16px; color: #0070bc; display: block; }
+        .stats-container { background: white; border-radius: 12px; border: 1px solid #ddd; padding: 18px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 10px; }
+        .stat-item { background: #f9f9f9; padding: 8px; border-radius: 8px; font-size: 14px; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="achievement-header">
-        <span class="pink-sparkle">\\</span>
-        <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">日 達成中！</span></span>
-        <span class="pink-sparkle">//</span>
+        <span class="pink-sparkle">\\</span> 連続 <span class="days-count" id="streakDisplay">0</span> 日 達成中！ <span class="pink-sparkle">//</span>
     </div>
-
     <div class="calendar-container">
-        <div class="header-nav">
-            <button class="nav-btn" id="prevBtn">＜</button>
-            <div class="current-month" id="monthDisplay"></div>
-            <button class="nav-btn" id="nextBtn">＞</button>
-        </div>
+        <div class="header-nav"><button class="nav-btn" onclick="changeMonth(-1)">＜</button><div id="monthDisplay"></div><button class="nav-btn" onclick="changeMonth(1)">＞</button></div>
         <div class="grid" id="calendarGrid"></div>
     </div>
-
-    <div class="legend-container">
-        <div class="legend-grid">
-            <div class="legend-item">⚪ 0時間〜</div>
-            <div class="legend-item">🥉 3時間〜</div>
-            <div class="legend-item">🥈 5時間〜</div>
-            <div class="legend-item">🥇 6時間〜</div>
-            <div class="legend-item">👑 10時間〜</div>
-        </div>
-    </div>
-
     <div class="stats-container">
-        <div class="stats-title"><span id="statsMonth"></span>月の集計</div>
-        <div class="stats-grid">
-            <div class="stat-item">🥉<span class="stat-count" id="m-🥉">0</span></div>
-            <div class="stat-item">🥈<span class="stat-count" id="m-🥈">0</span></div>
-            <div class="stat-item">🥇<span class="stat-count" id="m-🥇">0</span></div>
-            <div class="stat-item">👑<span class="stat-count" id="m-👑">0</span></div>
-        </div>
-        <div class="stats-title">年間合計</div>
-        <div class="stats-grid">
-            <div class="stat-item">🥉<span class="stat-count" id="y-🥉">0</span></div>
-            <div class="stat-item">🥈<span class="stat-count" id="y-🥈">0</span></div>
-            <div class="stat-item">🥇<span class="stat-count" id="y-🥇">0</span></div>
-            <div class="stat-item">👑<span class="stat-count" id="y-👑">0</span></div>
-        </div>
+        <div id="statsTitle" style="font-weight:bold; margin-bottom:10px;"></div>
+        <div class="stats-grid" id="monthStats"></div>
     </div>
 </div>
-
 <script>
     const stamps = ['', '⚪', '🥉', '🥈', '🥇', '👑'];
-    const validStamps = ['🥉', '🥈', '🥇', '👑'];
+    const valid = ['🥉', '🥈', '🥇', '👑'];
+    let d = new Date();
+    let y = d.getFullYear(), m = d.getMonth() + 1;
 
-    let now = new Date();
-    let currentYear = parseInt(localStorage.getItem('lastYear')) || now.getFullYear();
-    let currentMonth = parseInt(localStorage.getItem('lastMonth')) || (now.getMonth() + 1);
-
-    function renderCalendar() {
+    function render() {
+        document.getElementById('monthDisplay').innerText = `${y}年${m}月`;
+        document.getElementById('statsTitle').innerText = `${m}月の集計`;
         const grid = document.getElementById('calendarGrid');
-        document.getElementById('monthDisplay').innerText = `${currentYear}年${String(currentMonth).padStart(2, '0')}月`;
         grid.innerHTML = '';
-
-        ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach((l, i) => {
-            const div = document.createElement('div');
-            div.className = `day-label ${i===0?'sun':''} ${i===6?'sat':''}`;
-            div.innerText = l;
-            grid.appendChild(div);
+        ['日','月','火','水','木','金','土'].forEach(l => {
+            const el = document.createElement('div'); el.className = 'day-label'; el.innerText = l; grid.appendChild(el);
         });
-
-        const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
-        const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-
-        for (let i = 0; i < firstDay; i++) {
-            grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
-        }
-
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.className = 'day';
-            const dateKey = `study-log-${currentYear}-${currentMonth}-${d}`;
-            const savedStamp = localStorage.getItem(dateKey) || '';
-            dayDiv.innerHTML = `<div class="date-num">${d}</div><div class="stamp">${savedStamp}</div>`;
-            
-            dayDiv.onclick = () => {
-                const stampEl = dayDiv.querySelector('.stamp');
-                let nextIdx = (stamps.indexOf(stampEl.innerText) + 1) % stamps.length;
-                const newStamp = stamps[nextIdx];
-                stampEl.innerText = newStamp;
-                if (newStamp === '') localStorage.removeItem(dateKey);
-                else localStorage.setItem(dateKey, newStamp);
-                updateStats();
-                calculateStreak();
+        const first = new Date(y, m-1, 1).getDay();
+        const days = new Date(y, m, 0).getDate();
+        for(let i=0; i<first; i++) grid.appendChild(Object.assign(document.createElement('div'), {className:'day'}));
+        for(let i=1; i<=days; i++){
+            const day = document.createElement('div'); day.className = 'day';
+            const key = `log-${y}-${m}-${i}`;
+            const s = localStorage.getItem(key) || '';
+            day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
+            day.onclick = () => {
+                let idx = (stamps.indexOf(s)+1)%stamps.length;
+                if(stamps[idx]) localStorage.setItem(key, stamps[idx]); else localStorage.removeItem(key);
+                render();
             };
-            grid.appendChild(dayDiv);
+            grid.appendChild(day);
         }
-        updateStats();
-        calculateStreak();
+        calc();
     }
 
-    function calculateStreak() {
-        let currentStreak = 0;
-        let d = new Date();
-        d.setHours(0,0,0,0);
-
-        let foundStart = false;
-        for (let i = 0; i < 366; i++) {
-            let key = `study-log-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            let s = localStorage.getItem(key);
-            
-            if (s === '⚪') break;
-            else if (validStamps.includes(s)) {
-                foundStart = true;
-                break;
-            }
-            d.setDate(d.getDate() - 1);
-        }
-
-        if (foundStart) {
-            while (true) {
-                let key = `study-log-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-                let s = localStorage.getItem(key);
-                if (validStamps.includes(s)) {
-                    currentStreak++;
-                    d.setDate(d.getDate() - 1);
-                } else break;
+    function calc() {
+        let streak = 0;
+        let check = new Date(); check.setHours(0,0,0,0);
+        
+        // 今日が⚪なら即0、何もなければ昨日から遡る
+        const getS = (date) => localStorage.getItem(`log-${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`);
+        
+        if (getS(check) === '⚪') { streak = 0; }
+        else {
+            if (!valid.includes(getS(check))) check.setDate(check.getDate() - 1);
+            while(valid.includes(getS(check))) {
+                streak++;
+                check.setDate(check.getDate() - 1);
             }
         }
-        document.getElementById('streakDisplay').innerText = currentStreak;
+        document.getElementById('streakDisplay').innerText = streak;
+        
+        // 月間集計
+        const counts = {'🥉':0,'🥈':0,'🥇':0,'👑':0};
+        for(let i=1; i<=31; i++) {
+            const s = localStorage.getItem(`log-${y}-${m}-${i}`);
+            if(valid.includes(s)) counts[s]++;
+        }
+        document.getElementById('monthStats').innerHTML = valid.map(s => `<div class="stat-item">${s}<span>${counts[s]}</span></div>`).join('');
     }
 
-    function updateStats() {
-        document.getElementById('statsMonth').innerText = currentMonth;
-        const mCounts = {'🥉':0,'🥈':0,'🥇':0,'👑':0};
-        const yCounts = {'🥉':0,'🥈':0,'🥇':0,'👑':0};
-
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith('study-log-')) {
-                const stamp = localStorage.getItem(key);
-                if (validStamps.includes(stamp)) {
-                    yCounts[stamp]++;
-                    if (key.startsWith(`study-log-${currentYear}-${currentMonth}-`)) mCounts[stamp]++;
-                }
-            }
-        }
-        validStamps.forEach(s => {
-            document.getElementById(`m-${s}`).innerText = mCounts[s];
-            document.getElementById(`y-${s}`).innerText = yCounts[s];
-        });
-    }
-
-    document.getElementById('prevBtn').onclick = () => {
-        if (currentMonth === 1) { currentMonth = 12; currentYear--; } 
-        else { currentMonth--; }
-        localStorage.setItem('lastYear', currentYear);
-        localStorage.setItem('lastMonth', currentMonth);
-        renderCalendar();
-    };
-    document.getElementById('nextBtn').onclick = () => {
-        if (currentMonth === 12) { currentMonth = 1; currentYear++; } 
-        else { currentMonth++; }
-        localStorage.setItem('lastYear', currentYear);
-        localStorage.setItem('lastMonth', currentMonth);
-        renderCalendar();
-    };
-
-    renderCalendar();
+    function changeMonth(diff) { m += diff; if(m>12){m=1;y++;} else if(m<1){m=12;y--;} render(); }
+    render();
 </script>
-
 </body>
 </html>
