@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>学習集計カレンダー Pro</title>
+    <title>学習集計カレンダー</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
@@ -14,6 +14,7 @@
         .pink-sparkle { color: #ff85a2; font-size: 24px; font-weight: normal; }
         .days-count { font-size: 42px; font-family: 'Arial Black', sans-serif; color: #333; margin: 0 4px; border-bottom: 3px solid #ff85a2; line-height: 1; }
         .unit { font-size: 16px; }
+        .user-badge { font-size: 12px; background: #333; color: white; padding: 2px 10px; border-radius: 10px; margin-bottom: 10px; }
         .calendar-container { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 15px; }
         .header-nav { background: #0070bc; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px; }
         .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 5px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 18px; }
@@ -31,14 +32,15 @@
         .stats-title { font-weight: bold; border-left: 5px solid #0070bc; padding-left: 10px; margin-bottom: 12px; font-size: 15px; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; margin-bottom: 20px; }
         .stat-item { background: #f9f9f9; padding: 10px 2px; border-radius: 8px; border: 1px solid #eee; }
-        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; font-weight: bold; }
+        #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; justify-content: center; align-items: center; z-index: 100; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="loading">Firebase 接続中...<br><span style="font-size:12px; font-weight:normal;">(動かない場合はルール設定を確認してください)</span></div>
+<div id="loading">読み込み中...</div>
 
 <div class="container">
+    <div id="userNameBadge" class="user-badge">User: guest</div>
     <div class="achievement-header">
         <span class="pink-sparkle">\\</span>
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">日 達成中！</span></span>
@@ -76,7 +78,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 取得済みの設定を適用
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
         authDomain: "study-summary-calendar.firebaseapp.com",
@@ -85,26 +86,28 @@
         messagingSenderId: "621917521841",
         appId: "1:621917521841:web:dbf6eb5ab9f67d33af5f90",
         measurementId: "G-DF7DYRGLFZ",
-        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com" // 末尾の / を削除済み
+        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const logsRef = ref(db, 'logs');
+
+    // URLからユーザー名を取得 (例: ?id=kame)
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id') || 'guest';
+    document.getElementById('userNameBadge').innerText = `User: ${userId}`;
+    
+    const logsRef = ref(db, `users/${userId}/logs`);
 
     const STAMPS = ['', '⚪', '🥉', '🥈', '🥇', '👑'];
     const VALID = ['🥉', '🥈', '🥇', '👑'];
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1;
     let remoteData = {};
 
-    // クラウドからデータ取得
     onValue(logsRef, (snapshot) => {
         remoteData = snapshot.val() || {};
         document.getElementById('loading').style.display = 'none';
         render();
-    }, (error) => {
-        console.error(error);
-        alert("Firebaseエラー: ルール設定が正しく公開されているか確認してください。");
     });
 
     window.moveMonth = (n) => {
@@ -117,19 +120,15 @@
         document.getElementById('statsMonthLabel').innerText = viewM;
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
-
         ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach((l, i) => {
             const d = document.createElement('div');
             d.className = `day-label ${i===0?'sun':''} ${i===6?'sat':''}`;
             d.innerText = l;
             grid.appendChild(d);
         });
-
         const first = new Date(viewY, viewM - 1, 1).getDay();
         const days = new Date(viewY, viewM, 0).getDate();
-
         for (let i = 0; i < first; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
-
         for (let i = 1; i <= days; i++) {
             const day = document.createElement('div');
             day.className = 'day';
@@ -138,7 +137,7 @@
             day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
             day.onclick = () => {
                 let next = STAMPS[(STAMPS.indexOf(s) + 1) % STAMPS.length];
-                set(ref(db, `logs/${key}`), next);
+                set(ref(db, `users/${userId}/logs/${key}`), next);
             };
             grid.appendChild(day);
         }
@@ -148,14 +147,12 @@
     function updateStats() {
         let streak = 0, today = new Date(); today.setHours(0,0,0,0);
         const getS = (dt) => remoteData[`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`];
-        
         if (getS(today) !== '⚪') {
             let chk = new Date(today);
             if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1);
             while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
         }
         document.getElementById('streakDisplay').innerText = streak;
-        
         const mLog = {}, yLog = {}; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
         Object.keys(remoteData).forEach(k => {
             const s = remoteData[k];
