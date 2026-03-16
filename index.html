@@ -63,7 +63,6 @@
             animation: fadeIn 0.6s ease-out;
         }
 
-        /* レベルアップ通知オーバーレイ */
         #levelUpOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10000; pointer-events: none; display: none;
@@ -78,7 +77,6 @@
             animation: levelUpTextAnim 1.5s forwards;
         }
 
-        /* --- サイドメニュー --- */
         #sideMenu {
             position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
             background: rgba(255,255,255,0.96); z-index: 3500; 
@@ -100,12 +98,10 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
-        /* --- カラーグリッド --- */
         .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
         .color-dot { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 2.5px solid #fff; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .color-dot:hover { transform: scale(1.1); z-index: 2; }
 
-        /* --- メインコンテンツ --- */
         .container { width: 100%; max-width: 460px; padding: 20px 18px 100px; box-sizing: border-box; position: relative; }
         
         .year-summary-btn { 
@@ -128,7 +124,6 @@
             z-index: 20; position: relative;
         }
 
-        /* --- カウントダウン --- */
         .countdown-slider { text-align: center; margin: 10px 0 25px; cursor: pointer; min-height: 35px; }
         .countdown-text { 
             font-size: 16px; font-weight: 800; color: var(--text-on-bg); 
@@ -138,12 +133,12 @@
             color: var(--primary-color); 
             font-family: 'Arial Black', sans-serif; 
             font-size: 32px; margin: 0 5px;
-            -webkit-text-stroke: 2.5px #ffffff;
+            /* 修正点: 縁取りを太くした(2.5px -> 4px) */
+            -webkit-text-stroke: 4px #ffffff;
             paint-order: stroke fill;
             text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
         }
 
-        /* --- 連続記録エリア --- */
         .achievement-header { 
             text-align: center; margin-bottom: 30px; 
             display: flex; justify-content: center; align-items: baseline; gap: 12px; 
@@ -157,16 +152,16 @@
             transition: all 0.5s;
         }
 
-        /* --- 名言エリア --- */
         .quote-box { 
             background: var(--box-bg); backdrop-filter: blur(15px);
             border-radius: 24px; padding: 25px; margin-bottom: 35px; text-align: center; 
             box-shadow: 0 12px 35px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.45);
+            cursor: pointer; transition: transform 0.2s;
         }
+        .quote-box:active { transform: scale(0.98); }
         .quote-text { font-size: 14px; color: var(--text-on-bg); line-height: 1.9; font-style: italic; font-weight: 600; }
         .quote-author { font-size: 11px; color: var(--quote-author-color); font-weight: 800; display: block; margin-top: 15px; }
 
-        /* --- カレンダー --- */
         .calendar-container { 
             background: white; border-radius: 32px; 
             box-shadow: var(--calendar-shadow); overflow: hidden; 
@@ -194,7 +189,6 @@
         .stamp { font-size: 38px; height: 42px; line-height: 42px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15)); }
         .memo-indicator { font-size: 10px; color: var(--primary-color); height: 12px; margin-top: 2px; }
 
-        /* --- 凡例エリア --- */
         .legend-area {
             background: var(--legend-bg); backdrop-filter: blur(10px);
             border-radius: 20px; padding: 12px 10px; margin-bottom: 25px;
@@ -202,7 +196,6 @@
             font-size: 11px; font-weight: 800; color: var(--text-on-bg);
         }
 
-        /* --- スタッツ --- */
         .stats-container { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; }
         .stats-title { font-weight: 900; border-left: 7px solid var(--primary-color); padding-left: 16px; margin-bottom: 25px; font-size: 16px; color: #444; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; margin-bottom: 35px; }
@@ -210,7 +203,6 @@
         .stat-val { display:block; font-weight:900; color:var(--primary-color); font-size: 22px; }
         .stat-total { font-size: 11px; color: #ddd; }
 
-        /* --- チャート・分析 --- */
         .chart-wrapper { width: 100%; height: 210px; margin-bottom: 20px; }
         .analysis-box { background: #f9fbff; border-radius: 20px; padding: 18px; border: 1px solid #eef2ff; margin-bottom: 10px; }
         .analysis-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; font-weight: 900; color: var(--primary-color); }
@@ -218,14 +210,12 @@
         .analysis-score { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #d0d7e6; }
         .score-val { font-size: 14px; font-weight: 900; }
 
-        /* --- レベルバー --- */
         .lv-bar-container { width: 100%; margin-top: 30px; padding: 0 5px; box-sizing: border-box; }
         .lv-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
         .lv-num { font-size: 18px; font-weight: 900; color: var(--primary-color); }
         .lv-track { width: 100%; height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
         .lv-fill { height: 100%; background: var(--primary-color); width: 0%; transition: width 0.8s; border-radius: 10px; }
 
-        /* --- モーダル --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 4500; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-content { 
             background: white; width: 85%; max-width: 420px; max-height: 85vh; 
@@ -234,20 +224,17 @@
             position: relative;
         }
 
-        /* --- 移植: メモ表示用スタイル --- */
         .month-memo-btn { background: #f8f9fa; border: none; border-radius: 8px; padding: 5px 8px; cursor: pointer; font-size: 16px; transition: 0.2s; }
         .month-memo-btn:hover { background: #e9ecef; }
         .memo-list-item { padding: 12px; border-bottom: 1.2px solid #f1f3f5; font-size: 13.5px; line-height: 1.5; color: #555; }
         .memo-list-date { font-weight: 900; color: var(--primary-color); margin-right: 8px; font-size: 11px; }
 
-        /* --- モーダル内入力UI --- */
         .day-modal-header { font-size: 18px; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; text-align: center; }
         .stamp-selector { display: flex; justify-content: space-around; background: #f8faff; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
         .stamp-btn { font-size: 32px; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 12px; border: 2px solid transparent; }
         .stamp-btn.selected { background: white; border-color: var(--primary-color); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .memo-textarea { width: 100%; height: 100px; padding: 15px; border-radius: 16px; border: 2.5px solid #f0f0f0; background: #fafafa; font-size: 15px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 15px; }
 
-        /* --- 設定・保存系 --- */
         #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; font-weight: 900; color: var(--primary-color); }
         .save-btn { background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
         .setting-input { width: 100%; padding: 16px; margin: 12px 0; border: 2.5px solid #f0f0f0; border-radius: 16px; box-sizing: border-box; background: #fafafa; }
@@ -256,8 +243,8 @@
 <body>
 
 <div id="loading">
-    <div style="font-size: 50px; margin-bottom: 25px; animation: pulse 1.5s infinite;">💎</div>
-    <span id="loadText">データを同期しています...</span>
+    <div style="font-size: 50px; margin-bottom: 25px; animation: pulse 1.5s infinite;">🏆</div>
+    <span id="loadText">Loading...</span>
 </div>
 
 <div id="levelUpOverlay">
@@ -266,7 +253,7 @@
 
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 <div id="sideMenu">
-    <h3 style="margin-top:0; color:#222; border-bottom:4px solid #f0f0f0; padding-bottom:18px; font-weight: 900; font-size: 22px;">アプリ設定</h3>
+    <h3 style="margin-top:0; color:#222; border-bottom:4px solid #f0f0f0; padding-bottom:18px; font-weight: 900; font-size: 22px;">設定</h3>
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
         <input type="text" id="eventTitle" class="setting-input" placeholder="例：国家試験、英検">
@@ -308,9 +295,10 @@
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
         <span class="pink-sparkle">✦</span>
     </div>
-    <div class="quote-box" id="quoteContainer">
+    <div class="quote-box" id="quoteContainer" onclick="fetchQuote()">
         <div class="quote-text" id="quoteText">Loading message...</div>
         <div class="quote-author" id="quoteAuthor"></div>
+        <div style="font-size: 8px; color: #ccc; margin-top: 8px;">(タップして更新)</div>
     </div>
     <div class="calendar-container" id="calWrap">
         <div class="header-nav" id="mainHeader">
@@ -347,6 +335,9 @@
 
         <div class="stats-title"><span id="statsYearLabel"></span>年 年間累計</div>
         <div class="stats-grid" id="yearStatsGrid"></div>
+
+        <div class="stats-title">年間総メダル獲得推移</div>
+        <div class="chart-wrapper" style="height: 230px;"><canvas id="yearStackChart"></canvas></div>
 
         <div class="lv-bar-container">
             <div class="lv-info">
@@ -410,10 +401,6 @@
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
         authDomain: "study-summary-calendar.firebaseapp.com",
         projectId: "study-summary-calendar",
-        storageBucket: "study-summary-calendar.firebasestorage.app",
-        messagingSenderId: "621917521841",
-        appId: "1:621917521841:web:dbf6eb5ab9f67d33af5f90",
-        measurementId: "G-DF7DYRGLFZ",
         databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com"
     };
 
@@ -437,8 +424,8 @@
         ocean: { primary: '#02aab0', accent: '#00cdac', bg: 'linear-gradient(135deg, #02aab0 0%, #00cdac 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 35px rgba(255,255,255,0.45)', author: '#eee' }
     };
 
-    let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, currentEventIndex = 0;
-    let selectedDateKey = null, selectedStamp = '', currentLv = 0; // 初回判定用に0で初期化
+    let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
+    let selectedDateKey = null, selectedStamp = '', currentLv = 0;
     const VALID = ['🥉', '🥈', '🥇', '👑'];
     const VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 };
     const EXP_MAP = { '⚪':0, '🥉':2, '🥈':5, '🥇':8, '👑':15 };
@@ -470,6 +457,7 @@
         root.style.setProperty('--header-gradient', `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`);
         localStorage.setItem('study-calendar-theme', name);
         if(myChart) renderWeeklyChart();
+        if(yearStackChart) updateStats();
     };
 
     onValue(logsRef, (snap) => {
@@ -514,35 +502,13 @@
         const progress = totalExp % 100;
         const lvDisplay = document.getElementById('lvDisplay');
 
-        // レベルアップ時の豪華演出
         if (currentLv !== 0 && level > currentLv) {
-            // 1. 全画面演出
             const overlay = document.getElementById('levelUpOverlay');
             overlay.classList.add('active');
             setTimeout(() => overlay.classList.remove('active'), 2000);
-
-            // 2. 多層紙吹雪
-            const count = 200;
-            const defaults = { origin: { y: 0.6 }, zIndex: 11000 };
-            function fire(ratio, opts) {
-                confetti({...defaults, ...opts, particleCount: Math.floor(count * ratio)});
-            }
-            fire(0.25, { spread: 30, startVelocity: 60 });
-            fire(0.2, { spread: 60 });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-            fire(0.1, { spread: 130, startVelocity: 30, decay: 0.92, scalar: 1.2 });
-            fire(0.1, { spread: 130, startVelocity: 50 });
-
-            // 3. UIアニメーション
-            lvDisplay.style.animation = "none";
-            lvDisplay.offsetHeight; // reflow
+            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
             lvDisplay.style.animation = "levelUpPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-
-            const badge = document.getElementById('titleDisplay');
-            badge.style.transform = "scale(1.4) rotate(5deg)";
-            setTimeout(() => { badge.style.transform = "scale(1) rotate(0deg)"; }, 1200);
         }
-
         currentLv = level;
         lvDisplay.innerText = `Lv. ${level}`;
         document.getElementById('expDisplay').innerText = `EXP: ${progress} / 100`;
@@ -553,7 +519,7 @@
         const ctx = document.getElementById('weeklyChart').getContext('2d');
         const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         const labels = [], values = [];
-        let totalVal = 0, zeroDays = 0, highDays = 0, weekendVal = 0;
+        let totalVal = 0, zeroDays = 0, highDays = 0, lastDayVal = 0;
 
         for(let i=6; i>=0; i--) {
             const d = new Date(); d.setDate(d.getDate() - i);
@@ -562,7 +528,7 @@
             values.push(val); totalVal += val;
             if(val === 0) zeroDays++;
             if(val >= 7) highDays++;
-            if(d.getDay() === 0 || d.getDay() === 6) weekendVal += val;
+            if(i === 0) lastDayVal = val;
         }
 
         if(myChart) myChart.destroy();
@@ -572,32 +538,32 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } }
         });
 
-        const avg = totalVal / 7, stability = Math.max(0, 100 - (zeroDays * 15)), streak = parseInt(document.getElementById('streakDisplay').innerText);
-        let comment = "学習データの蓄積を待っています。まずは今日を最高の一日に！";
-        
-        if(totalVal > 0) {
-            if(streak >= 14) comment = "驚異的な継続力です！2週間不休のあなたは、すでに習慣化のプロフェッショナル。";
-            else if(streak >= 7 && highDays >= 5) comment = "最高潮のパフォーマンスです！高い集中力と継続が完璧に融合しています。";
-            else if(zeroDays === 0) comment = "毎日欠かさず学習を継続できています。この姿勢が、数ヶ月後に大きな差となります。";
-            else comment = "まずは週に3つのメダルを集めることから始めましょう。小さな成功体験があなたを強くします。";
-        }
+        const avg = totalVal / 7;
+        const streak = parseInt(document.getElementById('streakDisplay').innerText);
+        let comment = "";
+
+        if (totalVal === 0) comment = "分析を開始するには、まずは今日最初のスタンプを。小さな一歩がすべての結果を連れてきます。";
+        else if (streak >= 14) comment = `驚異的です！${streak}日間一度も足を止めていません。もはや努力はあなたの「才能」へと進化しました。`;
+        else if (highDays >= 5) comment = "圧倒的な熱量です。週のほとんどを「集中モード（7h〜）」で過ごせています。このままピークを維持しましょう。";
+        else if (zeroDays === 0 && avg >= 5) comment = "理想的な右肩上がりです。毎日コンスタントに5時間以上を確保できており、非常に安定した成長曲線を描いています。";
+        else if (zeroDays === 0) comment = "素晴らしい！今週は「穴」がありません。短時間でも毎日触れることで、脳の学習効率は最大化されます。";
+        else if (lastDayVal >= 7 && zeroDays > 0) comment = "昨日の爆発力は素晴らしいものでした。この勢いを消さぬよう、今日は「少しだけ」でも机に向かってみませんか？";
+        else if (zeroDays >= 4) comment = "少し休息が長くなっているようです。再開のハードルを下げるコツは「5分だけやる」と自分に嘘をつくことです。";
+        else if (avg < 3) comment = "現在は基礎固めの時期。まずは銅メダル(3h〜)を週3回目指すことから、新しいリズムを作っていきましょう。";
+        else comment = "波はありますが、着実に前進しています。自分のペースを掴みつつあるので、次は得意な科目の時間を増やしてみましょう。";
+
         document.getElementById('analysisComment').innerText = comment;
-        document.getElementById('scoreStability').innerText = stability + "%";
+        document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%";
         document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中"));
-        document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays/7)*100 + avg*5)) + "%";
+        document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
     const TITLES = [
-        { name: "🌌 学問の創造主", req: 365, icon: "🌌" },
-        { name: "♾️ 真理の探求者", req: 250, icon: "♾️" },
-        { name: "💎 不朽の努力家", req: 180, icon: "💎" },
-        { name: "🚀 学習の先駆者", req: 120, icon: "🚀" },
-        { name: "👑 努力の王様", req: 80, icon: "👑" },
-        { name: "🔥 努力の天才", req: 50, icon: "🔥" },
-        { name: "🎖️ 学習のエリート", req: 30, icon: "🎖️" },
-        { name: "⚔️ 集中力の達人", req: 15, icon: "⚔️" },
-        { name: "🌟 期待の星", req: 5, icon: "🌟" },
-        { name: "🐣 見習い学習者", req: 0, icon: "🐣" }
+        { name: "🌌 学問の創造主", req: 365 }, { name: "♾️ 真理の探求者", req: 250 },
+        { name: "💎 不朽の努力家", req: 180 }, { name: "🚀 学習の先駆者", req: 120 },
+        { name: "👑 努力の王様", req: 80 }, { name: "🔥 努力の天才", req: 50 },
+        { name: "🎖️ 学習のエリート", req: 30 }, { name: "⚔️ 集中力の達人", req: 15 },
+        { name: "🌟 期待の星", req: 5 }, { name: "🐣 見習い学習者", req: 0 }
     ];
 
     function updateStats() {
@@ -608,17 +574,52 @@
         document.getElementById('streakDisplay').innerText = streak;
         
         const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
+        const monthlyStack = Array.from({length: 12}, () => ({'🥉':0, '🥈':0, '🥇':0, '👑':0}));
+
         Object.keys(remoteData).forEach(k => {
             const s = getLogData(k).stamp;
             if (VALID.includes(s)) {
-                const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; }
+                const p = k.split('-'); 
+                if (p[1] == viewY) { 
+                    yLog[s]++; 
+                    if (p[2] == viewM) mLog[s]++; 
+                    const monthIdx = parseInt(p[2]) - 1;
+                    monthlyStack[monthIdx][s]++;
+                }
                 if (s === '👑') crowns++;
             }
         });
+
         const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
         document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate());
         document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365);
         document.getElementById('titleDisplay').innerText = (TITLES.find(t => crowns >= t.req)).name;
+
+        const barCtx = document.getElementById('yearStackChart').getContext('2d');
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        
+        if(yearStackChart) yearStackChart.destroy();
+        yearStackChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                datasets: [
+                    { label: '🥉', data: monthlyStack.map(m => m['🥉']), backgroundColor: '#cd7f32cc', borderRadius: 0 },
+                    { label: '🥈', data: monthlyStack.map(m => m['🥈']), backgroundColor: '#c0c0c0cc', borderRadius: 0 },
+                    { label: '🥇', data: monthlyStack.map(m => m['🥇']), backgroundColor: '#ffd700cc', borderRadius: 0 },
+                    { label: '👑', data: monthlyStack.map(m => m['👑']), backgroundColor: themeColor + 'cc', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 }, color: '#999' } },
+                    y: { stacked: true, beginAtZero: true, ticks: { stepSize: 5, color: '#aaa', font: { size: 10 } }, grid: { color: '#f0f0f0' } }
+                }
+            }
+        });
     }
 
     window.toggleYearModal = () => {
@@ -694,11 +695,8 @@
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
 
     window.selectStamp = (s) => {
-        if (selectedStamp === s) { selectedStamp = ''; } 
-        else {
-            selectedStamp = s;
-            if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
-        }
+        selectedStamp = (selectedStamp === s) ? '' : s;
+        if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
         document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp));
     };
 
@@ -737,15 +735,99 @@
         if(title && date) set(ref(db, `my_events/ev-${Date.now()}`), { id: `ev-${Date.now()}`, title, date });
     };
 
-    async function fetchQuote() {
+    const backupQuotes = [
+        { t: "小さいことを積み重ねるのが、とんでもないところへ行くただひとつの道。", a: "イチロー" },
+        { t: "明日死ぬかのように生きろ。永遠に生きるかのように学べ。", a: "ガンジー" },
+        { t: "お前の道を進め。人には勝手なことを言わせておけ。", a: "ダンテ" },
+        { t: "最も困難な道こそ、最も高い場所へ通じている。", a: "ことわざ" },
+        { t: "失敗したことがない人間は、何も新しいことに挑戦していない人間だ。", a: "アインシュタイン" },
+        { t: "成功とは、情熱を失わずに失敗を重ねていくことである。", a: "チャーチル" },
+        { t: "自分を信じろ。そうすれば、道は自ずと開ける。", a: "ゲーテ" },
+        { t: "天才とは、1%のひらめきと99%の努力である。", a: "エジソン" },
+        { t: "壁にぶつかったら、それは成長のチャンスだ。", a: "本田圭佑" },
+        { t: "あなたの時間が限られている。他人の人生を生きて時間を無駄にしてはいけない。", a: "スティーブ・ジョブズ" },
+        { t: "何事も達成するまでは不可能に見えるものである。", a: "ネルソン・マンデラ" },
+        { t: "準備を怠ることは、失敗の準備をしているのと同じだ。", a: "ベンジャミン・フランクリン" },
+        { t: "最大の弱点は諦めることにある。成功するための最も確実な方法は、常にもう一度だけ試してみることだ。", a: "エジソン" },
+        { t: "目的を見失わずに、一歩一歩進むことが大切だ。", a: "坂本龍一" },
+        { t: "努力は裏切らない。もし裏切られたと感じるなら、それはまだ努力とは呼べない。", a: "王貞治" },
+        { t: "夢を見るから、人生は輝く。", a: "モーツァルト" },
+        { t: "できるかできないかではない。やるかやらないかだ。", a: "野茂英雄" },
+        { t: "昨日の自分を少しだけ超えていけ。", a: "自己啓発" },
+        { t: "思考が変われば、行動が変わる。行動が変われば、未来が変わる。", a: "ウィリアム・ジェームズ" },
+        { t: "楽な道を選べば、景色はいつも同じだ。", a: "名言の主" },
+        // --- ここから追加分50個 ---
+        { t: "あきらめたらそこで試合終了ですよ…？", a: "安西先生（SLAM DUNK）" },
+        { t: "「不可能」という文字は、私の辞書にはない。", a: "ナポレオン" },
+        { t: "夢は逃げない。逃げるのはいつも自分だ。", a: "高橋歩" },
+        { t: "他人の靴を履いてみなければ、その人のことはわからない。", a: "英語のことわざ" },
+        { t: "下を向いていたら、虹を見つけることは出来ないよ。", a: "チャップリン" },
+        { t: "PKを外すことができるのは、PKを蹴る勇気を持った者だけだ。", a: "ロベルト・バッジョ" },
+        { t: "努力した者がすべて報われるとは限らん。しかし、成功した者は皆すべからく努力しておる。", a: "鴨川会長（はじめの一歩）" },
+        { t: "なりたかった自分になるのに、遅すぎるということはない。", a: "ジョージ・エリオット" },
+        { t: "結果が出ないとき、どういう自分でいられるか。決してあきらめない姿勢が、何かを生み出す。", a: "松岡修造" },
+        { t: "逃げた道には、幸せなんて落ちてない。", a: "漫画のセリフ" },
+        { t: "期待されるからやるのではない。自分がやりたいからやるのだ。", a: "阿部寛" },
+        { t: "自分の道を歩む勇気を持て。", a: "ニーチェ" },
+        { t: "配られたカードで勝負するっきゃないのさ。それがどういう意味であれ。", a: "スヌーピー" },
+        { t: "もし今日が人生最後の日だとしたら、今からやることは本当にやりたいことか？", a: "スティーブ・ジョブズ" },
+        { t: "限界なんてない。停滞期があるだけだ。そこに留まってはいけない。", a: "ブルース・リー" },
+        { t: "反省することはあっても、後悔することはない。", a: "羽生善治" },
+        { t: "他人の物差しで自分の幸せを測ってはいけない。", a: "美輪明宏" },
+        { t: "他人にできて、あなたにできないことなんてない。", a: "ボブ・マーリー" },
+        { t: "夢を掴むことより、夢を追い続けることの方が大切だ。", a: "ウォルト・ディズニー" },
+        { t: "俺の敵は、だいたい俺です。", a: "南波六太（宇宙兄弟）" },
+        { t: "お前の人生は、お前のものだ。", a: "モブサイコ100" },
+        { t: "今、この瞬間を生きる。", a: "アラン" },
+        { t: "迷わず行けよ、行けばわかるさ。", a: "アントニオ猪木" },
+        { t: "あなたの心に従う勇気を持ってください。", a: "ジョブズ" },
+        { t: "自分で自分をあきらめなければ、道は必ず開ける。", a: "松下幸之助" },
+        { t: "過去ばかり振り向いていたのでは、未来はつくれない。", a: "盛田昭夫" },
+        { t: "成功の反対は失敗ではなく、「挑戦しないこと」だ。", a: "エドモンド・バーク" },
+        { t: "天才とは、強烈な忍耐なり。", a: "ビュフォン" },
+        { t: "死ぬ気でやってみろ、死なないから。", a: "杉村太蔵" },
+        { t: "行動こそが、不安を消し去る唯一の方法だ。", a: "デール・カーネギー" },
+        { t: "人の一生は、重荷を負うて遠き道を行くが如し。", a: "徳川家康" },
+        { t: "今日を頑張った者にのみ、明日が来る。", a: "大槻班長（カイジ）" },
+        { t: "人生において、最も大切なことは「何を目指すか」である。", a: "ピーター・ドラッカー" },
+        { t: "おもしろき こともなき世を おもしろく。", a: "高杉晋作" },
+        { t: "世の中には、幸も不幸もない。ただ考え方一つで、どうにでもなる。", a: "シェイクスピア" },
+        { t: "負けたことがあるというのが、いつか大きな財産になる。", a: "堂本監督（SLAM DUNK）" },
+        { t: "一生懸命努力しても、結果が出ないこともある。でも、努力した事実は残る。", a: "イチロー" },
+        { t: "君の立場になれば君が正しい。僕の立場になれば僕が正しい。", a: "ボブ・ディラン" },
+        { t: "本気でやれば、たいていのことはできる。本気でやれば、おもしろくなる。", a: "後藤清一" },
+        { t: "他人と比較して、他人が自分より優れていたとしても、それは恥ではない。", a: "ヘミングウェイ" },
+        { t: "私は失敗したことがない。ただ、1万通りの「うまくいかない方法」を見つけただけだ。", a: "エジソン" },
+        { t: "とにかく、やってみなはれ。やらなわからしまへん。", a: "鳥井信治郎（サントリー創業者）" },
+        { t: "一度きりの人生、楽しまなきゃ損だ。", a: "芸能人の格言" },
+        { t: "人生は、勇気次第でどうにでもなる。", a: "セネカ" },
+        { t: "自分を愛することが、一生続くロマンスの始まりだ。", a: "オスカー・ワイルド" },
+        { t: "雲の向こうは、いつも青空。", a: "ルイーザ・メイ・オルコット" },
+        { t: "やってのけろ。何があっても。", a: "ウォルト・ディズニー" },
+        { t: "自分らしく生きることに、他人の許可はいらない。", a: "アドラー" },
+        { t: "あなたが今日、何もしなかったら、明日は今日と同じになる。", a: "マザー・テレサ" },
+        { t: "道を選ぶということは、他の道を捨てるということだ。", a: "霜月美佳（PSYCHO-PASS）" }
+    ];
+
+
+    window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+        qE.style.opacity = 0; aE.style.opacity = 0;
+        
         try {
-            const res = await fetch("https://meigen.fyi/api/v1/quotes/random");
+            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
+            if (!res.ok) throw new Error();
             const data = await res.json();
-            qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author||'賢者'}`;
+            qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
         } catch (e) {
-            qE.innerText = `"継続は力なり。"`; aE.innerText = `― 日本の格言`;
+            const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
+            qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
         }
+
+        setTimeout(() => {
+            qE.style.transition = 'opacity 0.5s'; aE.style.transition = 'opacity 0.5s';
+            qE.style.opacity = 1; aE.style.opacity = 1;
+        }, 100);
     }
 
     setTheme(localStorage.getItem('study-calendar-theme') || 'blue');
