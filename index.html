@@ -251,8 +251,8 @@
         .stamp-btn { font-size: 32px; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 12px; border: 2px solid transparent; }
         .stamp-btn.selected { background: white; border-color: var(--primary-color); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .memo-textarea { width: 100%; height: 100px; padding: 15px; border-radius: 16px; border: 2.5px solid #f0f0f0; background: #fafafa; font-size: 15px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 15px; }
-
-        /* Loading画面の配置をさらに上（カレンダー年月付近）に調整 */
+        
+        /* Loading画面を名言の下・カレンダー年月付近に配置 */
         #loading { 
             position: fixed; 
             top: 0; 
@@ -267,12 +267,11 @@
             z-index: 6000; 
             font-weight: 900; 
             color: var(--primary-color);
-            /* 10vhから30vhに変更して、より上部へ配置 */
-            padding-bottom: 30vh; 
+            /* 45vh（画面の約半分弱）の余白を下に入れることで、中身を上に押し上げます */
+            padding-bottom: 45vh; 
             box-sizing: border-box;
         }
         
-        /* アイコンとテキストの間隔などはそのまま */
         #loading div {
             font-size: 50px; 
             margin-bottom: 25px; 
