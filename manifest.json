@@ -1,14 +1,11 @@
 {
   "name": "学習集計カレンダー",
-  "short_name": "学習カレンダー",
+  "short_name": "学習カレ",
   "start_url": "index.html",
   "display": "standalone",
+  "background_color": "#0070bc",
+  "theme_color": "#0070bc",
   "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
     {
       "src": "icon.png",
       "sizes": "512x512",
