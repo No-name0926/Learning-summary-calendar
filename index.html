@@ -23,9 +23,44 @@
             --quote-author-color: #777;
             --outline-color: #ffffff;
             --legend-bg: rgba(255, 255, 255, 0.4);
+            /* 背景模様用の変数 */
+            --pattern-image: none;
+            --pattern-opacity: 0.3;
+            --pattern-size: 20px 20px;
         }
     </style>
     <style>
+        /* --- 背景模様のレイヤー構造 --- */
+        body { 
+            font-family: 'SF Pro Text', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; 
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; 
+            transition: background 0.5s ease;
+            animation: fadeIn 0.6s ease-out;
+            position: relative;
+        }
+
+        /* ここでグラデーションの上に「模様」を重ねる */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--pattern-image);
+            background-size: var(--pattern-size);
+            opacity: var(--pattern-opacity);
+            pointer-events: none;
+            z-index: -1;
+            transition: all 0.5s ease;
+        }
+
         /* --- 全体アニメーション定義 --- */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
@@ -44,23 +79,6 @@
             20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
             80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -60%) scale(0.8); }
-        }
-
-        /* --- 基本レイアウト --- */
-        body { 
-            font-family: 'SF Pro Text', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; 
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            min-height: 100vh;
-            margin: 0; 
-            color: #333; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent; 
-            transition: background 0.8s ease-in-out;
-            animation: fadeIn 0.6s ease-out;
         }
 
         #levelUpOverlay {
@@ -99,7 +117,7 @@
         }
 
         .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
-        .color-dot { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 2.5px solid #fff; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .color-dot { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 2.5px solid #fff; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 16px; overflow: hidden; background-size: cover; position: relative; }
         .color-dot:hover { transform: scale(1.1); z-index: 2; }
 
         .container { width: 100%; max-width: 460px; padding: 20px 18px 100px; box-sizing: border-box; position: relative; }
@@ -133,7 +151,6 @@
             color: var(--primary-color); 
             font-family: 'Arial Black', sans-serif; 
             font-size: 32px; margin: 0 5px;
-            /* 修正点: 縁取りを太くした(2.5px -> 4px) */
             -webkit-text-stroke: 4px #ffffff;
             paint-order: stroke fill;
             text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
@@ -261,20 +278,22 @@
         <button class="save-btn" id="saveEventBtn">目標をリストに保存</button>
         <div id="eventList" style="margin-top: 25px; max-height: 200px; overflow-y: auto;"></div>
         
-        <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:35px;">🎨 テーマカラー選択</p>
+        <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:35px;">🎨 テーマカラー & テクスチャ</p>
         <div class="color-grid">
-            <div class="color-dot" style="background:#0070bc;" onclick="setTheme('blue')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #eb4d4b, #ff4b2b);" onclick="setTheme('red')"></div>
-            <div class="color-dot" style="background:#f1c40f;" onclick="setTheme('yellow')"></div>
-            <div class="color-dot" style="background:#2d3436;" onclick="setTheme('black')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #ff5f6d, #ffc371);" onclick="setTheme('orange')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #11998e, #38ef7d);" onclick="setTheme('green')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #00c6ff, #0072ff);" onclick="setTheme('aqua')"></div>
-            <div class="color-dot" style="background:#ffffff; border: 1px solid #eee;" onclick="setTheme('white')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #6a11cb, #2575fc);" onclick="setTheme('galaxy')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #134e5e, #71b280);" onclick="setTheme('forest')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #f80759, #bc4e9c);" onclick="setTheme('sunset')"></div>
-            <div class="color-dot" style="background:linear-gradient(135deg, #02aab0, #00cdac);" onclick="setTheme('ocean')"></div>
+            <div class="color-dot" style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;" onclick="setTheme('blue')">💧</div>
+            <div class="color-dot" style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;" onclick="setTheme('red')">🔥</div>
+            <div class="color-dot" style="background:#f1c40f; background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('yellow')">✨</div>
+            <div class="color-dot" style="background:#2d3436; background-image: radial-gradient(#ffffff22 1px, transparent 1px); background-size: 30px 30px;" onclick="setTheme('black')">🕶️</div>
+            
+            <div class="color-dot" style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);" onclick="setTheme('orange')">🍊</div>
+            <div class="color-dot" style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;" onclick="setTheme('green')">🌿</div>
+            <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent); background-size: 20px 20px;" onclick="setTheme('aqua')">🌊</div>
+            <div class="color-dot" style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;" onclick="setTheme('white')">☁️</div>
+
+            <div class="color-dot" style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('luxury_carbon')">💎</div>
+            <div class="color-dot" style="background: #e6e9f0; background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px);" onclick="setTheme('royal_paper')">📜</div>
+            <div class="color-dot" style="background: #9b59b6; background-image: linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11);" onclick="setTheme('antique_rug')">🏛️</div>
+            <div class="color-dot" style="background: #0f2027; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px); background-size: 150px 150px;" onclick="setTheme('midnight_emoji')">🌃</div>
         </div>
     </div>
     <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
@@ -309,11 +328,11 @@
         <div class="grid" id="calendarGrid"></div>
     </div>
     <div class="legend-area">
-        <div style="display:flex;align-items:center;gap:4px;">⚪ 0時間~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥉 3時間~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥈 5時間~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥇 7時間~</div>
-        <div style="display:flex;align-items:center;gap:4px;">👑 10時間~</div>
+        <div style="display:flex;align-items:center;gap:4px;">⚪ 0h~</div>
+        <div style="display:flex;align-items:center;gap:4px;">🥉 3h~</div>
+        <div style="display:flex;align-items:center;gap:4px;">🥈 5h~</div>
+        <div style="display:flex;align-items:center;gap:4px;">🥇 7h~</div>
+        <div style="display:flex;align-items:center;gap:4px;">👑 10h~</div>
     </div>
 
     <div class="stats-container">
@@ -397,6 +416,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // Firebase構成はそのまま
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
         authDomain: "study-summary-calendar.firebaseapp.com",
@@ -409,19 +429,93 @@
     const logsRef = ref(db, `my_logs`);
     const eventsRef = ref(db, `my_events`);
 
+    // 背景模様を大幅強化
     const THEMES = {
-        blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', shadow: '0 15px 45px rgba(0,0,0,0.1)', author: '#777' },
-        red: { primary: '#eb4d4b', accent: '#ff4b2b', bg: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', shadow: '0 0 30px rgba(255,255,255,0.4)', author: '#eee' },
-        yellow: { primary: '#f1c40f', accent: '#f1c40f', bg: 'linear-gradient(135deg, #fffbcb 0%, #fbc2eb 100%)', text: '#444', header: '#f1c40f', box: 'rgba(255,255,255,0.78)', shadow: '0 15px 45px rgba(0,0,0,0.1)', author: '#777' },
-        black: { primary: '#2d3436', accent: '#000000', bg: 'linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 35px rgba(255,255,255,0.5)', author: '#ccc' },
-        white: { primary: '#636e72', accent: '#b2bec3', bg: '#ffffff', text: '#444', box: 'rgba(0,0,0,0.06)', shadow: '0 12px 35px rgba(0,0,0,0.12)', author: '#888' },
-        orange: { primary: '#ff5f6d', accent: '#ffc371', bg: 'linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', shadow: '0 0 30px rgba(255,255,255,0.35)', author: '#eee' },
-        green: { primary: '#11998e', accent: '#38ef7d', bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', shadow: '0 0 30px rgba(255,255,255,0.35)', author: '#eee' },
-        aqua: { primary: '#00c6ff', accent: '#0072ff', bg: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', shadow: '0 0 40px rgba(255,255,255,0.45)', author: '#eee' },
-        galaxy: { primary: '#6a11cb', accent: '#2575fc', bg: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 40px rgba(255,255,255,0.55)', author: '#ddd' },
-        forest: { primary: '#134e5e', accent: '#71b280', bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 30px rgba(255,255,255,0.35)', author: '#eee' },
-        sunset: { primary: '#f80759', accent: '#bc4e9c', bg: 'linear-gradient(135deg, #f80759 0%, #bc4e9c 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 35px rgba(255,255,255,0.45)', author: '#eee' },
-        ocean: { primary: '#02aab0', accent: '#00cdac', bg: 'linear-gradient(135deg, #02aab0 0%, #00cdac 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', shadow: '0 0 35px rgba(255,255,255,0.45)', author: '#eee' }
+        blue: { 
+            primary: '#0070bc', accent: '#00c6ff', 
+            bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', 
+            text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', 
+            pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', 
+            pOpacity: 0.1, pSize: '20px 20px' 
+        },
+        red: { 
+            primary: '#eb4d4b', accent: '#ff4b2b', 
+            bg: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', 
+            pattern: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%)', 
+            pOpacity: 0.4, pSize: '15px 15px' 
+        },
+        yellow: { 
+            primary: '#f39c12', accent: '#f1c40f', 
+            bg: 'linear-gradient(135deg, #fffbcb 0%, #fbc2eb 100%)', 
+            text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', 
+            pattern: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', 
+            pOpacity: 0.3, pSize: '30px 30px' 
+        },
+        black: { 
+            primary: '#2d3436', accent: '#000000', 
+            bg: 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.22)', author: '#ccc', 
+            pattern: 'radial-gradient(#ffffff22 1px, transparent 1px)', 
+            pOpacity: 0.5, pSize: '40px 40px' 
+        },
+        white: { 
+            primary: '#636e72', accent: '#b2bec3', 
+            bg: '#ffffff', text: '#444', box: 'rgba(0,0,0,0.06)', author: '#888', 
+            pattern: 'radial-gradient(#00000008 2px, transparent 0)', 
+            pOpacity: 0.4, pSize: '25px 25px' 
+        },
+        orange: { 
+            primary: '#ff5f6d', accent: '#ffc371', 
+            bg: 'linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', 
+            pattern: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px)', 
+            pOpacity: 0.4, pSize: '20px 20px' 
+        },
+        green: { 
+            primary: '#11998e', accent: '#38ef7d', 
+            bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', 
+            pattern: 'radial-gradient(rgba(255,255,255,0.2) 20%, transparent 20%)', 
+            pOpacity: 0.5, pSize: '15px 15px' 
+        },
+        aqua: { 
+            primary: '#00c6ff', accent: '#0072ff', 
+            bg: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', 
+            pattern: 'linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent)', 
+            pOpacity: 0.6, pSize: '40px 40px' 
+        },
+        
+        // 高級模様テーマ
+        luxury_carbon: { 
+            primary: '#4ca1af', accent: '#2c3e50', 
+            bg: 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.15)', author: '#bbb', 
+            pattern: 'radial-gradient(circle, #ffffff15 1px, transparent 1px)',
+            pOpacity: 0.7, pSize: '20px 20px'
+        },
+        royal_paper: { 
+            primary: '#8e9eab', accent: '#eef2f3', 
+            bg: 'linear-gradient(to bottom, #eef2f3, #8e9eab)', 
+            text: '#333', box: 'rgba(255,255,255,0.7)', author: '#777', 
+            pattern: 'repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px)',
+            pOpacity: 0.8, pSize: '100% 20px'
+        },
+        antique_rug: { 
+            primary: '#9b59b6', accent: '#34495e', 
+            bg: 'linear-gradient(135deg, #9b59b6 0%, #34495e 100%)', 
+            text: '#fff', box: 'rgba(0,0,0,0.35)', author: '#ccc', 
+            pattern: 'linear-gradient(30deg, #ffffff22 12%, transparent 12.5%, transparent 87%, #ffffff22 87.5%, #ffffff22), linear-gradient(150deg, #ffffff22 12%, transparent 12.5%, transparent 87%, #ffffff22 87.5%, #ffffff22)',
+            pOpacity: 0.3, pSize: '60px 100px'
+        },
+        midnight_emoji: { 
+            primary: '#00d2ff', accent: '#3a7bd5', 
+            bg: 'linear-gradient(135deg, #0f2027 0%, #203a43 100%)', 
+            text: '#fff', box: 'rgba(255,255,255,0.12)', author: '#ddd', 
+            pattern: 'radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 20px)',
+            pOpacity: 0.5, pSize: '100px 100px'
+        }
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
@@ -446,20 +540,27 @@
 
     window.setTheme = (name) => {
         const theme = THEMES[name];
+        if(!theme) return;
         const root = document.documentElement;
         root.style.setProperty('--primary-color', theme.primary);
         root.style.setProperty('--accent-color', theme.accent);
         root.style.setProperty('--bg-gradient', theme.bg);
         root.style.setProperty('--text-on-bg', theme.text);
         root.style.setProperty('--box-bg', theme.box);
-        root.style.setProperty('--calendar-shadow', theme.shadow);
         root.style.setProperty('--quote-author-color', theme.author);
         root.style.setProperty('--header-gradient', `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`);
+        
+        // 模様プロパティの更新
+        root.style.setProperty('--pattern-image', theme.pattern);
+        root.style.setProperty('--pattern-opacity', theme.pOpacity || 0.3);
+        root.style.setProperty('--pattern-size', theme.pSize || '20px 20px');
+
         localStorage.setItem('study-calendar-theme', name);
         if(myChart) renderWeeklyChart();
         if(yearStackChart) updateStats();
     };
 
+    // Firebase読み込み
     onValue(logsRef, (snap) => {
         remoteData = snap.val() || {};
         document.getElementById('loading').style.display = 'none';
@@ -542,15 +643,14 @@
         const streak = parseInt(document.getElementById('streakDisplay').innerText);
         let comment = "";
 
-        if (totalVal === 0) comment = "分析を開始するには、まずは今日最初のスタンプを。小さな一歩がすべての結果を連れてきます。";
-        else if (streak >= 14) comment = `驚異的です！${streak}日間一度も足を止めていません。もはや努力はあなたの「才能」へと進化しました。`;
-        else if (highDays >= 5) comment = "圧倒的な熱量です。週のほとんどを「集中モード（7h〜）」で過ごせています。このままピークを維持しましょう。";
-        else if (zeroDays === 0 && avg >= 5) comment = "理想的な右肩上がりです。毎日コンスタントに5時間以上を確保できており、非常に安定した成長曲線を描いています。";
-        else if (zeroDays === 0) comment = "素晴らしい！今週は「穴」がありません。短時間でも毎日触れることで、脳の学習効率は最大化されます。";
-        else if (lastDayVal >= 7 && zeroDays > 0) comment = "昨日の爆発力は素晴らしいものでした。この勢いを消さぬよう、今日は「少しだけ」でも机に向かってみませんか？";
-        else if (zeroDays >= 4) comment = "少し休息が長くなっているようです。再開のハードルを下げるコツは「5分だけやる」と自分に嘘をつくことです。";
-        else if (avg < 3) comment = "現在は基礎固めの時期。まずは銅メダル(3h〜)を週3回目指すことから、新しいリズムを作っていきましょう。";
-        else comment = "波はありますが、着実に前進しています。自分のペースを掴みつつあるので、次は得意な科目の時間を増やしてみましょう。";
+        if (totalVal === 0) comment = "まずは今日最初のスタンプを。小さな一歩がすべての結果を連れてきます。";
+        else if (streak >= 14) comment = `驚異的です！${streak}日間一度も足を止めていません。努力はあなたの「才能」です。`;
+        else if (highDays >= 5) comment = "圧倒的な熱量です。週のほとんどを「集中モード（7h〜）」で過ごせています。";
+        else if (zeroDays === 0 && avg >= 5) comment = "理想的な推移です。毎日コンスタントに5時間以上を確保できています。";
+        else if (zeroDays === 0) comment = "素晴らしい！今週は「穴」がありません。短時間でも毎日触れることが大切です。";
+        else if (lastDayVal >= 7 && zeroDays > 0) comment = "昨日の爆発力は素晴らしいものでした。この勢いを維持しましょう。";
+        else if (zeroDays >= 4) comment = "少し休息が長くなっているようです。「5分だけやる」から再開してみませんか？";
+        else comment = "波はありますが、着実に前進しています。自分のペースを掴みつつありますね。";
 
         document.getElementById('analysisComment').innerText = comment;
         document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%";
@@ -604,10 +704,10 @@
             data: {
                 labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
                 datasets: [
-                    { label: '🥉', data: monthlyStack.map(m => m['🥉']), backgroundColor: '#cd7f32cc', borderRadius: 0 },
-                    { label: '🥈', data: monthlyStack.map(m => m['🥈']), backgroundColor: '#c0c0c0cc', borderRadius: 0 },
-                    { label: '🥇', data: monthlyStack.map(m => m['🥇']), backgroundColor: '#ffd700cc', borderRadius: 0 },
-                    { label: '👑', data: monthlyStack.map(m => m['👑']), backgroundColor: themeColor + 'cc', borderRadius: 4 }
+                    { label: '🥉', data: monthlyStack.map(m => m['🥉']), backgroundColor: '#cd7f32cc' },
+                    { label: '🥈', data: monthlyStack.map(m => m['🥈']), backgroundColor: '#c0c0c0cc' },
+                    { label: '🥇', data: monthlyStack.map(m => m['🥇']), backgroundColor: '#ffd700cc' },
+                    { label: '👑', data: monthlyStack.map(m => m['👑']), backgroundColor: themeColor + 'cc' }
                 ]
             },
             options: {
@@ -615,13 +715,14 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 }, color: '#999' } },
-                    y: { stacked: true, beginAtZero: true, ticks: { stepSize: 5, color: '#aaa', font: { size: 10 } }, grid: { color: '#f0f0f0' } }
+                    x: { stacked: true, grid: { display: false } },
+                    y: { stacked: true, beginAtZero: true }
                 }
             }
         });
     }
 
+    // 各種モーダル・機能（そのまま維持）
     window.toggleYearModal = () => {
         const modal = document.getElementById('yearModal');
         const isOpening = modal.style.display !== 'flex';
@@ -813,7 +914,6 @@
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
         qE.style.opacity = 0; aE.style.opacity = 0;
-        
         try {
             const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
             if (!res.ok) throw new Error();
@@ -823,11 +923,7 @@
             const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
             qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
         }
-
-        setTimeout(() => {
-            qE.style.transition = 'opacity 0.5s'; aE.style.transition = 'opacity 0.5s';
-            qE.style.opacity = 1; aE.style.opacity = 1;
-        }, 100);
+        setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
     }
 
     setTheme(localStorage.getItem('study-calendar-theme') || 'blue');
