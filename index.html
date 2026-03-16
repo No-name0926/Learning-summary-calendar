@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>学習集計カレンダー</title>
+    <title>学習集計カレンダー Ultimate Edition PRO</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
@@ -98,7 +98,7 @@
             transition: 0.4s; border: 2px solid rgba(255,255,255,0.2);
         }
 
-        /* --- カウントダウン (滑らかな縁取り改修) --- */
+        /* --- カウントダウン --- */
         .countdown-slider { text-align: center; margin: 10px 0 25px; cursor: pointer; min-height: 35px; }
         .countdown-text { 
             font-size: 16px; font-weight: 800; color: var(--text-on-bg); 
@@ -108,7 +108,6 @@
             color: var(--primary-color); 
             font-family: 'Arial Black', sans-serif; 
             font-size: 30px; margin: 0 5px;
-            /* 修正：-webkit-text-stroke と 多重シャドウで滑らかに */
             -webkit-text-stroke: 1.5px #fff;
             paint-order: stroke fill;
             text-shadow: 
@@ -171,9 +170,10 @@
         .day { background: white; min-height: 95px; display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
         .day.today { background: #f0f7ff !important; box-shadow: inset 0 0 0 3px var(--primary-color); z-index: 5; }
         .date-num { width: 100%; padding: 12px 0; font-size: 14px; color: #bbb; font-weight: 900; text-align: center; }
-        .stamp { font-size: 38px; height: 52px; line-height: 52px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15)); transition: 0.2s; }
+        .stamp { font-size: 38px; height: 42px; line-height: 42px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15)); transition: 0.2s; }
+        .memo-indicator { font-size: 10px; color: var(--primary-color); height: 12px; margin-top: 2px; }
 
-        /* --- 時間凡例エリア (画像 7088.png 対応) --- */
+        /* --- 凡例エリア --- */
         .legend-area {
             background: var(--legend-bg);
             backdrop-filter: blur(10px);
@@ -198,7 +198,6 @@
         .stat-item { background: #fcfdfe; padding: 18px 4px; border-radius: 18px; border: 1.5px solid #f2f6f9; transition: 0.3s; }
         .stat-val { display:block; font-weight:900; color:var(--primary-color); font-size: 22px; margin-bottom: 4px; }
         .stat-total { font-size: 11px; color: #ddd; font-weight: 600; }
-
         .chart-wrapper { width: 100%; height: 210px; margin-bottom: 30px; }
 
         /* --- モーダル --- */
@@ -209,13 +208,19 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); 
             position: relative;
         }
-        .year-total-box { 
-            margin-top: 25px; padding: 18px; 
-            background: #f4faff; border-radius: 20px; 
-            border: 2.5px dashed var(--primary-color); 
-            font-weight: 900; font-size: 15px;
-            display: flex; justify-content: space-around;
-        }
+
+        /* --- メモUI専用スタイル --- */
+        .day-modal-header { font-size: 18px; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; text-align: center; }
+        .stamp-selector { display: flex; justify-content: space-around; background: #f8faff; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
+        .stamp-btn { font-size: 32px; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 12px; border: 2px solid transparent; }
+        .stamp-btn.selected { background: white; border-color: var(--primary-color); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .memo-textarea { width: 100%; height: 100px; padding: 15px; border-radius: 16px; border: 2.5px solid #f0f0f0; background: #fafafa; font-size: 15px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 15px; font-family: inherit; }
+
+        /* --- 年次レポート・メモ一覧用 --- */
+        .month-memo-btn { background: #f8f9fa; border: none; border-radius: 8px; padding: 5px 8px; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .month-memo-btn:hover { background: #e9ecef; }
+        .memo-list-item { padding: 12px; border-bottom: 1.2px solid #f1f3f5; font-size: 13.5px; line-height: 1.5; color: #555; }
+        .memo-list-date { font-weight: 900; color: var(--primary-color); margin-right: 8px; font-size: 11px; }
 
         /* --- 設定・保存系 --- */
         #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 6000; font-weight: 900; color: var(--primary-color); font-size: 19px; }
@@ -233,7 +238,6 @@
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 <div id="sideMenu">
     <h3 style="margin-top:0; color:#222; border-bottom:4px solid #f0f0f0; padding-bottom:18px; font-weight: 900; font-size: 22px;">アプリ設定</h3>
-    
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
         <input type="text" id="eventTitle" class="setting-input" placeholder="例：国家試験、英検">
@@ -257,7 +261,6 @@
             <div class="color-dot" style="background:linear-gradient(135deg, #02aab0, #00cdac);" onclick="setTheme('ocean')"></div>
         </div>
     </div>
-    
     <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
@@ -268,22 +271,18 @@
     <div style="text-align:center;">
         <div class="title-badge" id="titleDisplay" onclick="showTitleGuide()">🐣 見習い学習者</div>
     </div>
-    
     <div id="countdownSlider" class="countdown-slider" onclick="cycleEvent()">
         <span class="countdown-text" id="countdownText">🎯 目標を登録しましょう</span>
     </div>
-
     <div class="achievement-header">
         <span class="pink-sparkle">✦</span>
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
         <span class="pink-sparkle">✦</span>
     </div>
-
     <div class="quote-box" id="quoteContainer">
         <div class="quote-text" id="quoteText">Loading message...</div>
         <div class="quote-author" id="quoteAuthor"></div>
     </div>
-
     <div class="calendar-container" id="calWrap">
         <div class="header-nav" id="mainHeader">
             <button class="nav-btn" onclick="moveMonth(-1)">‹</button>
@@ -292,7 +291,6 @@
         </div>
         <div class="grid" id="calendarGrid"></div>
     </div>
-
     <div class="legend-area">
         <div class="legend-item"><span class="legend-dot">⚪</span> 0時間〜</div>
         <div class="legend-item"><span class="legend-dot">🥉</span> 3時間〜</div>
@@ -300,14 +298,11 @@
         <div class="legend-item"><span class="legend-dot">🥇</span> 6時間〜</div>
         <div class="legend-item"><span class="legend-dot">👑</span> 10時間〜</div>
     </div>
-
     <div class="stats-container">
         <div class="stats-title"><span id="statsMonthLabel"></span>月の学習メダル</div>
         <div class="stats-grid" id="monthStatsGrid"></div>
-        
         <div class="stats-title">学習集中力（直近7日間）</div>
         <div class="chart-wrapper"><canvas id="weeklyChart"></canvas></div>
-        
         <div class="stats-title"><span id="statsYearLabel"></span>年 年間累計</div>
         <div class="stats-grid" id="yearStatsGrid"></div>
     </div>
@@ -320,7 +315,31 @@
             <span style="cursor:pointer;font-size:28px;color:#ddd;line-height:1;" onclick="toggleYearModal()">×</span>
         </div>
         <div id="modalYearList"></div>
-        <div id="modalYearTotal" class="year-total-box"></div>
+        <div id="modalYearTotal" style="margin-top:25px; padding:18px; background:#f4faff; border-radius:20px; border:2.5px dashed var(--primary-color); font-weight:900; font-size:15px; display:flex; justify-content:space-around;"></div>
+        
+        <div id="monthMemoArea" style="display:none; margin-top:25px; border-top:2px solid #eee; padding-top:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 id="memoAreaTitle" style="margin:0; font-size:15px; font-weight:900;">メモ一覧</h3>
+                <button style="border:none; background:none; color:#999; font-size:12px; cursor:pointer;" onclick="closeMemoArea()">閉じる</button>
+            </div>
+            <div id="memoAreaList" style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="dayModal" class="modal" onclick="closeDayModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="day-modal-header" id="dayModalDate">日付</div>
+        <div class="stamp-selector">
+            <div class="stamp-btn" onclick="selectStamp('⚪')" data-stamp="⚪">⚪</div>
+            <div class="stamp-btn" onclick="selectStamp('🥉')" data-stamp="🥉">🥉</div>
+            <div class="stamp-btn" onclick="selectStamp('🥈')" data-stamp="🥈">🥈</div>
+            <div class="stamp-btn" onclick="selectStamp('🥇')" data-stamp="🥇">🥇</div>
+            <div class="stamp-btn" onclick="selectStamp('👑')" data-stamp="👑">👑</div>
+        </div>
+        <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
+        <button class="save-btn" onclick="saveDayData()">保存する</button>
+        <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:5px;" onclick="closeDayModal()">キャンセル</button>
     </div>
 </div>
 
@@ -333,11 +352,6 @@
 </div>
 
 <script type="module">
-    /* -------------------------------------------------------------------------
-       FIREBASE INITIALIZATION & CORE LOGIC
-       データの永続化と、学習状況のリアルタイム反映を制御します。
-       称号、カウントダウン、グラフ描画、カレンダー生成が含まれます。
-    -------------------------------------------------------------------------- */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -372,10 +386,10 @@
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, myChart = null, currentEventIndex = 0;
+    let selectedDateKey = null, selectedStamp = '';
     const VALID = ['🥉', '🥈', '🥇', '👑'];
     const VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 };
     
-    // 称号リスト（10段階 + 絵文字対応）
     const TITLES = [
         { name: "🌌 学問の創造主", condition: "王冠(👑)累計365個", check: (c) => c >= 365 },
         { name: "♾️ 叡智の支配者", condition: "王冠(👑)累計250個", check: (c) => c >= 250 },
@@ -389,7 +403,47 @@
         { name: "🐣 見習い学習者", condition: "初期ランク", check: () => true }
     ];
 
-    /* --- サイドメニュー制御 --- */
+    // --- データ抽出ヘルパー（互換性維持） ---
+    const getLogData = (key) => {
+        const d = remoteData[key];
+        if (!d) return { stamp: '', memo: '' };
+        if (typeof d === 'string') return { stamp: d, memo: '' };
+        return { stamp: d.stamp || '', memo: d.memo || '' };
+    };
+
+    window.showTitleGuide = () => {
+        const content = document.getElementById('titleGuideContent');
+        content.innerHTML = TITLES.map(t => `<div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1.5px solid #fcfcfc; padding-bottom:5px;"><strong style="color:var(--primary-color);">${t.name}</strong><span style="font-size:11px; color:#999;">${t.condition}</span></div>`).join('');
+        document.getElementById('titleModal').style.display = 'flex';
+    };
+
+    window.openDayModal = (y, m, d) => {
+        selectedDateKey = `log-${y}-${m}-${d}`;
+        const data = getLogData(selectedDateKey);
+        document.getElementById('dayModalDate').innerText = `${y}年${m}月${d}日`;
+        document.getElementById('dayMemo').value = data.memo;
+        selectStamp(data.stamp);
+        document.getElementById('dayModal').style.display = 'flex';
+    };
+
+    window.closeDayModal = () => { document.getElementById('dayModal').style.display = 'none'; };
+
+    window.selectStamp = (s) => {
+        if (selectedStamp === s) { selectedStamp = ''; } 
+        else {
+            selectedStamp = s;
+            if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } });
+        }
+        document.querySelectorAll('.stamp-btn').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp);
+        });
+    };
+
+    window.saveDayData = () => {
+        const memo = document.getElementById('dayMemo').value.trim();
+        set(ref(db, `my_logs/${selectedDateKey}`), { stamp: selectedStamp, memo: memo }).then(() => { closeDayModal(); });
+    };
+
     window.toggleMenu = () => {
         const menu = document.getElementById('sideMenu');
         const overlay = document.getElementById('menuOverlay');
@@ -397,7 +451,6 @@
         overlay.style.display = isOpen ? 'block' : 'none';
     };
 
-    /* --- テーマ切り替えロジック --- */
     window.setTheme = (name) => {
         const theme = THEMES[name];
         const root = document.documentElement;
@@ -408,45 +461,156 @@
         root.style.setProperty('--box-bg', theme.box);
         root.style.setProperty('--calendar-shadow', theme.shadow);
         root.style.setProperty('--quote-author-color', theme.author);
-        
         const hGrad = theme.header ? theme.header : `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`;
         root.style.setProperty('--header-gradient', hGrad);
         localStorage.setItem('study-calendar-theme', name);
         if(myChart) renderWeeklyChart();
     };
 
-    /* --- 目標管理ロジック --- */
+    window.showMonthMemos = (m) => {
+        const area = document.getElementById('monthMemoArea');
+        const list = document.getElementById('memoAreaList');
+        const title = document.getElementById('memoAreaTitle');
+        list.innerHTML = ''; title.innerText = `${viewY}年${m}月のメモ`;
+        let found = false;
+        const daysInMonth = new Date(viewY, m, 0).getDate();
+        for(let d=1; d<=daysInMonth; d++){
+            const data = getLogData(`log-${viewY}-${m}-${d}`);
+            if(data.memo && data.memo.trim() !== ""){
+                const item = document.createElement('div');
+                item.className = 'memo-list-item';
+                item.innerHTML = `<span class="memo-list-date">${m}/${d}</span> ${data.memo}`;
+                list.appendChild(item); found = true;
+            }
+        }
+        if(!found) list.innerHTML = `<div style="padding:20px; text-align:center; color:#ccc; font-size:12px;">この月のメモはありません</div>`;
+        area.style.display = 'block'; area.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    };
+    window.closeMemoArea = () => { document.getElementById('monthMemoArea').style.display = 'none'; };
+
+    onValue(logsRef, (snap) => {
+        remoteData = snap.val() || {};
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+        render();
+    });
+
+    window.moveMonth = (n) => { 
+        viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); 
+    };
+
+    window.toggleYearModal = () => {
+        const modal = document.getElementById('yearModal');
+        const isOpening = modal.style.display !== 'flex';
+        modal.style.display = isOpening ? 'flex' : 'none';
+        if(isOpening) { updateYearModal(); closeMemoArea(); }
+    };
+
+    function render() {
+        document.getElementById('monthDisplay').innerText = `${viewY} / ${String(viewM).padStart(2, '0')}`;
+        document.getElementById('statsMonthLabel').innerText = viewM;
+        document.getElementById('statsYearLabel').innerText = viewY;
+        const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
+        ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach((l, i) => {
+            grid.appendChild(Object.assign(document.createElement('div'), {className: `day-label ${i===0?'sun-label':''} ${i===6?'sat-label':''}`, innerText: l}));
+        });
+        const first = new Date(viewY, viewM - 1, 1).getDay(), days = new Date(viewY, viewM, 0).getDate();
+        for (let i = 0; i < first; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
+        const today = new Date();
+        for (let i = 1; i <= days; i++) {
+            const data = getLogData(`log-${viewY}-${viewM}-${i}`);
+            const isToday = viewY === today.getFullYear() && viewM === (today.getMonth()+1) && i === today.getDate();
+            const day = Object.assign(document.createElement('div'), {className: `day ${isToday?'today':''}`});
+            day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
+            day.onclick = () => openDayModal(viewY, viewM, i);
+            grid.appendChild(day);
+        }
+        updateStats(); renderWeeklyChart();
+    }
+
+    function updateYearModal() {
+        document.getElementById('modalYearTitle').innerText = `${viewY}年 レポート`;
+        const list = document.getElementById('modalYearList'); list.innerHTML = '';
+        const yearTotal = {}; VALID.forEach(v => yearTotal[v] = 0);
+        for (let m = 1; m <= 12; m++) {
+            const c = {}; VALID.forEach(v => c[v] = 0);
+            Object.keys(remoteData).forEach(k => {
+                const p = k.split('-'); const s = getLogData(k).stamp;
+                if (p[1] == viewY && p[2] == m && VALID.includes(s)) { c[s]++; yearTotal[s]++; }
+            });
+            const row = document.createElement('div');
+            row.style = "display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #f0f0f0; font-size:14px; font-weight:800; color:#555;";
+            row.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><span style="width:35px;">${m}月</span><button class="month-memo-btn" onclick="showMonthMemos(${m})">📝</button></div>
+                             <div style="display:flex; gap:12px;">${VALID.map(v => `<div style="display:flex; align-items:center; gap:3px; min-width:32px;"><span>${v}</span><span style="color:#222;">${c[v]}</span></div>`).join('')}</div>`;
+            list.appendChild(row);
+        }
+        document.getElementById('modalYearTotal').innerHTML = VALID.map(v => `<div style="display:flex; align-items:center; gap:5px;"><span>${v}</span><span style="font-size:18px; color:var(--primary-color);">${yearTotal[v]}</span></div>`).join('');
+    }
+
+    function renderWeeklyChart() {
+        const ctx = document.getElementById('weeklyChart').getContext('2d');
+        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        const labels = [], values = [];
+        for(let i=6; i>=0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i); labels.push(`${d.getMonth()+1}/${d.getDate()}`);
+            const s = getLogData(`log-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`).stamp;
+            values.push(VALUE_MAP[s] || 0);
+        }
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets: [{ data: values, borderColor: themeColor, backgroundColor: themeColor + '28', fill: true, tension: 0.45, borderWidth: 4, pointRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } }
+        });
+    }
+
+    function updateStats() {
+        let streak = 0, chk = new Date(); chk.setHours(0,0,0,0);
+        const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
+        if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1);
+        while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
+        document.getElementById('streakDisplay').innerText = streak;
+        const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
+        Object.keys(remoteData).forEach(k => {
+            const s = getLogData(k).stamp;
+            if (VALID.includes(s)) {
+                const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; }
+                if (s === '👑') crowns++;
+            }
+        });
+        const currentRank = TITLES.find(t => t.check(crowns)) || TITLES[TITLES.length - 1];
+        document.getElementById('titleDisplay').innerText = currentRank.name;
+        const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
+        document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate());
+        document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365);
+    }
+
     window.saveEvent = () => {
         const title = document.getElementById('eventTitle').value.trim();
         const date = document.getElementById('eventDate').value;
-        if(!title || !date) { alert("タイトルと日付を入力してください"); return; }
+        if(!title || !date) return;
         let events = JSON.parse(localStorage.getItem('study-events') || '[]');
         events.push({ id: Date.now(), title, date });
         localStorage.setItem('study-events', JSON.stringify(events));
-        document.getElementById('eventTitle').value = '';
-        document.getElementById('eventDate').value = '';
+        document.getElementById('eventTitle').value = ''; document.getElementById('eventDate').value = '';
         updateCountdown();
     };
 
     window.deleteEvent = (id) => {
         let events = JSON.parse(localStorage.getItem('study-events') || '[]');
         events = events.filter(e => e.id !== id);
-        localStorage.setItem('study-events', JSON.stringify(events));
-        updateCountdown();
+        localStorage.setItem('study-events', JSON.stringify(events)); updateCountdown();
     };
 
     function updateCountdown() {
         const events = JSON.parse(localStorage.getItem('study-events') || '[]');
         const slider = document.getElementById('countdownText');
-        const listDiv = document.getElementById('eventList');
-        listDiv.innerHTML = '';
-        if(events.length === 0) {
-            slider.innerHTML = '🎯 目標を登録しましょう';
-        } else {
+        const listDiv = document.getElementById('eventList'); listDiv.innerHTML = '';
+        if(events.length === 0) { slider.innerHTML = '🎯 目標を登録しましょう'; } 
+        else {
             const ev = events[currentEventIndex % events.length];
             const diff = Math.ceil((new Date(ev.date) - new Date().setHours(0,0,0,0)) / (1000*60*60*24));
             slider.innerHTML = `🎯 ${ev.title} あと<span class="countdown-days">${diff}</span>日`;
-            
             events.forEach(e => {
                 const item = document.createElement('div');
                 item.style = "display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:13px; background:#fff; padding:12px; border-radius:12px; color:#333; box-shadow: 0 3px 8px rgba(0,0,0,0.04);";
@@ -457,188 +621,16 @@
     }
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
 
-    /* --- データ同期 --- */
-    onValue(logsRef, (snap) => {
-        remoteData = snap.val() || {};
-        document.getElementById('loading').style.opacity = '0';
-        setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
-        render();
-    });
-
-    window.moveMonth = (n) => { 
-        viewM += n; 
-        if(viewM > 12) { viewM = 1; viewY++; } 
-        else if(viewM < 1) { viewM = 12; viewY--; } 
-        render(); 
-    };
-
-    window.toggleYearModal = () => {
-        const modal = document.getElementById('yearModal');
-        const isOpening = modal.style.display !== 'flex';
-        modal.style.display = isOpening ? 'flex' : 'none';
-        if(isOpening) updateYearModal();
-    };
-
-    window.showTitleGuide = () => {
-        document.getElementById('titleGuideContent').innerHTML = TITLES.map(t => 
-            `<div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1.5px solid #fcfcfc;">
-                <strong style="color:var(--primary-color);">${t.name}</strong>
-                <span style="font-size:11px; color:#999;">${t.condition}</span>
-            </div>`
-        ).join('');
-        document.getElementById('titleModal').style.display = 'flex';
-    };
-
-    /* --- カレンダーレンダリング --- */
-    function render() {
-        document.getElementById('monthDisplay').innerText = `${viewY} / ${String(viewM).padStart(2, '0')}`;
-        document.getElementById('statsMonthLabel').innerText = viewM;
-        document.getElementById('statsYearLabel').innerText = viewY;
-        const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
-        
-        ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach((l, i) => {
-            grid.appendChild(Object.assign(document.createElement('div'), {className: `day-label ${i===0?'sun-label':''} ${i===6?'sat-label':''}`, innerText: l}));
-        });
-        
-        const first = new Date(viewY, viewM - 1, 1).getDay(), days = new Date(viewY, viewM, 0).getDate();
-        for (let i = 0; i < first; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
-        
-        const today = new Date();
-        for (let i = 1; i <= days; i++) {
-            const key = `log-${viewY}-${viewM}-${i}`, s = remoteData[key] || '';
-            const isToday = viewY === today.getFullYear() && viewM === (today.getMonth()+1) && i === today.getDate();
-            const day = Object.assign(document.createElement('div'), {className: `day ${isToday?'today':''}`});
-            day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${s}</div>`;
-            day.onclick = () => {
-                const STAMPS = ['', '⚪', '🥉', '🥈', '🥇', '👑'];
-                let next = STAMPS[(STAMPS.indexOf(s) + 1) % STAMPS.length];
-                if (next === '👑') confetti({ particleCount: 200, spread: 90, origin: { y: 0.7 } });
-                set(ref(db, `my_logs/${key}`), next);
-            };
-            grid.appendChild(day);
-        }
-        updateStats();
-        renderWeeklyChart();
-    }
-
-    /* --- 週次チャート (Chart.js) --- */
-    function renderWeeklyChart() {
-        const ctx = document.getElementById('weeklyChart').getContext('2d');
-        const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-        const labels = [], values = [];
-        for(let i=6; i>=0; i--) {
-            const d = new Date(); d.setDate(d.getDate() - i);
-            labels.push(`${d.getMonth()+1}/${d.getDate()}`);
-            values.push(VALUE_MAP[remoteData[`log-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`] || ''] || 0);
-        }
-        if(myChart) myChart.destroy();
-        myChart = new Chart(ctx, {
-            type: 'line',
-            data: { labels, datasets: [{ data: values, borderColor: themeColor, backgroundColor: themeColor + '28', fill: true, tension: 0.45, borderWidth: 4, pointRadius: 4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } }
-        });
-    }
-
-    /* --- 統計 & 称号算出 --- */
-    function updateStats() {
-        let streak = 0, chk = new Date(); chk.setHours(0,0,0,0);
-        const getS = (dt) => remoteData[`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`];
-        if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1);
-        while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
-        document.getElementById('streakDisplay').innerText = streak;
-
-        const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; });
-        Object.keys(remoteData).forEach(k => {
-            const s = remoteData[k];
-            if (VALID.includes(s)) {
-                const p = k.split('-');
-                if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; }
-                if (s === '👑') crowns++;
-            }
-        });
-        
-        const currentRank = TITLES.find(t => t.check(crowns));
-        document.getElementById('titleDisplay').innerText = currentRank.name;
-        
-        const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
-        document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate());
-        document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365);
-    }
-
-    /* --- 年次サマリー更新 (改良版レイアウト) --- */
-    function updateYearModal() {
-        document.getElementById('modalYearTitle').innerText = `${viewY}年 レポート`;
-        const list = document.getElementById('modalYearList'); list.innerHTML = '';
-        const yearTotal = {}; VALID.forEach(v => yearTotal[v] = 0);
-        
-        for (let m = 1; m <= 12; m++) {
-            const c = {}; VALID.forEach(v => c[v] = 0);
-            Object.keys(remoteData).forEach(k => {
-                const p = k.split('-');
-                if (p[1] == viewY && p[2] == m && VALID.includes(remoteData[k])) {
-                    c[remoteData[k]]++; yearTotal[remoteData[k]]++;
-                }
-            });
-            const row = document.createElement('div');
-            // 行のデザインをゆったりさせ、絵文字と数字をセットで見やすく配置
-            row.style = "display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #f0f0f0; font-size:14px; font-weight:800; color:#555;";
-            row.innerHTML = `
-                <span style="width:40px;">${m}月</span>
-                <div style="display:flex; gap:12px;">
-                    ${VALID.map(v => `
-                        <div style="display:flex; align-items:center; gap:3px; min-width:32px;">
-                            <span>${v}</span><span style="color:#222;">${c[v]}</span>
-                        </div>`).join('')}
-                </div>`;
-            list.appendChild(row);
-        }
-        // 合計ボックスの絵文字と数字の間隔も調整
-        document.getElementById('modalYearTotal').innerHTML = VALID.map(v => `
-            <div style="display:flex; align-items:center; gap:5px;">
-                <span>${v}</span><span style="font-size:18px; color:var(--primary-color);">${yearTotal[v]}</span>
-            </div>`).join('');
-    }
-
-    /* --- 名言 API フェッチ & バックアップ --- */
     async function fetchQuote() {
-        const quoteEl = document.getElementById('quoteText');
-        const authorEl = document.getElementById('quoteAuthor');
-        
-        // ネットワークエラー時のバックアップ名言集 (データ量確保のため充実)
-        const localQuotes = [
-            { t: "夢をかなえる秘訣は、4つの『C』に集約される。好奇心、自信、勇気、そして継続である。", a: "ウォルト・ディズニー" },
-            { t: "努力は必ず報われる。もし報われない努力があるのならば、それはまだ努力とは呼べない。", a: "王貞治" },
-            { t: "最も強い者が生き残るのではなく、最も賢い者が生き延びるのでもない。唯一生き残ることが出来るのは、変化できる者である。", a: "チャールズ・ダーウィン" },
-            { t: "失敗したことがない人間というのは、新しいことに挑戦したことがない人間だ。", a: "アルベルト・アインシュタイン" },
-            { t: "あなたの時間は限られている。だから他人の人生を生きたりして無駄に過ごしてはいけない。", a: "スティーブ・ジョブズ" },
-            { t: "自分を信じろ。そうすれば、道は開ける。", a: "ゲーテ" }
-        ];
-
+        const quoteEl = document.getElementById('quoteText'); const authorEl = document.getElementById('quoteAuthor');
         try {
-            const res = await fetch("https://meigen.fyi/api/v1/quotes/random");
-            const data = await res.json();
-            quoteEl.innerText = `"${data.text}"`;
-            authorEl.innerText = data.author ? `― ${data.author}` : "― 不明な賢者";
-        } catch (e) { 
-            const q = localQuotes[Math.floor(Math.random() * localQuotes.length)];
-            quoteEl.innerText = `"${q.t}"`;
-            authorEl.innerText = `― ${q.a}`;
-        }
+            const res = await fetch("https://meigen.fyi/api/v1/quotes/random"); const data = await res.json();
+            quoteEl.innerText = `"${data.text}"`; authorEl.innerText = data.author ? `― ${data.author}` : "― 賢者";
+        } catch (e) { quoteEl.innerText = `"努力は必ず報われる。"`; authorEl.innerText = `― 王貞治`; }
     }
 
-    /* --- 初期化実行 --- */
     const savedTheme = localStorage.getItem('study-calendar-theme') || 'blue';
-    setTheme(savedTheme);
-    fetchQuote();
-    updateCountdown();
-    setInterval(fetchQuote, 1800000); // 30分ごとに名言更新
-
-    /* データボリューム維持用コメント:
-       このアプリケーションは、モバイルファーストのデザイン原則に基づいて設計されています。
-       CSS変数を活用したテーマシステムにより、瞬時に外観を変更することが可能です。
-       グラフ描画には Chart.js を採用し、直近 7 日間の学習密度を動的に可視化します。
-       Firebase によるバックエンド同期により、デバイスを跨いだ進捗管理が実現されています。
-    */
+    setTheme(savedTheme); fetchQuote(); updateCountdown(); setInterval(fetchQuote, 1800000);
 </script>
 </body>
 </html>
