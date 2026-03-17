@@ -351,26 +351,43 @@
             </label>
         </div>
 
-        <div class="color-grid">
+        <!-- テーマページャー -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 2px 6px;">
+            <span style="font-size:11px; font-weight:900; color:#aaa;" id="themePageLabel">1 / 3</span>
+            <div style="display:flex; gap:6px;">
+                <button id="themePrevBtn" onclick="themePageChange(-1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;" disabled>&#8249;</button>
+                <button id="themeNextBtn" onclick="themePageChange(1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;">&#8250;</button>
+            </div>
+        </div>
+
+        <!-- ページ1 -->
+        <div class="color-grid theme-page" id="themePage0">
             <div class="color-dot" style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;" onclick="setTheme('blue')">💧</div>
             <div class="color-dot" style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;" onclick="setTheme('red')">🔥</div>
             <div class="color-dot" style="background:#f1c40f; background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('yellow')">✨</div>
             <div class="color-dot" style="background:#2d3436; background-image: radial-gradient(#ffffff22 1px, transparent 1px); background-size: 30px 30px;" onclick="setTheme('black')">🕶️</div>
-            
             <div class="color-dot" style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);" onclick="setTheme('orange')">🍊</div>
             <div class="color-dot" style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;" onclick="setTheme('green')">🌿</div>
             <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);" onclick="setTheme('aqua')">🌊</div>
             <div class="color-dot" style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;" onclick="setTheme('white')">☁️</div>
-
+        </div>
+        <!-- ページ2 -->
+        <div class="color-grid theme-page" id="themePage1" style="display:none;">
             <div class="color-dot" style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('luxury_carbon')">💎</div>
             <div class="color-dot" style="background: #e6e9f0; background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px);" onclick="setTheme('royal_paper')">📜</div>
             <div class="color-dot" style="background: #9b59b6; background-image: linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11);" onclick="setTheme('antique_rug')">🏛️</div>
             <div class="color-dot" style="background: #0f2027; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px); background-size: 150px 150px;" onclick="setTheme('midnight_emoji')">🌃</div>
-            
             <div class="color-dot" style="background:#c0392b; background-image: linear-gradient(45deg, #f1c40f 25%, transparent 25%), linear-gradient(-45deg, #f1c40f 25%, transparent 25%); background-size: 30px 30px;" onclick="setTheme('charlotte')">☄️</div>
             <div class="color-dot" style="background:#3498db; background-image: radial-gradient(circle at 50% 50%, white 2%, transparent 10%), radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2) 20%, transparent 50%); background-size: 40px 40px;" onclick="setTheme('angel_beats')">😇</div>
             <div class="color-dot" style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;" onclick="setTheme('steins_gate')">🕰️</div>
             <div class="color-dot" style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;" onclick="setTheme('lucky_star')">🍀</div>
+        </div>
+        <!-- ページ3：模様強め新作 -->
+        <div class="color-grid theme-page" id="themePage2" style="display:none;">
+            <div class="color-dot" style="background:#1a0533; background-image: repeating-conic-gradient(#7c3aed 0deg 10deg, transparent 10deg 20deg); background-size: 24px 24px;" onclick="setTheme('kaleidoscope')">🔮</div>
+            <div class="color-dot" style="background:#003d2b; background-image: repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px); background-size: 5px 5px;" onclick="setTheme('matrix')">👾</div>
+            <div class="color-dot" style="background:#2d0a1e; background-image: repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%); background-size: 14px 24px;" onclick="setTheme('neon_tribal')">⚡</div>
+            <div class="color-dot" style="background:#0a1628; background-image: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,220,100,0.22) 0%, transparent 70%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.18) 0deg 5deg, transparent 5deg 10deg); background-size: cover, 30px 30px;" onclick="setTheme('sun_temple')">🌅</div>
         </div>
         <div class="login-section">
             <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
@@ -552,7 +569,11 @@
         charlotte: { primary: '#c0392b', accent: '#f1c40f', bg: 'linear-gradient(135deg, #2c3e50 0%, #c0392b 100%)', text: '#fff', box: 'rgba(255,255,255,0.2)', author: '#f1c40f', pattern: 'linear-gradient(45deg, #f1c40f11 25%, transparent 25%), linear-gradient(-45deg, #f1c40f11 25%, transparent 25%)', pOpacity: 0.4, pSize: '30px 30px' },
         angel_beats: { primary: '#3498db', accent: '#ffffff', bg: 'linear-gradient(135deg, #3498db 0%, #9b59b6 100%)', text: '#fff', box: 'rgba(255,255,255,0.25)', author: '#eee', pattern: 'radial-gradient(circle at 50% 50%, white 2%, transparent 10%), radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2) 20%, transparent 50%)', pOpacity: 0.5, pSize: '40px 40px' },
         steins_gate: { primary: '#2ecc71', accent: '#1e272e', bg: 'linear-gradient(135deg, #1e272e 0%, #2c3e50 100%)', text: '#2ecc71', box: 'rgba(0,0,0,0.4)', author: '#27ae60', pattern: 'repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc7108 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc7108 49px, transparent 50px)', pOpacity: 0.8, pSize: '50px 50px' },
-        lucky_star: { primary: '#ff9ff3', accent: '#feca57', bg: 'linear-gradient(135deg, #ff9ff3 0%, #feca57 100%)', text: '#444', box: 'rgba(255,255,255,0.6)', author: '#ff6b6b', pattern: 'linear-gradient(45deg, #feca5733 25%, transparent 25%, transparent 75%, #feca5733 75%, #feca5733), linear-gradient(45deg, #feca5733 25%, transparent 25%, transparent 75%, #feca5733 75%, #feca5733)', pOpacity: 0.5, pSize: '40px 40px', pPosition: '0 0, 20px 20px' }
+        lucky_star: { primary: '#ff9ff3', accent: '#feca57', bg: 'linear-gradient(135deg, #ff9ff3 0%, #feca57 100%)', text: '#444', box: 'rgba(255,255,255,0.6)', author: '#ff6b6b', pattern: 'linear-gradient(45deg, #feca5733 25%, transparent 25%, transparent 75%, #feca5733 75%, #feca5733), linear-gradient(45deg, #feca5733 25%, transparent 25%, transparent 75%, #feca5733 75%, #feca5733)', pOpacity: 0.5, pSize: '40px 40px', pPosition: '0 0, 20px 20px' },
+        kaleidoscope: { primary: '#a855f7', accent: '#ec4899', bg: 'linear-gradient(135deg, #1a0533 0%, #2d1060 100%)', text: '#f0e6ff', box: 'rgba(255,255,255,0.12)', author: '#d8b4fe', pattern: 'repeating-conic-gradient(#7c3aed 0deg 10deg, rgba(168,85,247,0.15) 10deg 20deg)', pOpacity: 0.7, pSize: '24px 24px' },
+        matrix: { primary: '#00ff80', accent: '#00cc55', bg: 'linear-gradient(180deg, #001a0f 0%, #003d2b 100%)', text: '#00ff80', box: 'rgba(0,255,100,0.08)', author: '#00cc55', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px)', pOpacity: 1, pSize: '5px 5px' },
+        neon_tribal: { primary: '#e91e8c', accent: '#ff6ef7', bg: 'linear-gradient(135deg, #2d0a1e 0%, #1a0030 100%)', text: '#ffe0f5', box: 'rgba(255,255,255,0.1)', author: '#ff9ff3', pattern: 'repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%)', pOpacity: 0.5, pSize: '14px 24px' },
+        sun_temple: { primary: '#f5c842', accent: '#ff9a00', bg: 'linear-gradient(160deg, #0a1628 0%, #1e2d50 100%)', text: '#ffe9a0', box: 'rgba(255,220,100,0.1)', author: '#ffd060', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.22) 0deg 5deg, transparent 5deg 10deg)', pOpacity: 0.8, pSize: '30px 30px' }
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
@@ -1089,6 +1110,24 @@
     }
     setTheme(initialTheme);
     fetchQuote();
+
+    // テーマページング
+    let _themePage = 0;
+    const _themePageCount = 3;
+    window.themePageChange = function(dir) {
+        _themePage = Math.max(0, Math.min(_themePageCount - 1, _themePage + dir));
+        for (let i = 0; i < _themePageCount; i++) {
+            document.getElementById('themePage' + i).style.display = i === _themePage ? 'grid' : 'none';
+        }
+        document.getElementById('themePageLabel').textContent = (_themePage + 1) + ' / ' + _themePageCount;
+        document.getElementById('themePrevBtn').disabled = _themePage === 0;
+        document.getElementById('themeNextBtn').disabled = _themePage === _themePageCount - 1;
+        // ボタン色更新
+        ['themePrevBtn','themeNextBtn'].forEach(id => {
+            const btn = document.getElementById(id);
+            btn.style.color = btn.disabled ? '#ccc' : '#555';
+        });
+    };
 </script>
 <!-- フィードバックパネル -->
 <div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:white; z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
