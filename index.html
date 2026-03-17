@@ -269,7 +269,10 @@
 
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 <div id="sideMenu">
-    <h3 style="margin-top:0; color:#222; border-bottom:4px solid #f0f0f0; padding-bottom:18px; font-weight: 900; font-size: 22px;">設定</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
+        <h3 style="margin:0; color:#222; font-weight:900; font-size:22px;">設定</h3>
+        <button onclick="openFeedback()" title="フィードバックを送る" style="background:#f0f7ff; border:none; border-radius:12px; width:36px; height:36px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0;">💬</button>
+    </div>
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
         <input type="text" id="eventTitle" class="setting-input" placeholder="例：国家試験、英検">
@@ -330,7 +333,7 @@
             <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
         </div>
     </div>
-    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
+    <button style="width:100%; margin-top:16px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
 <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
@@ -448,6 +451,21 @@
         <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
         <button class="save-btn" onclick="saveDayData()">保存する</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
+    </div>
+</div>
+
+<!-- チュートリアルモーダル -->
+<div id="tutorialModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:8000; justify-content:center; align-items:center; backdrop-filter:blur(8px);">
+    <div style="background:white; width:88%; max-width:400px; border-radius:28px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.4); position:relative;">
+        <!-- ステップ表示 -->
+        <div id="tutSlides" style="overflow:hidden;">
+            <!-- スライド1〜5はJSで生成 -->
+        </div>
+        <!-- 下部ナビ -->
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px 22px;">
+            <div id="tutDots" style="display:flex; gap:7px;"></div>
+            <button id="tutNextBtn" onclick="tutNext()" style="background:var(--primary-color); color:white; border:none; padding:12px 24px; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer;">次へ →</button>
+        </div>
     </div>
 </div>
 
@@ -586,7 +604,7 @@
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); });
+            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); showTutorialIfFirst(); });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
             // プロフィール読み込み
             get(profileRef).then(snap => {
@@ -1011,6 +1029,117 @@
     }
     setTheme(initialTheme);
     fetchQuote();
+
+    // ── チュートリアル ────────────────────────
+    const TUTORIAL_STEPS = [
+        {
+            emoji: '📅',
+            title: 'カレンダーに記録しよう',
+            body: '日付をタップすると記録画面が開きます。
+その日の学習時間に合ったメダルを選んでスタンプしましょう！
+
+⚪ 〜3h　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜',
+            color: '#e8f4fd',
+            accent: '#0070bc'
+        },
+        {
+            emoji: '📝',
+            title: 'メモも残せます',
+            body: 'スタンプと一緒に、その日の学習内容や気づきをメモできます。
+
+後から振り返ったり、右上の「記録 📊」からまとめて読めます。',
+            color: '#fff8e1',
+            accent: '#f39c12'
+        },
+        {
+            emoji: '🎯',
+            title: '目標カウントダウン',
+            body: '設定メニュー（左上 ☰）から試験や資格などの目標日を登録できます。
+
+画面上部に「あと○日」と表示され、モチベーションをキープ！',
+            color: '#f0fff4',
+            accent: '#11998e'
+        },
+        {
+            emoji: '🎨',
+            title: 'テーマを変えよう',
+            body: '設定メニューからカラーテーマを16種類から選べます。
+気分によって変えると新鮮な気持ちで学習できます ✨
+
+起動時ランダムテーマも試してみて！',
+            color: '#fdf4ff',
+            accent: '#9b59b6'
+        },
+        {
+            emoji: '🏆',
+            title: 'ランキングに参加しよう',
+            body: '設定メニューのアカウント欄で表示名を決めて
+「ランキングに表示する」をONにすると
+他のユーザーとレベルを競えます！
+
+画面一番下のランキングをチェック 👀',
+            color: '#fffbe6',
+            accent: '#f1c40f'
+        }
+    ];
+
+    let tutStep = 0;
+
+    function buildTutorial() {
+        const slides = document.getElementById('tutSlides');
+        slides.innerHTML = '';
+        TUTORIAL_STEPS.forEach((s, i) => {
+            const div = document.createElement('div');
+            div.id = `tutSlide${i}`;
+            div.style.cssText = `display:${i===0?'block':'none'}; padding:32px 28px 16px;`;
+            div.innerHTML = `
+                <div style="text-align:center; margin-bottom:18px;">
+                    <div style="font-size:56px; line-height:1;">${s.emoji}</div>
+                </div>
+                <div style="background:${s.color}; border-radius:18px; padding:20px; border-left:4px solid ${s.accent};">
+                    <div style="font-size:16px; font-weight:900; color:${s.accent}; margin-bottom:10px;">${s.title}</div>
+                    <div style="font-size:13px; line-height:1.9; color:#555; font-weight:600; white-space:pre-wrap;">${s.body}</div>
+                </div>
+            `;
+            slides.appendChild(div);
+        });
+        buildDots();
+    }
+
+    function buildDots() {
+        const dots = document.getElementById('tutDots');
+        dots.innerHTML = '';
+        TUTORIAL_STEPS.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.style.cssText = `width:8px; height:8px; border-radius:50%; background:${i===tutStep?'var(--primary-color)':'#ddd'}; transition:0.3s;`;
+            dots.appendChild(d);
+        });
+    }
+
+    window.tutNext = function() {
+        document.getElementById(`tutSlide${tutStep}`).style.display = 'none';
+        tutStep++;
+        if (tutStep >= TUTORIAL_STEPS.length) {
+            document.getElementById('tutorialModal').style.display = 'none';
+            localStorage.setItem('study-tutorial-done', '1');
+            return;
+        }
+        document.getElementById(`tutSlide${tutStep}`).style.display = 'block';
+        buildDots();
+        const btn = document.getElementById('tutNextBtn');
+        btn.textContent = tutStep === TUTORIAL_STEPS.length - 1 ? 'はじめる 🚀' : '次へ →';
+    };
+
+    function showTutorialIfFirst() {
+        if (!localStorage.getItem('study-tutorial-done')) {
+            tutStep = 0;
+            buildTutorial();
+            const modal = document.getElementById('tutorialModal');
+            modal.style.display = 'flex';
+            document.getElementById('tutNextBtn').textContent = '次へ →';
+        }
+    }
+    // ─────────────────────────────────────────
 </script>
 </body>
 </html>
