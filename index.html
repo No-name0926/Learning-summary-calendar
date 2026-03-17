@@ -708,15 +708,21 @@
         const showInRanking = (profile.showInRanking === true);
         const rankEntry = ref(db, `ranking/${user.uid}`);
         if (!showInRanking) { remove(rankEntry); return; }
-        let totalExp = 0;
-        Object.keys(remoteData).forEach(k => totalExp += (EXP_MAP[getLogData(k).stamp] || 0));
+        let totalExp = 0, crownsCount = 0;
+        Object.keys(remoteData).forEach(k => {
+            const s = getLogData(k).stamp;
+            totalExp += (EXP_MAP[s] || 0);
+            if (s === '👑') crownsCount++;
+        });
         const level = Math.floor(totalExp / 100) + 1;
         const displayName = profile.displayName || user.displayName || 'ゲスト';
+        const titleObj = TITLES.find(t => crownsCount >= t.req) || TITLES[TITLES.length - 1];
         await set(rankEntry, {
             displayName,
             photoURL: user.photoURL || '',
             level,
             exp: totalExp,
+            title: titleObj.name,
             updatedAt: Date.now()
         });
     }
@@ -768,6 +774,7 @@
                     ${avatar('rank-avatar-1', entry.photoURL, '👤')}
                     <div class="rank-info">
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#c8980a;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-1">👑 Lv.${entry.level}</div>`;
@@ -778,6 +785,7 @@
                     ${avatar('rank-avatar-2', entry.photoURL, '👤')}
                     <div class="rank-info">
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#888;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-2">Lv.${entry.level}</div>`;
@@ -788,6 +796,7 @@
                     ${avatar('rank-avatar-3', entry.photoURL, '👤')}
                     <div class="rank-info">
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07040;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-3">Lv.${entry.level}</div>`;
@@ -798,6 +807,7 @@
                     ${avatar('rank-avatar-n', entry.photoURL, '👤')}
                     <div class="rank-info">
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
+                        ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.2px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-n">Lv.${entry.level}</div>`;
