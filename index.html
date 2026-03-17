@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta id="vapidPublicKey" content="YOUR_VAPID_PUBLIC_KEY">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style id="theme-variables">
@@ -458,6 +460,15 @@
             </div>
             <button class="save-btn" id="saveProfileBtn" style="margin-top:8px;">プロフィールを保存</button>
             <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
+            <div style="margin-top:14px; padding:14px; background:#f8faff; border-radius:14px; border:1.5px solid #e0eaff;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                    <div>
+                        <div style="font-size:13px; font-weight:900; color:#333;">🔔 毎日リマインダー</div>
+                        <div style="font-size:11px; color:#aaa; margin-top:2px;">毎日20時に学習を促す通知</div>
+                    </div>
+                    <button id="notifyToggleBtn" onclick="togglePushNotification()" style="background:var(--primary-color); color:white; border:none; padding:8px 14px; border-radius:10px; font-size:12px; font-weight:900; cursor:pointer; transition:0.2s; white-space:nowrap; flex-shrink:0;">通知をONにする</button>
+                </div>
+            </div>
         </div>
     </div>
     <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
@@ -595,6 +606,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    window._firebaseDb = db;
     const auth = getAuth(app);
 
     let logsRef = null;
@@ -704,10 +716,11 @@
 
     document.getElementById('logoutBtn').onclick = async () => {
         if(confirm('ログアウトしますか？')) {
-            // ランキングから自分を削除
-            if(window._currentUser && rankingRef) {
-                const myRankEntry = ref(db, `ranking/${window._currentUser.uid}`);
-                await remove(myRankEntry);
+            if(window._currentUser) {
+                // ランキングから削除
+                if(rankingRef) await remove(ref(db, `ranking/${window._currentUser.uid}`));
+                // プッシュ購読をFirebaseから削除
+                try { await remove(ref(db, `pushSubscriptions/${window._currentUser.uid}`)); } catch(e){}
             }
             await signOut(auth);
         }
@@ -1519,5 +1532,90 @@ window.checkTutorial = function() {
     </div>
 </div>
 
+<script>
+// ── Service Worker & プッシュ通知 ─────────────────
+const _VAPID_KEY = document.getElementById('vapidPublicKey')?.content || '';
+
+function _urlB64ToUint8(b64) {
+    const pad = '='.repeat((4 - b64.length % 4) % 4);
+    const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        try {
+            await navigator.serviceWorker.register('./service-worker.js');
+            _updateNotifyBtn();
+        } catch(e) { console.error('SW failed:', e); }
+    });
+}
+
+async function _updateNotifyBtn() {
+    const btn = document.getElementById('notifyToggleBtn');
+    if (!btn) return;
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        btn.textContent = '非対応ブラウザ'; btn.disabled = true; btn.style.background = '#ccc'; return;
+    }
+    if (Notification.permission === 'denied') {
+        btn.textContent = 'ブロック済み'; btn.style.background = '#aaa'; btn.disabled = true; return;
+    }
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+            btn.textContent = '通知ON ✓'; btn.style.background = '#22c55e';
+        } else {
+            btn.textContent = '通知をONにする'; btn.style.background = 'var(--primary-color)'; btn.disabled = false;
+        }
+    } catch(e) {}
+}
+
+window.togglePushNotification = async function() {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        alert('このブラウザはプッシュ通知に対応していません'); return;
+    }
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const existing = await reg.pushManager.getSubscription();
+
+        // すでに購読中 → 解除
+        if (existing) {
+            await existing.unsubscribe();
+            if (window._currentUser && window._firebaseDb) {
+                const { ref: r, remove: rm } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js');
+                await rm(r(window._firebaseDb, `pushSubscriptions/${window._currentUser.uid}`));
+            }
+            _updateNotifyBtn(); return;
+        }
+
+        // 通知許可を要求
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') {
+            alert('通知が許可されませんでした'); _updateNotifyBtn(); return;
+        }
+
+        if (!_VAPID_KEY || _VAPID_KEY === 'YOUR_VAPID_PUBLIC_KEY') {
+            alert('VAPIDキーが未設定です'); return;
+        }
+
+        // 購読して Firebase に保存
+        const sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: _urlB64ToUint8(_VAPID_KEY)
+        });
+
+        if (window._currentUser && window._firebaseDb) {
+            const { ref: r, set: s } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js');
+            await s(r(window._firebaseDb, `pushSubscriptions/${window._currentUser.uid}`), sub.toJSON());
+        }
+        _updateNotifyBtn();
+    } catch(e) {
+        console.error('Push error:', e);
+        alert('通知設定に失敗しました: ' + e.message);
+    }
+};
+// ────────────────────────────────────────────────
+</script>
 </body>
 </html>
