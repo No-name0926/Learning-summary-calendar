@@ -353,7 +353,7 @@
 
         <!-- テーマページャー -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 2px 6px;">
-            <span style="font-size:11px; font-weight:900; color:#aaa;" id="themePageLabel">1 / 3</span>
+            <span style="font-size:11px; font-weight:900; color:#aaa;" id="themePageLabel">1 / 4</span>
             <div style="display:flex; gap:6px;">
                 <button id="themePrevBtn" onclick="themePageChange(-1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;" disabled>&#8249;</button>
                 <button id="themeNextBtn" onclick="themePageChange(1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;">&#8250;</button>
@@ -388,6 +388,12 @@
             <div class="color-dot" style="background:#003d2b; background-image: repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px); background-size: 5px 5px;" onclick="setTheme('matrix')">👾</div>
             <div class="color-dot" style="background:#2d0a1e; background-image: repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%); background-size: 14px 24px;" onclick="setTheme('neon_tribal')">⚡</div>
             <div class="color-dot" style="background:#0a1628; background-image: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,220,100,0.22) 0%, transparent 70%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.18) 0deg 5deg, transparent 5deg 10deg); background-size: cover, 30px 30px;" onclick="setTheme('sun_temple')">🌅</div>
+        <!-- ページ4：超強烈模様 -->
+        <div class="color-grid theme-page" id="themePage3" style="display:none;">
+            <div class="color-dot" style="background:#0d0d0d; background-image:repeating-conic-gradient(from 0deg,#ff003c 0deg 15deg,#ff7700 15deg 30deg,#ffee00 30deg 45deg,#00ff88 45deg 60deg,#00cfff 60deg 75deg,#7700ff 75deg 90deg); background-size:40px 40px;" onclick="setTheme('prism_burst')">🌈</div>
+            <div class="color-dot" style="background:#000; background-image:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,128,0.6) 2px,rgba(255,0,128,0.6) 3px),repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,200,255,0.6) 2px,rgba(0,200,255,0.6) 3px); background-size:3px 3px;" onclick="setTheme('cyber_grid')">🕹️</div>
+            <div class="color-dot" style="background:conic-gradient(#ff6b35,#f7c59f,#efefd0,#004e89,#1a936f,#ff6b35); background-size:100% 100%;" onclick="setTheme('aurora')">🌌</div>
+            <div class="color-dot" style="background:#1a0a00; background-image:repeating-linear-gradient(30deg,#ff4500 0,#ff4500 1px,transparent 0,transparent 50%),repeating-linear-gradient(150deg,#ff8c00 0,#ff8c00 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#ffd700 0,#ffd700 1px,transparent 0,transparent 50%); background-size:20px 35px;" onclick="setTheme('lava_weave')">🌋</div>
         </div>
         <div class="login-section">
             <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
@@ -573,7 +579,11 @@
         kaleidoscope: { primary: '#a855f7', accent: '#ec4899', bg: 'linear-gradient(135deg, #1a0533 0%, #2d1060 100%)', text: '#f0e6ff', box: 'rgba(255,255,255,0.12)', author: '#d8b4fe', pattern: 'repeating-conic-gradient(#7c3aed 0deg 10deg, rgba(168,85,247,0.15) 10deg 20deg)', pOpacity: 0.7, pSize: '24px 24px' },
         matrix: { primary: '#00ff80', accent: '#00cc55', bg: 'linear-gradient(180deg, #001a0f 0%, #003d2b 100%)', text: '#00ff80', box: 'rgba(0,255,100,0.08)', author: '#00cc55', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px)', pOpacity: 1, pSize: '5px 5px' },
         neon_tribal: { primary: '#e91e8c', accent: '#ff6ef7', bg: 'linear-gradient(135deg, #2d0a1e 0%, #1a0030 100%)', text: '#ffe0f5', box: 'rgba(255,255,255,0.1)', author: '#ff9ff3', pattern: 'repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%)', pOpacity: 0.5, pSize: '14px 24px' },
-        sun_temple: { primary: '#f5c842', accent: '#ff9a00', bg: 'linear-gradient(160deg, #0a1628 0%, #1e2d50 100%)', text: '#ffe9a0', box: 'rgba(255,220,100,0.1)', author: '#ffd060', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.22) 0deg 5deg, transparent 5deg 10deg)', pOpacity: 0.8, pSize: '30px 30px' }
+        sun_temple: { primary: '#f5c842', accent: '#ff9a00', bg: 'linear-gradient(160deg, #0a1628 0%, #1e2d50 100%)', text: '#ffe9a0', box: 'rgba(255,220,100,0.1)', author: '#ffd060', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.22) 0deg 5deg, transparent 5deg 10deg)', pOpacity: 0.8, pSize: '30px 30px' },
+        prism_burst: { primary: '#ff003c', accent: '#00cfff', bg: 'linear-gradient(135deg,#0d0d0d,#1a0020)', text: '#fff', box: 'rgba(255,255,255,0.1)', author: '#ffee00', pattern: 'repeating-conic-gradient(from 0deg,#ff003c44 0deg 15deg,#ff770044 15deg 30deg,#ffee0044 30deg 45deg,#00ff8844 45deg 60deg,#00cfff44 60deg 75deg,#7700ff44 75deg 90deg)', pOpacity: 1, pSize: '40px 40px' },
+        cyber_grid: { primary: '#ff0080', accent: '#00c8ff', bg: 'linear-gradient(135deg,#000000,#0a0a1a)', text: '#00c8ff', box: 'rgba(0,200,255,0.08)', author: '#ff0080', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,128,0.55) 2px,rgba(255,0,128,0.55) 3px),repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(0,200,255,0.55) 2px,rgba(0,200,255,0.55) 3px)', pOpacity: 1, pSize: '3px 3px' },
+        aurora: { primary: '#1a936f', accent: '#004e89', bg: 'conic-gradient(at 50% 50%,#ff6b35,#f7c59f,#efefd0,#004e89,#1a936f,#ff6b35)', text: '#fff', box: 'rgba(255,255,255,0.18)', author: '#efefd0', pattern: 'radial-gradient(ellipse 80% 50% at 50% 50%,rgba(255,255,255,0.12),transparent 70%)', pOpacity: 1, pSize: '100% 100%' },
+        lava_weave: { primary: '#ff4500', accent: '#ffd700', bg: 'linear-gradient(160deg,#1a0a00,#3d1500)', text: '#ffd090', box: 'rgba(255,100,0,0.12)', author: '#ffd700', pattern: 'repeating-linear-gradient(30deg,#ff4500 0,#ff4500 1px,transparent 0,transparent 50%),repeating-linear-gradient(150deg,#ff8c00 0,#ff8c00 1px,transparent 0,transparent 50%),repeating-linear-gradient(90deg,#ffd700 0,#ffd700 1px,transparent 0,transparent 50%)', pOpacity: 0.6, pSize: '20px 35px' }
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
@@ -748,6 +758,16 @@
         });
     }
 
+    // EXPから称号を推定（titleがFirebaseに未保存の旧データ用）
+    function titleFromEntry(entry) {
+        if (entry.title) return entry.title;
+        // EXPから👑の最小推定値でTITLESを検索
+        // EXP_MAP: 👑=15 なので crowns ≈ exp / 15 の下限で推定
+        const estCrowns = Math.floor((entry.exp || 0) / 15);
+        const t = TITLES.find(t => estCrowns >= t.req) || TITLES[TITLES.length - 1];
+        return t.name;
+    }
+
     const RANK_PER_PAGE = 10;
     let rankAllEntries = [], rankCurrentPage = 0, rankMyUid = '';
 
@@ -794,7 +814,7 @@
                     <div class="rank-num-1">🥇</div>
                     ${avatar('rank-avatar-1', entry.photoURL, '👤')}
                     <div class="rank-info">
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b8860b;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
+                        <div style="font-size:9px;font-weight:900;color:#b8860b;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${titleFromEntry(entry)}</div>
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
@@ -805,7 +825,7 @@
                     <div class="rank-num-2">🥈</div>
                     ${avatar('rank-avatar-2', entry.photoURL, '👤')}
                     <div class="rank-info">
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#8a9aaa;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
+                        <div style="font-size:9px;font-weight:900;color:#8a9aaa;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${titleFromEntry(entry)}</div>
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
@@ -816,7 +836,7 @@
                     <div class="rank-num-3">🥉</div>
                     ${avatar('rank-avatar-3', entry.photoURL, '👤')}
                     <div class="rank-info">
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07840;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
+                        <div style="font-size:9px;font-weight:900;color:#b07840;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${titleFromEntry(entry)}</div>
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
@@ -827,7 +847,7 @@
                     <div class="rank-num-n">${rank}</div>
                     ${avatar('rank-avatar-n', entry.photoURL, '👤')}
                     <div class="rank-info">
-                        ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.4px;margin-bottom:1px;">${entry.title}</div>` : ''}
+                        <div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.4px;margin-bottom:1px;">${titleFromEntry(entry)}</div>
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
@@ -1113,7 +1133,7 @@
 
     // テーマページング
     let _themePage = 0;
-    const _themePageCount = 3;
+    const _themePageCount = 4;
     window.themePageChange = function(dir) {
         _themePage = Math.max(0, Math.min(_themePageCount - 1, _themePage + dir));
         for (let i = 0; i < _themePageCount; i++) {
