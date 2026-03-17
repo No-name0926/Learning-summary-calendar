@@ -112,7 +112,7 @@
 
         .achievement-header { text-align: center; margin-bottom: 30px; display: flex; justify-content: center; align-items: baseline; gap: 12px; color: var(--text-on-bg); transition: color 0.5s; }
         .pink-sparkle { color: #ff85a2; font-size: 26px; filter: drop-shadow(0 0 8px rgba(255,133,162,0.6)); }
-        .days-count { font-size: 64px; font-family: 'Arial Black', sans-serif; color: var(--text-on-bg); margin: 0 6px; border-bottom: 7px solid #ff85a2; line-height: 0.8; transition: all 0.5s; }
+        .days-count { font-size: 64px; font-family: 'Arial Black', sans-serif; font-weight: 900; -webkit-text-stroke: 2px var(--text-on-bg); color: var(--text-on-bg); margin: 0 6px; border-bottom: 7px solid #ff85a2; line-height: 0.8; transition: all 0.5s; }
 
         .quote-box { background: var(--box-bg); backdrop-filter: blur(15px); border-radius: 24px; padding: 25px; margin-bottom: 35px; text-align: center; box-shadow: 0 12px 35px rgba(0,0,0,0.06); border: 1.5px solid rgba(255,255,255,0.45); cursor: pointer; transition: transform 0.2s; }
         .quote-box:active { transform: scale(0.98); }
@@ -184,6 +184,15 @@
         .user-email { font-size: 11px; color: #999; margin-top: 2px; }
         .logout-btn { width: 100%; padding: 14px; background: #fff0f0; border: 2px solid #ffdddd; border-radius: 14px; color: #e74c3c; font-weight: 900; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .logout-btn:hover { background: #ffe0e0; }
+
+        /* フィードバック */
+        .feedback-section { margin-top: 20px; padding-top: 20px; border-top: 3px solid #f0f0f0; }
+        .feedback-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border: none; border-radius: 14px; color: white; font-weight: 900; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+        .feedback-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        #feedbackModal .modal-content { max-height: 90vh; }
+        .feedback-stars { display: flex; justify-content: center; gap: 10px; margin: 16px 0 24px; }
+        .star-btn { font-size: 36px; cursor: pointer; opacity: 0.3; transition: 0.15s; }
+        .star-btn.on { opacity: 1; transform: scale(1.1); }
         .save-btn { background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
         .setting-input { width: 100%; padding: 16px; margin: 12px 0; border: 2.5px solid #f0f0f0; border-radius: 16px; box-sizing: border-box; background: #fafafa; }
         
@@ -219,6 +228,24 @@
 <div id="loading" style="display:none;">
     <div>🏆</div>
     <span id="loadText">Loading...</span>
+</div>
+
+<div id="feedbackModal" class="modal" onclick="closeFeedbackModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 style="margin-top:0; font-size:18px; font-weight:900;">💬 フィードバック</h2>
+        <p style="font-size:13px; color:#999; margin-bottom:4px;">総合評価</p>
+        <div class="feedback-stars" id="feedbackStars">
+            <span class="star-btn" data-v="1">⭐</span>
+            <span class="star-btn" data-v="2">⭐</span>
+            <span class="star-btn" data-v="3">⭐</span>
+            <span class="star-btn" data-v="4">⭐</span>
+            <span class="star-btn" data-v="5">⭐</span>
+        </div>
+        <p style="font-size:13px; color:#999; margin-bottom:8px;">コメント（任意）</p>
+        <textarea id="feedbackText" class="memo-textarea" style="height:120px;" placeholder="改善してほしい点、よかった点など自由にどうぞ！"></textarea>
+        <button class="save-btn" id="feedbackSendBtn">送信する 🚀</button>
+        <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:4px;" onclick="closeFeedbackModal()">キャンセル</button>
+    </div>
 </div>
 
 <div id="levelUpOverlay">
@@ -266,19 +293,20 @@
             <div class="color-dot" style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;" onclick="setTheme('steins_gate')">🕰️</div>
             <div class="color-dot" style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;" onclick="setTheme('lucky_star')">🍀</div>
         </div>
-        <div class="login-section">
-            <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
-            <div class="user-info-card" id="menuUserInfo">
-                <div class="user-avatar-placeholder" id="menuUserIcon">👤</div>
-                <div>
-                    <div class="user-name" id="menuUserName">未ログイン</div>
-                    <div class="user-email" id="menuUserEmail">-</div>
-                </div>
-            </div>
-            <button class="logout-btn" id="logoutBtn">🚪 ログアウト</button>
-        </div>
     </div>
-    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
+    <div class="login-section">
+        <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
+        <div class="user-info-card">
+            <div class="user-avatar-placeholder" id="menuUserIcon">👤</div>
+            <div>
+                <div class="user-name" id="menuUserName">未ログイン</div>
+                <div class="user-email" id="menuUserEmail">-</div>
+            </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">🚪 ログアウト</button>
+    </div>
+    <button class="feedback-btn" style="margin-top:20px;" onclick="openFeedbackModal()">💬 フィードバックを送る</button>
+    <button style="width:100%; margin-top:12px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
 <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
@@ -372,6 +400,44 @@
     </div>
 </div>
 
+<div id="feedbackModal" class="modal" onclick="closeFeedback()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div id="feedbackForm">
+            <h2 style="margin-top:0; font-size:18px; font-weight:900;">💬 フィードバック</h2>
+            <p style="font-size:13px; color:#888; margin:0 0 6px;">どんな感想でもOK！改善のために活用します</p>
+
+            <p style="font-size:12px; font-weight:900; color:#555; margin: 18px 0 0;">⭐ 満足度</p>
+            <div class="feedback-stars" id="feedbackStars">
+                <span class="feedback-star" data-v="1">⭐</span>
+                <span class="feedback-star" data-v="2">⭐</span>
+                <span class="feedback-star" data-v="3">⭐</span>
+                <span class="feedback-star" data-v="4">⭐</span>
+                <span class="feedback-star" data-v="5">⭐</span>
+            </div>
+
+            <p style="font-size:12px; font-weight:900; color:#555; margin: 0 0 0;">🏷️ カテゴリ（複数選択可）</p>
+            <div class="feedback-tag-grid" id="feedbackTags">
+                <span class="feedback-tag" data-tag="使いやすい">👍 使いやすい</span>
+                <span class="feedback-tag" data-tag="デザインが好き">🎨 デザインが好き</span>
+                <span class="feedback-tag" data-tag="バグがある">🐛 バグがある</span>
+                <span class="feedback-tag" data-tag="機能追加希望">✨ 機能追加希望</span>
+                <span class="feedback-tag" data-tag="動作が遅い">🐢 動作が遅い</span>
+                <span class="feedback-tag" data-tag="続けやすい">🔥 続けやすい</span>
+            </div>
+
+            <textarea id="feedbackText" class="memo-textarea" style="height:90px;" placeholder="自由にコメントをどうぞ（任意）"></textarea>
+            <button class="save-btn" onclick="submitFeedback()">送信する 🚀</button>
+            <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:6px;" onclick="closeFeedback()">キャンセル</button>
+        </div>
+        <div id="feedbackSent" class="feedback-sent" style="display:none;">
+            <div class="feedback-sent-icon">🎉</div>
+            <div class="feedback-sent-msg">ありがとうございます！</div>
+            <p style="font-size:13px; color:#999; margin-top:8px;">フィードバックを受け取りました</p>
+            <button class="save-btn" style="margin-top:16px;" onclick="closeFeedback()">閉じる</button>
+        </div>
+    </div>
+</div>
+
 <div id="dayModal" class="modal" onclick="closeDayModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div class="day-modal-header" id="dayModalDate">日付</div>
@@ -390,7 +456,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, remove, child, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -403,9 +469,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
-
-    let logsRef = null;
-    let eventsRef = null;
+    let logsRef = null, eventsRef = null;
 
     const THEMES = {
         blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
@@ -458,6 +522,49 @@
     }
 
     const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '' }; return (typeof d === 'string') ? { stamp: d, memo: '' } : { stamp: d.stamp || '', memo: d.memo || '' }; };
+    // ───── フィードバック ─────
+    let feedbackRating = 0, feedbackSelectedTags = [];
+
+    window.openFeedback = () => {
+        feedbackRating = 0; feedbackSelectedTags = [];
+        document.getElementById('feedbackText').value = '';
+        document.getElementById('feedbackForm').style.display = 'block';
+        document.getElementById('feedbackSent').style.display = 'none';
+        document.querySelectorAll('.feedback-star').forEach(s => s.classList.remove('on'));
+        document.querySelectorAll('.feedback-tag').forEach(t => t.classList.remove('selected'));
+        document.getElementById('feedbackModal').style.display = 'flex';
+        toggleMenu();
+    };
+    window.closeFeedback = () => { document.getElementById('feedbackModal').style.display = 'none'; };
+
+    document.getElementById('feedbackStars').onclick = (e) => {
+        const star = e.target.closest('.feedback-star'); if(!star) return;
+        feedbackRating = parseInt(star.dataset.v);
+        document.querySelectorAll('.feedback-star').forEach(s => s.classList.toggle('on', parseInt(s.dataset.v) <= feedbackRating));
+    };
+    document.getElementById('feedbackTags').onclick = (e) => {
+        const tag = e.target.closest('.feedback-tag'); if(!tag) return;
+        tag.classList.toggle('selected');
+        const t = tag.dataset.tag;
+        feedbackSelectedTags = tag.classList.contains('selected') ? [...feedbackSelectedTags, t] : feedbackSelectedTags.filter(x => x !== t);
+    };
+
+    window.submitFeedback = () => {
+        const text = document.getElementById('feedbackText').value.trim();
+        const user = auth.currentUser;
+        const payload = {
+            rating: feedbackRating,
+            tags: feedbackSelectedTags,
+            comment: text,
+            uid: user ? user.uid : 'anonymous',
+            name: user ? (user.displayName || '') : '',
+            at: new Date().toISOString()
+        };
+        set(ref(db, `feedbacks/fb-${Date.now()}`), payload);
+        document.getElementById('feedbackForm').style.display = 'none';
+        document.getElementById('feedbackSent').style.display = 'block';
+    };
+
     window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
     window.setTheme = (name) => {
         const theme = THEMES[name]; if(!theme) return;
@@ -474,58 +581,39 @@
 
     // ───── 認証フロー ─────
     document.getElementById('googleLoginBtn').onclick = async () => {
-        try {
-            await signInWithPopup(auth, new GoogleAuthProvider());
-        } catch(e) {
-            alert('ログインに失敗しました: ' + e.message);
-        }
+        try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+        catch(e) { alert('ログインに失敗しました: ' + e.message); }
     };
-
     document.getElementById('logoutBtn').onclick = async () => {
-        if(confirm('ログアウトしますか？')) {
-            await signOut(auth);
-        }
+        if(confirm('ログアウトしますか？')) await signOut(auth);
     };
-
     function updateMenuUser(user) {
-        if(user) {
-            document.getElementById('menuUserName').innerText = user.displayName || 'ユーザー';
-            document.getElementById('menuUserEmail').innerText = user.email || '';
-            const icon = document.getElementById('menuUserIcon');
-            if(user.photoURL) {
-                icon.outerHTML = `<img class="user-avatar" id="menuUserIcon" src="${user.photoURL}" referrerpolicy="no-referrer">`;
-            } else {
-                document.getElementById('menuUserIcon').innerText = user.displayName ? user.displayName[0] : '👤';
-            }
+        document.getElementById('menuUserName').innerText = user ? (user.displayName || 'ユーザー') : '未ログイン';
+        document.getElementById('menuUserEmail').innerText = user ? (user.email || '') : '-';
+        const iconEl = document.getElementById('menuUserIcon');
+        if(user && user.photoURL) {
+            iconEl.outerHTML = `<img class="user-avatar" id="menuUserIcon" src="${user.photoURL}" referrerpolicy="no-referrer">`;
         } else {
-            document.getElementById('menuUserName').innerText = '未ログイン';
-            document.getElementById('menuUserEmail').innerText = '-';
-            document.getElementById('menuUserIcon').innerText = '👤';
+            iconEl.innerText = user ? (user.displayName ? user.displayName[0] : '👤') : '👤';
         }
     }
-
-    let logsUnsubscribe = null, eventsUnsubscribe = null;
-
+    let logsUnsub = null, eventsUnsub = null;
     onAuthStateChanged(auth, (user) => {
         updateMenuUser(user);
         if(user) {
-            // ログイン済み：ログイン画面を隠してLoading表示
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('loading').style.display = 'flex';
-            // 前のリスナーを解除
-            if(logsUnsubscribe) logsUnsubscribe();
-            if(eventsUnsubscribe) eventsUnsubscribe();
-            // ユーザーごとのパスで購読開始
+            if(logsUnsub) logsUnsub();
+            if(eventsUnsub) eventsUnsub();
             logsRef = ref(db, `users/${user.uid}/my_logs`);
             eventsRef = ref(db, `users/${user.uid}/my_events`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); });
-            eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
+            logsUnsub = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); });
+            eventsUnsub = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
         } else {
-            // 未ログイン：Loadingを隠してログイン画面表示
             document.getElementById('loading').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
-            if(logsUnsubscribe) { logsUnsubscribe(); logsUnsubscribe = null; }
-            if(eventsUnsubscribe) { eventsUnsubscribe(); eventsUnsubscribe = null; }
+            if(logsUnsub) { logsUnsub(); logsUnsub = null; }
+            if(eventsUnsub) { eventsUnsub(); eventsUnsub = null; }
             logsRef = null; eventsRef = null;
         }
     });
@@ -792,6 +880,38 @@
         }
         setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
     }
+
+    // ───── フィードバック ─────
+    let feedbackRating = 0;
+    document.querySelectorAll('.star-btn').forEach(btn => {
+        btn.onclick = () => {
+            feedbackRating = parseInt(btn.dataset.v);
+            document.querySelectorAll('.star-btn').forEach(s => s.classList.toggle('on', parseInt(s.dataset.v) <= feedbackRating));
+        };
+    });
+    window.openFeedbackModal = () => {
+        feedbackRating = 0;
+        document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('on'));
+        document.getElementById('feedbackText').value = '';
+        document.getElementById('feedbackModal').style.display = 'flex';
+        toggleMenu();
+    };
+    window.closeFeedbackModal = () => document.getElementById('feedbackModal').style.display = 'none';
+    document.getElementById('feedbackSendBtn').onclick = async () => {
+        const text = document.getElementById('feedbackText').value.trim();
+        if(feedbackRating === 0 && text === '') { alert('評価またはコメントを入力してください'); return; }
+        const fbRef = ref(db, 'feedbacks');
+        const user = auth.currentUser;
+        await push(fbRef, {
+            rating: feedbackRating,
+            comment: text,
+            uid: user ? user.uid : 'anonymous',
+            name: user ? (user.displayName || '') : '',
+            at: new Date().toISOString()
+        });
+        closeFeedbackModal();
+        alert('フィードバックを送信しました！ありがとうございます 🙏');
+    };
 
     const randomToggle = document.getElementById('randomThemeToggle');
     randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
