@@ -184,19 +184,6 @@
         .user-email { font-size: 11px; color: #999; margin-top: 2px; }
         .logout-btn { width: 100%; padding: 14px; background: #fff0f0; border: 2px solid #ffdddd; border-radius: 14px; color: #e74c3c; font-weight: 900; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .logout-btn:hover { background: #ffe0e0; }
-
-        /* フィードバックボタン */
-        .feedback-open-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border: none; border-radius: 16px; color: white; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); transition: opacity 0.2s; }
-        .feedback-open-btn:active { opacity: 0.8; }
-        /* フィードバックモーダル内 */
-        .fb-stars { display: flex; gap: 10px; justify-content: center; margin: 6px 0 20px; }
-        .fb-star { font-size: 30px; cursor: pointer; opacity: 0.25; transition: opacity 0.15s, transform 0.15s; }
-        .fb-star.on { opacity: 1; transform: scale(1.15); }
-        .fb-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 18px; }
-        .fb-tag { padding: 7px 13px; border-radius: 20px; border: 2px solid #eee; background: #f8f8f8; font-size: 12px; font-weight: 800; color: #777; cursor: pointer; transition: 0.15s; }
-        .fb-tag.sel { border-color: var(--primary-color); background: #edf4ff; color: var(--primary-color); }
-        .fb-done { text-align: center; padding: 16px 0 8px; }
-
         .save-btn { background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
         .setting-input { width: 100%; padding: 16px; margin: 12px 0; border: 2.5px solid #f0f0f0; border-radius: 16px; box-sizing: border-box; background: #fafafa; }
         
@@ -291,8 +278,7 @@
             <button class="logout-btn" id="logoutBtn">🚪 ログアウト</button>
         </div>
     </div>
-    <button class="feedback-open-btn" onclick="openFeedbackModal()">💬 フィードバックを送る</button>
-    <button style="width:100%; margin-top:12px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
+    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
 <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
@@ -383,42 +369,6 @@
             <div id="memoAreaList" style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
         </div>
         <button class="save-btn" style="margin-top:20px;" onclick="toggleYearModal()">閉じる</button>
-    </div>
-</div>
-
-<div id="feedbackModal" class="modal" onclick="closeFeedbackModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <div id="fbForm">
-            <h2 style="margin-top:0; font-size:18px; font-weight:900;">💬 フィードバック</h2>
-            <p style="font-size:12px; color:#aaa; margin:0 0 16px;">改善のためにご意見をお聞かせください！</p>
-            <p style="font-size:12px; font-weight:900; color:#555; margin:0 0 2px;">⭐ 満足度</p>
-            <div class="fb-stars" id="fbStars">
-                <span class="fb-star" data-v="1">⭐</span>
-                <span class="fb-star" data-v="2">⭐</span>
-                <span class="fb-star" data-v="3">⭐</span>
-                <span class="fb-star" data-v="4">⭐</span>
-                <span class="fb-star" data-v="5">⭐</span>
-            </div>
-            <p style="font-size:12px; font-weight:900; color:#555; margin:0 0 2px;">🏷️ カテゴリ（複数可）</p>
-            <div class="fb-tags" id="fbTags">
-                <span class="fb-tag" data-v="使いやすい">👍 使いやすい</span>
-                <span class="fb-tag" data-v="デザインが好き">🎨 デザイン</span>
-                <span class="fb-tag" data-v="バグがある">🐛 バグがある</span>
-                <span class="fb-tag" data-v="機能追加希望">✨ 機能追加希望</span>
-                <span class="fb-tag" data-v="続けやすい">🔥 続けやすい</span>
-                <span class="fb-tag" data-v="動作が遅い">🐢 動作が遅い</span>
-            </div>
-            <p style="font-size:12px; font-weight:900; color:#555; margin:0 0 6px;">✏️ コメント（任意）</p>
-            <textarea id="fbText" class="memo-textarea" style="height:85px;" placeholder="自由にどうぞ"></textarea>
-            <button class="save-btn" onclick="submitFeedback()">送信する 🚀</button>
-            <button class="save-btn" style="background:none;color:#bbb;box-shadow:none;margin-top:4px;" onclick="closeFeedbackModal()">キャンセル</button>
-        </div>
-        <div id="fbDone" class="fb-done" style="display:none;">
-            <div style="font-size:52px;">🎉</div>
-            <div style="font-size:17px;font-weight:900;margin:10px 0 6px;">ありがとうございます！</div>
-            <div style="font-size:13px;color:#aaa;">フィードバックを受け取りました</div>
-            <button class="save-btn" style="margin-top:20px;" onclick="closeFeedbackModal()">閉じる</button>
-        </div>
     </div>
 </div>
 
@@ -828,45 +778,6 @@
         { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
         { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
     ];
-
-    // ───── フィードバック ─────
-    let fbRating = 0, fbTags = [];
-    window.openFeedbackModal = () => {
-        fbRating = 0; fbTags = [];
-        document.getElementById('fbText').value = '';
-        document.getElementById('fbForm').style.display = 'block';
-        document.getElementById('fbDone').style.display = 'none';
-        document.querySelectorAll('.fb-star').forEach(s => s.classList.remove('on'));
-        document.querySelectorAll('.fb-tag').forEach(t => t.classList.remove('sel'));
-        // メニューを閉じる
-        document.getElementById('sideMenu').classList.remove('open');
-        document.getElementById('menuOverlay').style.display = 'none';
-        document.getElementById('feedbackModal').style.display = 'flex';
-    };
-    window.closeFeedbackModal = () => { document.getElementById('feedbackModal').style.display = 'none'; };
-    document.getElementById('fbStars').onclick = (e) => {
-        const s = e.target.closest('.fb-star'); if(!s) return;
-        fbRating = parseInt(s.dataset.v);
-        document.querySelectorAll('.fb-star').forEach(el => el.classList.toggle('on', parseInt(el.dataset.v) <= fbRating));
-    };
-    document.getElementById('fbTags').onclick = (e) => {
-        const t = e.target.closest('.fb-tag'); if(!t) return;
-        t.classList.toggle('sel');
-        const v = t.dataset.v;
-        fbTags = t.classList.contains('sel') ? [...fbTags, v] : fbTags.filter(x => x !== v);
-    };
-    window.submitFeedback = () => {
-        const u = auth.currentUser;
-        set(ref(db, `feedbacks/fb-${Date.now()}`), {
-            rating: fbRating, tags: fbTags,
-            comment: document.getElementById('fbText').value.trim(),
-            uid: u ? u.uid : 'anonymous',
-            name: u ? (u.displayName || '') : '',
-            at: new Date().toISOString()
-        });
-        document.getElementById('fbForm').style.display = 'none';
-        document.getElementById('fbDone').style.display = 'block';
-    };
 
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
