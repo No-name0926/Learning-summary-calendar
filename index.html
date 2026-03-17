@@ -197,22 +197,57 @@
         input:checked + .slider:before { transform: translateX(20px); }
 
         /* ランキング */
-        .ranking-container { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; margin-top: 20px; }
-        .ranking-row { display: flex; align-items: center; gap: 12px; padding: 14px 10px; border-bottom: 1.5px solid #f5f5f5; transition: background 0.15s; cursor: default; }
-        .ranking-row:last-child { border-bottom: none; }
-        .ranking-row.me { background: #f0f7ff; border-radius: 16px; border-bottom: none; margin: 4px 0; }
-        .rank-num { font-size: 18px; font-weight: 900; min-width: 32px; text-align: center; color: #ccc; }
-        .rank-num.gold { color: #f1c40f; font-size: 22px; }
-        .rank-num.silver { color: #b0bec5; font-size: 22px; }
-        .rank-num.bronze { color: #cd7f32; font-size: 22px; }
-        .rank-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; overflow: hidden; }
-        .rank-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .rank-info { flex: 1; min-width: 0; }
-        .rank-name { font-size: 14px; font-weight: 900; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rank-lv { font-size: 12px; color: #999; font-weight: 700; margin-top: 2px; }
-        .rank-badge { font-size: 12px; font-weight: 900; color: var(--primary-color); background: #e8f4fd; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-        .ranking-empty { text-align: center; color: #ccc; font-size: 13px; padding: 30px; font-weight: 700; }
-        .setting-input-label { font-size: 12px; font-weight: 900; color: #666; display: block; margin-bottom: 5px; margin-top: 14px; }
+        /* ── ランキング全体 ── */
+        .ranking-container { background: white; border-radius: 28px; padding: 24px 20px 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; margin-top: 20px; }
+
+        /* 1位 */
+        .rank-row-1 { display:flex; align-items:center; gap:12px; padding:18px 14px; margin-bottom:6px; border-radius:20px; background:linear-gradient(135deg,#fffbe6,#fff3b0 55%,#ffe566); border:2.5px solid #f1c40f; box-shadow:0 6px 22px rgba(241,196,15,0.28); position:relative; overflow:hidden; }
+        .rank-row-1::after { content:''; position:absolute; top:-24px; right:-18px; width:80px; height:80px; background:radial-gradient(circle,rgba(255,220,0,0.4),transparent 68%); pointer-events:none; }
+        .rank-num-1 { font-size:28px; min-width:34px; text-align:center; filter:drop-shadow(0 2px 4px rgba(241,196,15,0.5)); flex-shrink:0; }
+        .rank-avatar-1 { width:50px; height:50px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:22px; overflow:hidden; border:3px solid #f1c40f; box-shadow:0 0 10px rgba(241,196,15,0.55); }
+        .rank-name-1 { font-size:15px; font-weight:900; color:#6b4c00; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-1 { font-size:11px; color:#a07800; font-weight:800; margin-top:2px; }
+        .rank-badge-1 { font-size:12px; font-weight:900; color:#6b4c00; background:rgba(255,255,255,0.75); border:1.5px solid #f1c40f; padding:5px 10px; border-radius:18px; white-space:nowrap; flex-shrink:0; }
+
+        /* 2位 */
+        .rank-row-2 { display:flex; align-items:center; gap:11px; padding:14px 12px; margin-bottom:4px; border-radius:16px; background:linear-gradient(135deg,#f5f5f5,#ececec); border:2px solid #c8c8c8; box-shadow:0 3px 12px rgba(0,0,0,0.07); }
+        .rank-num-2 { font-size:24px; min-width:30px; text-align:center; flex-shrink:0; }
+        .rank-avatar-2 { width:44px; height:44px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:19px; overflow:hidden; border:2.5px solid #b0b0b0; }
+        .rank-name-2 { font-size:14px; font-weight:900; color:#444; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-2 { font-size:11px; color:#888; font-weight:700; margin-top:2px; }
+        .rank-badge-2 { font-size:12px; font-weight:900; color:#555; background:#e8e8e8; border:1.5px solid #bbb; padding:4px 10px; border-radius:18px; white-space:nowrap; flex-shrink:0; }
+
+        /* 3位 */
+        .rank-row-3 { display:flex; align-items:center; gap:11px; padding:14px 12px; margin-bottom:8px; border-radius:16px; background:linear-gradient(135deg,#fff4ec,#ffe8d6); border:2px solid #e8a87c; box-shadow:0 3px 12px rgba(205,127,50,0.12); }
+        .rank-num-3 { font-size:24px; min-width:30px; text-align:center; flex-shrink:0; }
+        .rank-avatar-3 { width:44px; height:44px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:19px; overflow:hidden; border:2.5px solid #cd7f32; }
+        .rank-name-3 { font-size:14px; font-weight:900; color:#5a3a1a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-3 { font-size:11px; color:#a0652a; font-weight:700; margin-top:2px; }
+        .rank-badge-3 { font-size:12px; font-weight:900; color:#7a4a1a; background:rgba(255,255,255,0.7); border:1.5px solid #cd7f32; padding:4px 10px; border-radius:18px; white-space:nowrap; flex-shrink:0; }
+
+        /* 4位以降 */
+        .rank-row-n { display:flex; align-items:center; gap:10px; padding:10px 8px; border-bottom:1px solid #f2f2f2; }
+        .rank-row-n:last-of-type { border-bottom:none; }
+        .rank-row-n.me { background:#f5f9ff; border-radius:12px; border-bottom:none; margin:2px 0; }
+        .rank-num-n { font-size:13px; font-weight:900; min-width:26px; text-align:center; color:#ccc; flex-shrink:0; }
+        .rank-avatar-n { width:32px; height:32px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:14px; overflow:hidden; }
+        .rank-name-n { font-size:13px; font-weight:800; color:#444; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-n { font-size:10px; color:#bbb; font-weight:700; margin-top:1px; }
+        .rank-badge-n { font-size:11px; font-weight:900; color:#aaa; background:#f5f5f5; padding:3px 8px; border-radius:14px; white-space:nowrap; flex-shrink:0; }
+
+        /* 共通 */
+        .rank-avatar-1 img,.rank-avatar-2 img,.rank-avatar-3 img,.rank-avatar-n img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+        .rank-info { flex:1; min-width:0; }
+
+        /* ページャー */
+        .ranking-pager { display:flex; justify-content:center; align-items:center; gap:16px; margin-top:16px; padding-top:14px; border-top:1.5px solid #f0f0f0; }
+        .pager-btn { background:#f5f7fa; border:none; width:36px; height:36px; border-radius:11px; font-size:18px; cursor:pointer; font-weight:900; color:#aaa; transition:0.2s; display:flex; align-items:center; justify-content:center; }
+        .pager-btn:hover:not(:disabled) { background:var(--primary-color); color:white; }
+        .pager-btn:disabled { opacity:0.3; cursor:default; }
+        .pager-info { font-size:13px; font-weight:900; color:#bbb; min-width:40px; text-align:center; }
+
+        .ranking-empty { text-align:center; color:#ccc; font-size:13px; padding:30px; font-weight:700; line-height:1.8; }
+        .setting-input-label { font-size:12px; font-weight:900; color:#666; display:block; margin-bottom:5px; margin-top:14px; }
     </style>
 </head>
 <body>
@@ -301,7 +336,7 @@
             <div class="setting-switch">
                 <span class="switch-label">🏆 ランキングに表示する</span>
                 <label class="switch">
-                    <input type="checkbox" id="showInRankingToggle" checked>
+                    <input type="checkbox" id="showInRankingToggle">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -379,6 +414,11 @@
     <div class="ranking-container">
         <div class="stats-title">🏆 学習レベルランキング</div>
         <div id="rankingList"><div class="ranking-empty">読み込み中...</div></div>
+        <div class="ranking-pager" id="rankingPager" style="display:none;">
+            <button class="pager-btn" id="rankPrevBtn" onclick="rankChangePage(-1)" disabled>&#8249;</button>
+            <span class="pager-info" id="rankPageInfo">1 / 1</span>
+            <button class="pager-btn" id="rankNextBtn" onclick="rankChangePage(1)">&#8250;</button>
+        </div>
     </div>
 </div>
 
@@ -566,7 +606,7 @@
             get(profileRef).then(snap => {
                 const p = snap.val() || {};
                 document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
-                document.getElementById('showInRankingToggle').checked = (p.showInRanking !== false);
+                document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
             });
             // ランキング購読
             onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
@@ -615,7 +655,7 @@
         const user = window._currentUser;
         const snap = await get(profileRef);
         const profile = snap.val() || {};
-        const showInRanking = (profile.showInRanking !== false);
+        const showInRanking = (profile.showInRanking === true);
         const rankEntry = ref(db, `ranking/${user.uid}`);
         if (!showInRanking) { remove(rankEntry); return; }
         let totalExp = 0;
@@ -631,37 +671,105 @@
         });
     }
 
+    const RANK_PER_PAGE = 10;
+    let rankAllEntries = [], rankCurrentPage = 0, rankMyUid = '';
+
     function renderRanking(data, myUid) {
-        const list = document.getElementById('rankingList');
-        const entries = Object.entries(data)
+        rankMyUid = myUid;
+        rankAllEntries = Object.entries(data)
             .map(([uid, v]) => ({ uid, ...v }))
             .sort((a, b) => b.exp - a.exp);
-        if (entries.length === 0) { list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀</div>'; return; }
+        rankCurrentPage = 0;
+        const myIdx = rankAllEntries.findIndex(e => e.uid === myUid);
+        if (myIdx >= 0) rankCurrentPage = Math.floor(myIdx / RANK_PER_PAGE);
+        renderRankingPage();
+    }
+
+    function avatar(cls, photoURL, fallback) {
+        if (photoURL) return `<div class="${cls}"><img src="${photoURL}" referrerpolicy="no-referrer"></div>`;
+        return `<div class="${cls}">${fallback}</div>`;
+    }
+
+    function renderRankingPage() {
+        const list = document.getElementById('rankingList');
+        const pager = document.getElementById('rankingPager');
+        const totalPages = Math.max(1, Math.ceil(rankAllEntries.length / RANK_PER_PAGE));
+
+        if (rankAllEntries.length === 0) {
+            list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀<br><span style="font-size:11px;">設定でランキング表示をONにしよう！</span></div>';
+            pager.style.display = 'none';
+            return;
+        }
+
+        const start = rankCurrentPage * RANK_PER_PAGE;
+        const pageEntries = rankAllEntries.slice(start, start + RANK_PER_PAGE);
         list.innerHTML = '';
-        entries.forEach((entry, i) => {
-            const isMe = entry.uid === myUid;
+
+        pageEntries.forEach((entry, pageIdx) => {
+            const rank = start + pageIdx + 1;
+            const isMe = entry.uid === rankMyUid;
+            const meTag = isMe ? ' <span style="font-size:10px;color:var(--primary-color);font-weight:900;">（あなた）</span>' : '';
             const row = document.createElement('div');
-            row.className = 'ranking-row' + (isMe ? ' me' : '');
-            const rankNum = i + 1;
-            let rankClass = '', rankLabel = rankNum;
-            if (rankNum === 1) { rankClass = 'gold'; rankLabel = '🥇'; }
-            else if (rankNum === 2) { rankClass = 'silver'; rankLabel = '🥈'; }
-            else if (rankNum === 3) { rankClass = 'bronze'; rankLabel = '🥉'; }
-            const avatarHTML = entry.photoURL
-                ? `<div class="rank-avatar"><img src="${entry.photoURL}" referrerpolicy="no-referrer"></div>`
-                : `<div class="rank-avatar" style="font-size:18px;">👤</div>`;
-            row.innerHTML = `
-                <div class="rank-num ${rankClass}">${rankLabel}</div>
-                ${avatarHTML}
-                <div class="rank-info">
-                    <div class="rank-name">${entry.displayName}${isMe ? ' <span style="font-size:10px;color:var(--primary-color);">（あなた）</span>' : ''}</div>
-                    <div class="rank-lv">Lv. ${entry.level} ／ EXP ${entry.exp}</div>
-                </div>
-                <div class="rank-badge">Lv.${entry.level}</div>
-            `;
+
+            if (rank === 1) {
+                row.className = 'rank-row-1';
+                row.innerHTML = `
+                    <div class="rank-num-1">🥇</div>
+                    ${avatar('rank-avatar-1', entry.photoURL, '👤')}
+                    <div class="rank-info">
+                        <div class="rank-name-1">${entry.displayName}${meTag}</div>
+                        <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
+                    </div>
+                    <div class="rank-badge-1">👑 Lv.${entry.level}</div>`;
+            } else if (rank === 2) {
+                row.className = 'rank-row-2' + (isMe ? ' me' : '');
+                row.innerHTML = `
+                    <div class="rank-num-2">🥈</div>
+                    ${avatar('rank-avatar-2', entry.photoURL, '👤')}
+                    <div class="rank-info">
+                        <div class="rank-name-2">${entry.displayName}${meTag}</div>
+                        <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
+                    </div>
+                    <div class="rank-badge-2">Lv.${entry.level}</div>`;
+            } else if (rank === 3) {
+                row.className = 'rank-row-3' + (isMe ? ' me' : '');
+                row.innerHTML = `
+                    <div class="rank-num-3">🥉</div>
+                    ${avatar('rank-avatar-3', entry.photoURL, '👤')}
+                    <div class="rank-info">
+                        <div class="rank-name-3">${entry.displayName}${meTag}</div>
+                        <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
+                    </div>
+                    <div class="rank-badge-3">Lv.${entry.level}</div>`;
+            } else {
+                row.className = 'rank-row-n' + (isMe ? ' me' : '');
+                row.innerHTML = `
+                    <div class="rank-num-n">${rank}</div>
+                    ${avatar('rank-avatar-n', entry.photoURL, '👤')}
+                    <div class="rank-info">
+                        <div class="rank-name-n">${entry.displayName}${meTag}</div>
+                        <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
+                    </div>
+                    <div class="rank-badge-n">Lv.${entry.level}</div>`;
+            }
             list.appendChild(row);
         });
+
+        if (totalPages > 1) {
+            pager.style.display = 'flex';
+            document.getElementById('rankPageInfo').textContent = `${rankCurrentPage + 1} / ${totalPages}`;
+            document.getElementById('rankPrevBtn').disabled = (rankCurrentPage === 0);
+            document.getElementById('rankNextBtn').disabled = (rankCurrentPage >= totalPages - 1);
+        } else {
+            pager.style.display = 'none';
+        }
     }
+
+    window.rankChangePage = function(dir) {
+        const total = Math.ceil(rankAllEntries.length / RANK_PER_PAGE);
+        rankCurrentPage = Math.max(0, Math.min(total - 1, rankCurrentPage + dir));
+        renderRankingPage();
+    };
 
     document.getElementById('saveProfileBtn').onclick = async () => {
         if (!window._currentUser || !profileRef) return;
@@ -923,15 +1031,25 @@
     fetchQuote();
 </script>
 <!-- フィードバックパネル -->
-<div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:rgba(255,255,255,0.98); z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); padding:24px 20px; box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
-        <button onclick="closeFeedback()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#bbb; padding:0; line-height:1;">&#8249;</button>
-        <h3 style="margin:0; font-size:20px; font-weight:900; color:#222;">💬 フィードバック</h3>
+<div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:white; z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
+    <!-- ヘッダー帯 -->
+    <div style="background:linear-gradient(135deg, #0070bc, #00c6ff); padding:22px 20px 18px; flex-shrink:0;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <button onclick="closeFeedback()" style="background:rgba(255,255,255,0.2); border:none; border-radius:10px; width:32px; height:32px; font-size:18px; cursor:pointer; color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0;">&#8249;</button>
+            <span style="font-size:19px; font-weight:900; color:white; letter-spacing:-0.3px;">フィードバック</span>
+        </div>
+        <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.85); line-height:1.7; font-weight:600;">ご意見・ご要望をお気軽にどうぞ 🙏<br>開発チームに直接届きます</p>
     </div>
-    <p style="font-size:13px; color:#aaa; margin:0 0 18px; line-height:1.8; font-weight:600;">ご意見・ご要望をお気軽にどうぞ。<br>開発チームに直接届きます 🙏</p>
-    <textarea id="feedbackMessage" style="flex:1; min-height:220px; width:100%; padding:16px; border:2.5px solid #f0f0f0; border-radius:18px; background:#fafafa; font-size:15px; box-sizing:border-box; outline:none; resize:none; font-family:inherit; line-height:1.7; color:#333; transition:border-color 0.2s;" placeholder="例：〇〇の機能がほしい、〇〇が使いにくい、など" onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='#f0f0f0'"></textarea>
-    <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:20px; margin:10px 0 4px; font-weight:800;"></div>
-    <button id="sendFeedbackBtn" onclick="sendFeedback()" style="width:100%; padding:16px; background:var(--primary-color); color:white; border:none; border-radius:16px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15);">送信する 🚀</button>
+    <!-- 本文エリア -->
+    <div style="padding:20px; flex:1; display:flex; flex-direction:column; gap:12px;">
+        <div style="background:#f0f7ff; border-radius:14px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
+            <span style="font-size:20px; flex-shrink:0; margin-top:1px;">💡</span>
+            <span style="font-size:12px; color:#555; font-weight:700; line-height:1.6;">バグ報告・新機能のリクエスト・なんでもどうぞ！</span>
+        </div>
+        <textarea id="feedbackMessage" style="flex:1; min-height:200px; width:100%; padding:14px; border:2px solid #e8f0fe; border-radius:16px; background:#fafcff; font-size:14px; box-sizing:border-box; outline:none; resize:none; font-family:inherit; line-height:1.7; color:#333; transition:border-color 0.2s;" placeholder="例：〇〇の機能がほしい&#10;〇〇が使いにくい　など" onfocus="this.style.borderColor='#0070bc'" onblur="this.style.borderColor='#e8f0fe'"></textarea>
+        <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:18px; font-weight:800;"></div>
+        <button id="sendFeedbackBtn" onclick="sendFeedback()" style="width:100%; padding:15px; background:linear-gradient(135deg,#0070bc,#00c6ff); color:white; border:none; border-radius:16px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(0,112,188,0.3); letter-spacing:0.3px;">送信する 🚀</button>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
