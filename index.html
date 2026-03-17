@@ -522,6 +522,9 @@
     }
 
     const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '' }; return (typeof d === 'string') ? { stamp: d, memo: '' } : { stamp: d.stamp || '', memo: d.memo || '' }; };
+
+    window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
+
     // ───── フィードバック ─────
     let feedbackRating = 0, feedbackSelectedTags = [];
 
@@ -532,8 +535,10 @@
         document.getElementById('feedbackSent').style.display = 'none';
         document.querySelectorAll('.feedback-star').forEach(s => s.classList.remove('on'));
         document.querySelectorAll('.feedback-tag').forEach(t => t.classList.remove('selected'));
+        // メニューを閉じてからモーダルを開く
+        const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay');
+        menu.classList.remove('open'); overlay.style.display = 'none';
         document.getElementById('feedbackModal').style.display = 'flex';
-        toggleMenu();
     };
     window.closeFeedback = () => { document.getElementById('feedbackModal').style.display = 'none'; };
 
@@ -564,8 +569,6 @@
         document.getElementById('feedbackForm').style.display = 'none';
         document.getElementById('feedbackSent').style.display = 'block';
     };
-
-    window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
     window.setTheme = (name) => {
         const theme = THEMES[name]; if(!theme) return;
         const root = document.documentElement;
