@@ -23,14 +23,12 @@
             --quote-author-color: #777;
             --outline-color: #ffffff;
             --legend-bg: rgba(255, 255, 255, 0.4);
-            /* 背景模様用の変数 */
             --pattern-image: none;
             --pattern-opacity: 0.3;
             --pattern-size: 20px 20px;
         }
     </style>
     <style>
-        /* --- 背景模様のレイヤー構造 --- */
         body { 
             font-family: 'SF Pro Text', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; 
             background: var(--bg-gradient);
@@ -48,7 +46,6 @@
             position: relative;
         }
 
-        /* グラデーションの上に模様を重ねる */
         body::before {
             content: "";
             position: fixed;
@@ -61,7 +58,6 @@
             transition: all 0.5s ease;
         }
 
-        /* --- アニメーション定義 --- */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes levelUpPop { 0% { transform: scale(1); } 50% { transform: scale(1.4); filter: brightness(1.2); } 100% { transform: scale(1); } }
@@ -84,9 +80,35 @@
         .container { width: 100%; max-width: 460px; padding: 20px 18px 100px; box-sizing: border-box; position: relative; }
         .year-summary-btn { position: absolute; top: 15px; right: 18px; background: white; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.08); z-index: 15; transition: all 0.3s; }
         .title-badge { text-align: center; font-size: 14px; font-weight: 900; color: white; margin: 15px 0 12px; background: var(--primary-color); display: inline-block; padding: 7px 25px; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transition: 0.4s; border: 2px solid rgba(255,255,255,0.2); z-index: 20; position: relative; }
-        .countdown-slider { text-align: center; margin: 10px 0 25px; cursor: pointer; min-height: 35px; }
-        .countdown-text { font-size: 16px; font-weight: 800; color: var(--text-on-bg); transition: color 0.5s; text-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-        .countdown-days { color: var(--primary-color); font-family: 'Arial Black', sans-serif; font-size: 32px; margin: 0 5px; -webkit-text-stroke: 4px #ffffff; paint-order: stroke fill; text-shadow: 2px 2px 5px rgba(0,0,0,0.25); }
+        
+        .countdown-slider { text-align: center; margin: 10px 0 25px; cursor: pointer; min-height: 45px; position: relative; z-index: 10; padding-top: 5px; }
+/* カウントダウン全体のコンテナ */
+.countdown-text { 
+    font-size: 16px; /* index.htmlと同じサイズ */
+    font-weight: 800; 
+    color: var(--text-on-bg); 
+    transition: color 0.5s; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    /* 底を揃えるための設定 */
+    display: inline-flex; 
+    align-items: baseline; 
+    justify-content: center; 
+    flex-wrap: wrap;
+}
+
+/* カウントダウンの数字部分 */
+.countdown-days { 
+    color: var(--primary-color); 
+    font-family: 'Arial Black', sans-serif; 
+    font-size: 32px; /* index.htmlと同じサイズ */
+    margin: 0 5px;   /* index.htmlと同じマージン */
+    -webkit-text-stroke: 4.5px #ffffff; 
+    paint-order: stroke fill; 
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.25);
+    /* 行の高さを調整して、大きなフォント特有の下の余白を削る */
+    line-height: 0.8; 
+}
+
 
         .achievement-header { text-align: center; margin-bottom: 30px; display: flex; justify-content: center; align-items: baseline; gap: 12px; color: var(--text-on-bg); transition: color 0.5s; }
         .pink-sparkle { color: #ff85a2; font-size: 26px; filter: drop-shadow(0 0 8px rgba(255,133,162,0.6)); }
@@ -97,7 +119,7 @@
         .quote-text { font-size: 14px; color: var(--text-on-bg); line-height: 1.9; font-style: italic; font-weight: 600; }
         .quote-author { font-size: 11px; color: var(--quote-author-color); font-weight: 800; display: block; margin-top: 15px; }
 
-        .calendar-container { background: white; border-radius: 32px; box-shadow: var(--calendar-shadow); overflow: hidden; margin-bottom: 15px; transition: all 0.5s; }
+        .calendar-container { background: white; border-radius: 32px; box-shadow: var(--calendar-shadow); overflow: hidden; margin-bottom: 15px; transition: all 0.5s; position: relative; z-index: 5; }
         .header-nav { background: var(--header-gradient); color: white; display: flex; justify-content: space-between; align-items: center; padding: 24px 35px; }
         .nav-btn { background: rgba(255,255,255,0.28); color: white; border: none; width: 42px; height: 42px; border-radius: 14px; cursor: pointer; font-size: 22px; }
         .grid { display: grid; grid-template-columns: repeat(7, 1fr); background: #f2f2f2; gap: 1px; }
@@ -144,6 +166,15 @@
         #loading div { font-size: 50px; margin-bottom: 25px; animation: pulse 1.5s infinite; }
         .save-btn { background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
         .setting-input { width: 100%; padding: 16px; margin: 12px 0; border: 2.5px solid #f0f0f0; border-radius: 16px; box-sizing: border-box; background: #fafafa; }
+        
+        .setting-switch { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 0 10px; }
+        .switch-label { font-size: 13px; font-weight: 800; color: #666; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
 <body>
@@ -168,6 +199,15 @@
         <div id="eventList" style="margin-top: 25px; max-height: 200px; overflow-y: auto;"></div>
         
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:35px;">🎨 テーマカラー & テクスチャ</p>
+        
+        <div class="setting-switch">
+            <span class="switch-label">🔄 起動時ランダムテーマ</span>
+            <label class="switch">
+                <input type="checkbox" id="randomThemeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
         <div class="color-grid">
             <div class="color-dot" style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;" onclick="setTheme('blue')">💧</div>
             <div class="color-dot" style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;" onclick="setTheme('red')">🔥</div>
@@ -176,7 +216,7 @@
             
             <div class="color-dot" style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);" onclick="setTheme('orange')">🍊</div>
             <div class="color-dot" style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;" onclick="setTheme('green')">🌿</div>
-            <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent); background-size: 20px 20px;" onclick="setTheme('aqua')">🌊</div>
+            <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);" onclick="setTheme('aqua')">🌊</div>
             <div class="color-dot" style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;" onclick="setTheme('white')">☁️</div>
 
             <div class="color-dot" style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('luxury_carbon')">💎</div>
@@ -246,7 +286,7 @@
         <div class="stats-title"><span id="statsYearLabel"></span>年 年間累計</div>
         <div class="stats-grid" id="yearStatsGrid"></div>
         <div class="stats-title">年間総メダル獲得推移</div>
-        <div class="chart-wrapper" style="height: 230px;"><canvas id="yearStackChart"></canvas></div>
+        <div class="chart-wrapper" style="height: 250px;"><canvas id="yearStackChart"></canvas></div>
         <div class="lv-bar-container">
             <div class="lv-info">
                 <span class="lv-num" id="lvDisplay">Lv. 1</span>
@@ -339,6 +379,33 @@
     let selectedDateKey = null, selectedStamp = '', currentLv = 0;
     const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':2, '🥈':5, '🥇':8, '👑':15 };
 
+    function createPattern(type, color) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 16; canvas.height = 16;
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, 16, 16);
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+        ctx.lineWidth = 1;
+        
+        if (type === '🥉') {
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.beginPath(); ctx.arc(4, 4, 1.5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(12, 12, 1.5, 0, Math.PI*2); ctx.fill();
+        } else if (type === '🥈') {
+            ctx.beginPath(); ctx.moveTo(0, 16); ctx.lineTo(16, 0); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-4, 4); ctx.lineTo(4, -4); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(12, 20); ctx.lineTo(20, 12); ctx.stroke();
+        } else if (type === '🥇') {
+            ctx.beginPath(); ctx.moveTo(0, 8); ctx.lineTo(16, 8); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(8, 16); ctx.stroke();
+        } else if (type === '👑') {
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.beginPath(); ctx.arc(8, 16, 8, Math.PI, 0); ctx.stroke();
+        }
+        return ctx.createPattern(canvas, 'repeat');
+    }
+
     const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '' }; return (typeof d === 'string') ? { stamp: d, memo: '' } : { stamp: d.stamp || '', memo: d.memo || '' }; };
     window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
     window.setTheme = (name) => {
@@ -417,9 +484,33 @@
         Object.keys(remoteData).forEach(k => { const s = getLogData(k).stamp; if (VALID.includes(s)) { const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; const monthIdx = parseInt(p[2]) - 1; monthlyStack[monthIdx][s]++; } if (s === '👑') crowns++; } });
         const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
         document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate()); document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365); document.getElementById('titleDisplay').innerText = (TITLES.find(t => crowns >= t.req)).name;
+        
         const barCtx = document.getElementById('yearStackChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if(yearStackChart) yearStackChart.destroy();
-        yearStackChart = new Chart(barCtx, { type: 'bar', data: { labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], datasets: [{ label: '🥉', data: monthlyStack.map(m => m['🥉']), backgroundColor: '#cd7f32cc' }, { label: '🥈', data: monthlyStack.map(m => m['🥈']), backgroundColor: '#c0c0c0cc' }, { label: '🥇', data: monthlyStack.map(m => m['🥇']), backgroundColor: '#ffd700cc' }, { label: '👑', data: monthlyStack.map(m => m['👑']), backgroundColor: themeColor + 'cc' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true } } } });
+        
+        yearStackChart = new Chart(barCtx, { 
+            type: 'bar', 
+            data: { 
+                labels: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], 
+                datasets: [
+                    { label: '🥉', data: monthlyStack.map(m => m['🥉']), backgroundColor: createPattern('🥉', '#cd7f32'), borderRadius: 4 }, 
+                    { label: '🥈', data: monthlyStack.map(m => m['🥈']), backgroundColor: createPattern('🥈', '#c0c0c0'), borderRadius: 4 }, 
+                    { label: '🥇', data: monthlyStack.map(m => m['🥇']), backgroundColor: createPattern('🥇', '#ffd700'), borderRadius: 4 }, 
+                    { label: '👑', data: monthlyStack.map(m => m['👑']), backgroundColor: createPattern('👑', themeColor), borderRadius: 4 }
+                ] 
+            }, 
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { 
+                        display: true, 
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 15, font: { size: 10, weight: 'bold' }, usePointStyle: true }
+                    } 
+                }, 
+                scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true } } 
+            } 
+        });
     }
 
     window.toggleYearModal = () => { const modal = document.getElementById('yearModal'), isOpening = modal.style.display !== 'flex'; modal.style.display = isOpening ? 'flex' : 'none'; if(isOpening) { updateYearModal(); closeMemoArea(); } };
@@ -459,7 +550,7 @@
     }
     document.getElementById('saveEventBtn').onclick = () => { const title = document.getElementById('eventTitle').value.trim(), date = document.getElementById('eventDate').value; if(title && date) set(ref(db, `my_events/ev-${Date.now()}`), { id: `ev-${Date.now()}`, title, date }); };
 
-         const backupQuotes = [
+    const backupQuotes = [
         { t: "小さいことを積み重ねるのが、とんでもないところへ行くただひとつの道。", a: "イチロー" },
         { t: "明日死ぬかのように生きろ。永遠に生きるかのように学べ。", a: "ガンジー" },
         { t: "お前の道を進め。人には勝手なことを言わせておけ。", a: "ダンテ" },
@@ -506,7 +597,7 @@
         { t: "あなたの心に従う勇気を持ってください。", a: "ジョブズ" },
         { t: "自分で自分をあきらめなければ、道は必ず開ける。", a: "松下幸之助" },
         { t: "過去ばかり振り向いていたのでは、未来はつくれない。", a: "盛田昭夫" },
-        { t: "成功の反対は失敗ではなく、「挑戦しないこと」だ。", a: "エドモンド・バーク" },
+        { t: "成功の反対は失敗ではなく、「挑戦しないこと」だ。", a: "エどモンド・バーク" },
         { t: "天才とは、強烈な忍耐なり。", a: "ビュフォン" },
         { t: "死ぬ気でやってみろ、死なないから。", a: "杉村太蔵" },
         { t: "行動こそが、不安を消し去る唯一の方法だ。", a: "デール・カーネギー" },
@@ -521,7 +612,7 @@
         { t: "本気でやれば、たいていのことはできる。本気でやれば、おもしろくなる。", a: "後藤清一" },
         { t: "他人と比較して、他人が自分より優れていたとしても、それは恥ではない。", a: "ヘミングウェイ" },
         { t: "私は失敗したことがない。ただ、1万通りの「うまくいかない方法」を見つけただけだ。", a: "エジソン" },
-        { t: "とにかく、やってみなはれ。やらなわからしまへん。", a: "鳥井信治郎（サントリー創業者）" },
+        { t: "とにかく、やってみなはれ。やらなわわからしまへん。", a: "鳥井信治郎（サントリー創業者）" },
         { t: "一度きりの人生、楽しまなきゃ損だ。", a: "芸能人の格言" },
         { t: "人生は、勇気次第でどうにでもなる。", a: "セネカ" },
         { t: "自分を愛することが、一生続くロマンスの始まりだ。", a: "オスカー・ワイルド" },
@@ -530,7 +621,6 @@
         { t: "自分らしく生きることに、他人の許可はいらない。", a: "アドラー" },
         { t: "あなたが今日、何もしなかったら、明日は今日と同じになる。", a: "マザー・テレサ" },
         { t: "道を選ぶということは、他の道を捨てるということだ。", a: "霜月美佳（PSYCHO-PASS）" },
-        // --- ここからさらに追加分 ---
         { t: "前進し続けなきゃならない。立ち止まるのは、後退するのと同じだ。", a: "ウォルト・ディズニー" },
         { t: "配られたカードに文句を言うよりも、どう使いこなすかが大事なんだ。", a: "マルチ・ルナシャルスキー" },
         { t: "自分で自分を「正解」にするしかないんだよ。", a: "ドラマ『ドラゴン桜』" },
@@ -583,7 +673,6 @@
         { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
     ];
 
-
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
         qE.style.opacity = 0; aE.style.opacity = 0;
@@ -598,7 +687,16 @@
         setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
     }
 
-    setTheme(localStorage.getItem('study-calendar-theme') || 'blue');
+    const randomToggle = document.getElementById('randomThemeToggle');
+    randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
+    randomToggle.onchange = (e) => localStorage.setItem('study-random-theme', e.target.checked);
+
+    let initialTheme = localStorage.getItem('study-calendar-theme') || 'blue';
+    if (randomToggle.checked) {
+        const themeKeys = Object.keys(THEMES);
+        initialTheme = themeKeys[Math.floor(Math.random() * themeKeys.length)];
+    }
+    setTheme(initialTheme);
     fetchQuote();
 </script>
 </body>
