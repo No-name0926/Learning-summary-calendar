@@ -1,20 +1,21 @@
 {
   "name": "学習集計カレンダー",
-  "short_name": "学習カレ",
+  "short_name": "学習カレンダー",
+  "description": "毎日の学習を記録・可視化するアプリ",
+  "start_url": "/Learning-summary-calendar/",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#0070bc",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000"
+  ]
 }
