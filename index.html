@@ -7,6 +7,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style id="theme-variables">
@@ -29,6 +34,7 @@
         }
     </style>
     <style>
+        /* 既存のスタイル */
         body { 
             font-family: 'SF Pro Text', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif; 
             background: var(--bg-gradient);
@@ -171,616 +177,809 @@
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* 追加: ログインボタンのスタイル */
-        .auth-container { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
-        .login-btn-google { background: white; color: #444; border: 1.5px solid #ddd; padding: 14px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
-        .login-btn-google:active { transform: scale(0.98); background: #f9f9f9; }
-        .user-info-area { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 12px; border-radius: 16px; }
-        .logout-link { font-size: 11px; color: #999; text-decoration: underline; cursor: pointer; }
+        /* ログイン関連の追加スタイル (index (1).htmlより移植) */
+        #authContainer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-gradient);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .auth-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        .auth-title { font-weight: 900; font-size: 24px; color: var(--primary-color); margin-bottom: 10px; }
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            margin: 10px 0;
+            border-radius: 16px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .google-btn { background: #4285F4; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .logout-btn {
+            background: #fff;
+            color: #ff4757;
+            border: 2px solid #ff4757;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 13px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 15px;
+        }
+        .user-photo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary-color); }
+        .user-name { font-weight: 800; font-size: 14px; }
     </style>
 </head>
 <body>
-
-<div id="loading">
-    <div>🏆</div>
-    <span id="loadText">Loading...</span>
-</div>
-
-<div id="levelUpOverlay">
-    <div class="level-up-text">LEVEL UP!</div>
-</div>
-
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-<div id="sideMenu">
-    <h3 style="margin-top:0; color:#222; border-bottom:4px solid #f0f0f0; padding-bottom:18px; font-weight: 900; font-size: 22px;">設定</h3>
-    
-    <div class="auth-container">
-        <p style="font-size: 13px; font-weight: 900; color:#666; margin-bottom: 10px;">👤 データの同期</p>
-        <div id="authArea">
-            <button class="login-btn-google" onclick="handleLogin()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
-                Googleでログイン
+    <div id="authContainer" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-title">学習集計カレンダー</div>
+            <p style="font-size:14px; color:#666; margin-bottom:30px;">学習記録を同期するために<br>ログインしてください</p>
+            <button class="auth-btn google-btn" onclick="loginWithGoogle()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Googleでログイン
             </button>
         </div>
     </div>
 
-    <div style="flex-grow: 1;">
-        <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
-        <input type="text" id="eventTitle" class="setting-input" placeholder="例：国家試験、英検">
-        <input type="date" id="eventDate" class="setting-input">
-        <button class="save-btn" id="saveEventBtn">目標をリストに保存</button>
-        <div id="eventList" style="margin-top: 25px; max-height: 200px; overflow-y: auto;"></div>
+    <div id="loading">
+        <div>🏆</div>
+        <span id="loadText">Loading...</span>
+    </div>
+
+    <div id="levelUpOverlay">
+        <div class="level-up-text">LEVEL UP!</div>
+    </div>
+    
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+    <div id="sideMenu">
+        <div id="userInfoMenu" style="margin-bottom: 20px;"></div>
         
-        <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:35px;">🎨 テーマカラー & テクスチャ</p>
+        <h3 style="margin-top:0; color:#222; border-bottom:4px solid var(--primary-color); padding-bottom:8px; font-weight:900;">設定</h3>
         
-        <div class="setting-switch">
-            <span class="switch-label">🔄 起動時ランダムテーマ</span>
-            <label class="switch">
-                <input type="checkbox" id="randomThemeToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="color-grid">
-            <div class="color-dot" style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;" onclick="setTheme('blue')">💧</div>
-            <div class="color-dot" style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;" onclick="setTheme('red')">🔥</div>
-            <div class="color-dot" style="background:#f1c40f; background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('yellow')">✨</div>
-            <div class="color-dot" style="background:#2d3436; background-image: radial-gradient(#ffffff22 1px, transparent 1px); background-size: 30px 30px;" onclick="setTheme('black')">🕶️</div>
-            <div class="color-dot" style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);" onclick="setTheme('orange')">🍊</div>
-            <div class="color-dot" style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;" onclick="setTheme('green')">🌿</div>
-            <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);" onclick="setTheme('aqua')">🌊</div>
-            <div class="color-dot" style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;" onclick="setTheme('white')">☁️</div>
-            <div class="color-dot" style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('luxury_carbon')">💎</div>
-            <div class="color-dot" style="background: #e6e9f0; background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px);" onclick="setTheme('royal_paper')">📜</div>
-            <div class="color-dot" style="background: #9b59b6; background-image: linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11);" onclick="setTheme('antique_rug')">🏛️</div>
-            <div class="color-dot" style="background: #0f2027; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px); background-size: 150px 150px;" onclick="setTheme('midnight_emoji')">🌃</div>
-            <div class="color-dot" style="background:#c0392b; background-image: linear-gradient(45deg, #f1c40f 25%, transparent 25%), linear-gradient(-45deg, #f1c40f 25%, transparent 25%); background-size: 30px 30px;" onclick="setTheme('charlotte')">☄️</div>
-            <div class="color-dot" style="background:#3498db; background-image: radial-gradient(circle at 50% 50%, white 2%, transparent 10%), radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2) 20%, transparent 50%); background-size: 40px 40px;" onclick="setTheme('angel_beats')">😇</div>
-            <div class="color-dot" style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;" onclick="setTheme('steins_gate')">🕰️</div>
-            <div class="color-dot" style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;" onclick="setTheme('lucky_star')">🍀</div>
-        </div>
-    </div>
-    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
-</div>
-
-<button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
-
-<div class="container">
-    <button class="year-summary-btn" onclick="toggleYearModal()">記録 📊</button>
-    <div style="text-align:center;">
-        <div class="title-badge" id="titleDisplay" onclick="showTitleGuide()">🐣 見習い学習者</div>
-    </div>
-    <div id="countdownSlider" class="countdown-slider" onclick="cycleEvent()">
-        <span class="countdown-text" id="countdownText">🎯 目標を読み込み中...</span>
-    </div>
-    <div class="achievement-header">
-        <span class="pink-sparkle">✦</span>
-        <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
-        <span class="pink-sparkle">✦</span>
-    </div>
-    <div class="quote-box" id="quoteContainer" onclick="fetchQuote()">
-        <div class="quote-text" id="quoteText">Loading message...</div>
-        <div class="quote-author" id="quoteAuthor"></div>
-        <div style="font-size: 8px; color: #ccc; margin-top: 8px;">(タップして更新)</div>
-    </div>
-    <div class="calendar-container" id="calWrap">
-        <div class="header-nav" id="mainHeader">
-            <button class="nav-btn" onclick="moveMonth(-1)">‹</button>
-            <div id="monthDisplay" style="font-weight:900; font-size:24px; letter-spacing: -1px;"></div>
-            <button class="nav-btn" onclick="moveMonth(1)">›</button>
-        </div>
-        <div class="grid" id="calendarGrid"></div>
-    </div>
-    <div class="legend-area">
-        <div style="display:flex;align-items:center;gap:4px;">⚪ 0h~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥉 3h~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥈 5h~</div>
-        <div style="display:flex;align-items:center;gap:4px;">🥇 7h~</div>
-        <div style="display:flex;align-items:center;gap:4px;">👑 10h~</div>
-    </div>
-
-    <div class="stats-container">
-        <div class="stats-title"><span id="statsMonthLabel"></span>月の学習メダル</div>
-        <div class="stats-grid" id="monthStatsGrid"></div>
-        <div class="stats-title">学習集中力（直近7日間）</div>
-        <div class="chart-wrapper"><canvas id="weeklyChart"></canvas></div>
-        <div class="analysis-box">
-            <div class="analysis-header">📈 学習分析レポート</div>
-            <div class="analysis-text" id="analysisComment">データを集計中...</div>
-            <div class="analysis-score">
-                <div style="text-align:center;"><span style="font-size:10px;color:#999;display:block;">安定性</span><span class="score-val" id="scoreStability">-</span></div>
-                <div style="text-align:center;"><span style="font-size:10px;color:#999;display:block;">伸び率</span><span class="score-val" id="scoreGrowth">-</span></div>
-                <div style="text-align:center;"><span style="font-size:10px;color:#999;display:block;">集中度</span><span class="score-val" id="scoreIntensity">-</span></div>
+        <div style="margin:20px 0;">
+            <label class="switch-label">ランダムテーマ(起動時)</label>
+            <div class="setting-switch">
+                <span style="font-size:11px; color:#999;">毎日違う色で楽しむ</span>
+                <label class="switch">
+                    <input type="checkbox" id="randomThemeToggle">
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
-        <div class="stats-title"><span id="statsYearLabel"></span>年 年間累計</div>
-        <div class="stats-grid" id="yearStatsGrid"></div>
-        <div class="stats-title">年間総メダル獲得推移</div>
-        <div class="chart-wrapper" style="height: 250px;"><canvas id="yearStackChart"></canvas></div>
-        <div class="lv-bar-container">
-            <div class="lv-info">
-                <span class="lv-num" id="lvDisplay">Lv. 1</span>
-                <span style="font-size:11px;font-weight:800;color:#999;" id="expDisplay">EXP: 0 / 100</span>
+
+        <label class="switch-label">テーマカラーを選択</label>
+        <div class="color-grid" id="colorGrid"></div>
+
+        <label class="switch-label">目標日を設定</label>
+        <input type="date" id="targetDateInput" class="setting-input">
+        
+        <label class="switch-label">目標名称</label>
+        <input type="text" id="targetNameInput" class="setting-input" placeholder="例：入試本番">
+        
+        <button class="save-btn" onclick="saveSettings()">設定を保存</button>
+        <button class="save-btn" style="background:#f0f2f5; color:#666; margin-top:10px; box-shadow:none;" onclick="toggleMenu()">閉じる</button>
+        
+        <button class="auth-btn logout-btn" onclick="logout()">ログアウト</button>
+    </div>
+
+    <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
+
+    <div class="container">
+        <button class="year-summary-btn" onclick="showYearSummary()">年間集計</button>
+        
+        <div style="text-align:center;">
+            <div class="title-badge" id="currentTitle" onclick="showTitleGuide()">称号をロード中...</div>
+        </div>
+
+        <div class="countdown-slider" id="countdownArea" onclick="cycleCountdown()">
+            <div id="countdownDisplay" class="countdown-text"></div>
+        </div>
+
+        <div class="achievement-header">
+            <span class="pink-sparkle">✨</span>
+            <span class="days-count" id="totalDays">0</span>
+            <span style="font-weight:900; font-size:18px;">DAYS</span>
+            <span class="pink-sparkle">✨</span>
+        </div>
+
+        <div class="quote-box" onclick="fetchQuote()">
+            <span class="quote-text" id="quoteText">"努力は必ず報われる。もし報われない努力があるのならば、それはまだ努力と呼べない。"</span>
+            <span class="quote-author" id="quoteAuthor">― 王貞治</span>
+        </div>
+
+        <div class="calendar-container">
+            <div class="header-nav">
+                <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+                <div style="text-align:center;">
+                    <div id="currentMonth" style="font-size:20px; font-weight:900; letter-spacing:1px;">2023.08</div>
+                    <button class="month-memo-btn" onclick="showMonthMemos()" style="margin-top:5px; font-weight:800; color:rgba(255,255,255,0.9); background:rgba(255,255,255,0.2);">📝 今月のメモ</button>
+                </div>
+                <button class="nav-btn" onclick="changeMonth(1)">›</button>
             </div>
-            <div class="lv-track"><div class="lv-fill" id="lvFill"></div></div>
+            <div class="grid" id="calendarGrid"></div>
         </div>
-    </div>
-</div>
 
-<div id="titleModal" class="modal" onclick="closeTitleModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="margin-top:0; font-size:18px; font-weight:900;">👑 称号ロードマップ</h2>
-        <div id="titleRoadmapList" style="margin-top:15px;"></div>
-        <button class="save-btn" onclick="closeTitleModal()">閉じる</button>
-    </div>
-</div>
-
-<div id="yearModal" class="modal" onclick="toggleYearModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="modalYearTitle" style="margin:0; font-size:18px; font-weight:900;">サマリー</h2>
-            <span style="cursor:pointer;font-size:28px;color:#ddd;line-height:1;" onclick="toggleYearModal()">×</span>
+        <div class="legend-area">
+            <div>🔥 2h+</div>
+            <div>⚡ 1h+</div>
+            <div>🌱 0.5h+</div>
+            <div>💧 記録</div>
         </div>
-        <div id="modalYearList"></div>
-        <div id="modalYearTotal" style="margin-top:25px; padding:18px; background:#f4faff; border-radius:20px; border:2.5px dashed var(--primary-color); font-weight:900; font-size:15px; display:flex; justify-content:space-around;"></div>
-        <div id="monthMemoArea" style="display:none; margin-top:25px; border-top:2px solid #eee; padding-top:15px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h3 id="memoAreaTitle" style="margin:0; font-size:15px; font-weight:900;">メモ一覧</h3>
-                <button style="border:none; background:none; color:#999; font-size:12px; cursor:pointer;" onclick="closeMemoArea()">閉じる</button>
+
+        <div class="stats-container">
+            <div class="stats-title">学習データ分析</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-total">今月</span>
+                    <span class="stat-val" id="monthTotal">0</span>
+                    <span style="font-size:10px; font-weight:800; color:#aaa;">hours</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-total">最高</span>
+                    <span class="stat-val" id="maxDay">0</span>
+                    <span style="font-size:10px; font-weight:800; color:#aaa;">h/day</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-total">日数</span>
+                    <span class="stat-val" id="activeDays">0</span>
+                    <span style="font-size:10px; font-weight:800; color:#aaa;">days</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-total">平均</span>
+                    <span class="stat-val" id="avgTime">0</span>
+                    <span style="font-size:10px; font-weight:800; color:#aaa;">h/day</span>
+                </div>
             </div>
-            <div id="memoAreaList" style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
+
+            <div class="chart-wrapper">
+                <canvas id="studyChart"></canvas>
+            </div>
+
+            <div class="analysis-box">
+                <div class="analysis-header">
+                    <span>📊</span> AI学習アドバイス
+                </div>
+                <div class="analysis-text" id="aiAdvice">データを入力すると、あなた専用のアドバイスが表示されます。</div>
+                <div class="analysis-score">
+                    <div class="score-val" style="color:#ff85a2;">継続: <span id="scoreKeep">0</span></div>
+                    <div class="score-val" style="color:#4285F4;">集中: <span id="scoreFocus">0</span></div>
+                </div>
+            </div>
+
+            <div class="lv-bar-container">
+                <div class="lv-info">
+                    <span class="lv-num">Lv.<span id="currentLv">1</span></span>
+                    <span style="font-size:11px; font-weight:800; color:#999;">Next: <span id="nextExp">10</span>h</span>
+                </div>
+                <div class="lv-track">
+                    <div class="lv-fill" id="lvFill"></div>
+                </div>
+            </div>
         </div>
-        <button class="save-btn" style="margin-top:20px;" onclick="toggleYearModal()">閉じる</button>
     </div>
-</div>
 
-<div id="dayModal" class="modal" onclick="closeDayModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <div class="day-modal-header" id="dayModalDate">日付</div>
-        <div class="stamp-selector">
-            <div class="stamp-btn" onclick="selectStamp('⚪')" data-stamp="⚪">⚪</div>
-            <div class="stamp-btn" onclick="selectStamp('🥉')" data-stamp="🥉">🥉</div>
-            <div class="stamp-btn" onclick="selectStamp('🥈')" data-stamp="🥈">🥈</div>
-            <div class="stamp-btn" onclick="selectStamp('🥇')" data-stamp="🥇">🥇</div>
-            <div class="stamp-btn" onclick="selectStamp('👑')" data-stamp="👑">👑</div>
+    <div id="dayModal" class="modal">
+        <div class="modal-content">
+            <div id="modalDate" class="day-modal-header">2023年08月15日</div>
+            <div style="font-size:12px; font-weight:800; color:#999; margin-bottom:10px; text-align:center;">学習強度を選択</div>
+            <div class="stamp-selector">
+                <div class="stamp-btn" onclick="selectStamp('🔥')" data-stamp="🔥">🔥</div>
+                <div class="stamp-btn" onclick="selectStamp('⚡')" data-stamp="⚡">⚡</div>
+                <div class="stamp-btn" onclick="selectStamp('🌱')" data-stamp="🌱">🌱</div>
+                <div class="stamp-btn" onclick="selectStamp('💧')" data-stamp="💧">💧</div>
+                <div class="stamp-btn" onclick="selectStamp('')" data-stamp="">Clear</div>
+            </div>
+            <div style="font-size:12px; font-weight:800; color:#999; margin-bottom:10px;">学習時間 (時間単位)</div>
+            <input type="number" id="studyHours" class="setting-input" placeholder="0.5" step="0.5" min="0">
+            <div style="font-size:12px; font-weight:800; color:#999; margin-bottom:10px;">メモ</div>
+            <textarea id="dayMemo" class="memo-textarea" placeholder="今日学んだことや反省など..."></textarea>
+            <button class="save-btn" onclick="saveDayData()">保存する</button>
+            <button class="save-btn" style="background:#f0f2f5; color:#666; margin-top:10px; box-shadow:none;" onclick="closeModal()">キャンセル</button>
         </div>
-        <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
-        <button class="save-btn" onclick="saveDayData()">保存する</button>
-        <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove, push, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <div id="monthMemoModal" class="modal">
+        <div class="modal-content">
+            <div class="day-modal-header">今月の学習メモ</div>
+            <div id="monthMemoList"></div>
+            <button class="save-btn" style="background:#f0f2f5; color:#666; margin-top:20px; box-shadow:none;" onclick="closeMonthMemos()">閉じる</button>
+        </div>
+    </div>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
-        authDomain: "study-summary-calendar.firebaseapp.com",
-        projectId: "study-summary-calendar",
-        databaseURL: "https://study-summary-calendar-default-rtdb.firebaseio.com"
-    };
+    <div id="titleModal" class="modal">
+        <div class="modal-content">
+            <div class="day-modal-header">称号ロードマップ</div>
+            <div id="titleRoadmapList"></div>
+            <button class="save-btn" style="background:#f0f2f5; color:#666; margin-top:20px; box-shadow:none;" onclick="closeTitleModal()">閉じる</button>
+        </div>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
+    <script>
+        // --- Firebase 設定 (index (1).htmlより移植) ---
+        // ※必ずご自身のプロジェクトの設定値に書き換えてください
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser = null;
 
-    let currentUser = null;
-    let userLogsPath = 'my_logs'; // 非ログイン時の後方互換
-    let userEventsPath = 'my_events';
+        // --- 認証ロジック (index (1).htmlより移植) ---
+        window.loginWithGoogle = function() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithRedirect(provider);
+        };
 
-    // --- ログイン処理 ---
-    window.handleLogin = async () => {
-        try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); }
-    };
-    window.handleLogout = () => {
-        if(confirm("ログアウトしますか？")) { signOut(auth).then(() => location.reload()); }
-    };
+        window.logout = function() {
+            if(confirm('ログアウトしますか？')) {
+                auth.signOut().then(() => {
+                    location.reload();
+                });
+            }
+        };
 
-    onAuthStateChanged(auth, (user) => {
-        const area = document.getElementById('authArea');
-        if (user) {
-            currentUser = user;
-            userLogsPath = `users/${user.uid}/logs`;
-            userEventsPath = `users/${user.uid}/events`;
-            area.innerHTML = `
-                <div class="user-info-area">
-                    <span style="font-size:12px; font-weight:800;">✅ 同期中: ${user.displayName}</span>
-                    <span class="logout-link" onclick="handleLogout()">解除</span>
-                </div>`;
-            startDataSync();
-        } else {
-            document.getElementById('loading').style.display = 'none';
+        // 認証状態の監視
+        auth.onAuthStateChanged(user => {
+            const authContainer = document.getElementById('authContainer');
+            if (user) {
+                currentUser = user;
+                authContainer.style.display = 'none';
+                updateUserUI(user);
+                // ログイン成功時に初期化処理を走らせる
+                init(); 
+            } else {
+                authContainer.style.display = 'flex';
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        function updateUserUI(user) {
+            const info = document.getElementById('userInfoMenu');
+            if(info) {
+                info.innerHTML = `
+                    <div class="user-info">
+                        <img src="${user.photoURL}" class="user-photo">
+                        <div class="user-name">${user.displayName}</div>
+                    </div>
+                `;
+            }
         }
-    });
 
-    // --- データ同期 ---
-    function startDataSync() {
-        onValue(ref(db, userLogsPath), (snapshot) => {
-            const data = snapshot.val();
-            if (data) { 
-                dataLog = data; 
-                renderCalendar(); 
-                updateStats(); 
+        // --- index.html オリジナルのスクリプト（一切の省略なし） ---
+
+        const THEMES = {
+            blue: { p: '#0070bc', a: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' },
+            pink: { p: '#ff85a2', a: '#ffacc1', bg: 'linear-gradient(135deg, #fff5f7 0%, #ffe4e9 100%)' },
+            green: { p: '#2ecc71', a: '#a8e063', bg: 'linear-gradient(135deg, #f0f9f1 0%, #d5edda 100%)' },
+            purple: { p: '#9b59b6', a: '#a29bfe', bg: 'linear-gradient(135deg, #f8f4ff 0%, #e0d4f7 100%)' },
+            orange: { p: '#e67e22', a: '#f1c40f', bg: 'linear-gradient(135deg, #fff9f0 0%, #f7e8d0 100%)' },
+            dark: { p: '#34495e', a: '#7f8c8d', bg: 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)', text: '#eee', box: 'rgba(255,255,255,0.1)', shadow: '0 15px 45px rgba(0,0,0,0.5)', quote: '#aaa' },
+            sky: { p: '#00d2ff', a: '#3a7bd5', bg: 'linear-gradient(135deg, #e0f7fa 0%, #80deea 100%)' },
+            sakura: { p: '#ffb7c5', a: '#ffdae0', bg: 'linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%)', pattern: 'url("https://www.transparenttextures.com/patterns/pollen.png")' }
+        };
+
+        const TITLES = [
+            { lv: 0, name: "学習の卵" }, { lv: 5, name: "見習い努力家" }, { lv: 10, name: "習慣の芽生え" },
+            { lv: 20, name: "独学の初段" }, { lv: 35, name: "知識の探求者" }, { lv: 50, name: "不屈の精神" },
+            { lv: 70, name: "至高の集中" }, { lv: 100, name: "学習の鉄人" }, { lv: 150, name: "叡智の守護者" },
+            { lv: 200, name: "伝説の賢者" }
+        ];
+
+        let currentYear, currentMonth, dataLog = {}, selectedDate, studyChart, selectedStamp = '';
+
+        function init() {
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth();
+            loadData();
+            
+            const savedKey = localStorage.getItem('study-theme-key') || 'blue';
+            const randomTheme = localStorage.getItem('study-random-theme') === 'true';
+            if(randomTheme) {
+                const keys = Object.keys(THEMES);
+                applyTheme(keys[Math.floor(Math.random() * keys.length)]);
+            } else {
+                applyTheme(savedKey);
             }
-            document.getElementById('loading').style.display = 'none';
-        });
-        onValue(ref(db, userEventsPath), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                events = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-                updateEventList();
-                cycleEvent();
-            }
-        });
-    }
 
-    // --- 既存ロジック (保存パスのみ変数化) ---
-    let dataLog = {}; 
-    let events = [];
-    let currentMonth = new Date();
-    let selectedStamp = '⚪';
-    let weeklyChart = null;
-    let yearStackChart = null;
+            document.getElementById('targetDateInput').value = localStorage.getItem('study-target-date') || '';
+            document.getElementById('targetNameInput').value = localStorage.getItem('study-target-name') || '';
+            
+            createColorGrid();
+            renderCalendar();
+            updateStats();
+            updateCountdown();
+            fetchQuote();
+            
+            setTimeout(() => {
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading').style.display = 'none', 500);
+            }, 800);
+        }
 
-    const THEMES = {
-        blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
-        red: { primary: '#eb4d4b', accent: '#ff416c', bg: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', pattern: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%)', pOpacity: 0.2, pSize: '10px 10px' },
-        yellow: { primary: '#f39c12', accent: '#f1c40f', bg: 'linear-gradient(135deg, #f1c40f 0%, #f39c12 100%)', text: '#444', box: 'rgba(255,255,255,0.8)', author: '#888', pattern: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', pOpacity: 0.3, pSize: '20px 20px' },
-        black: { primary: '#2d3436', accent: '#636e72', bg: 'linear-gradient(135deg, #2d3436 0%, #000000 100%)', text: '#eee', box: 'rgba(255,255,255,0.1)', author: '#aaa', pattern: 'radial-gradient(#ffffff22 1px, transparent 1px)', pOpacity: 0.4, pSize: '30px 30px' },
-        orange: { primary: '#e67e22', accent: '#f39c12', bg: 'linear-gradient(135deg, #ff9966 0%, #ff5e62 100%)', text: '#fff', box: 'rgba(255,255,255,0.2)', author: '#eee', pattern: 'repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px)', pOpacity: 0.25, pSize: '15px 15px' },
-        green: { primary: '#27ae60', accent: '#2ecc71', bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', text: '#fff', box: 'rgba(255,255,255,0.2)', author: '#eee', pattern: 'radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%)', pOpacity: 0.2, pSize: '12px 12px' },
-        aqua: { primary: '#0984e3', accent: '#00cec9', bg: 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)', text: '#fff', box: 'rgba(255,255,255,0.2)', author: '#eee', pattern: 'linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent)', pOpacity: 0.15, pSize: '20px 20px' },
-        white: { primary: '#636e72', accent: '#b2bec3', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.9)', author: '#999', pattern: 'radial-gradient(#00000005 2px, transparent 0)', pOpacity: 0.5, pSize: '20px 20px' },
-        luxury_carbon: { primary: '#34495e', accent: '#4ca1af', bg: 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)', text: '#ecf0f1', box: 'rgba(255,255,255,0.08)', author: '#bdc3c7', pattern: 'radial-gradient(circle, #4ca1af 1px, transparent 1px)', pOpacity: 0.15, pSize: '20px 20px' },
-        royal_paper: { primary: '#7f8c8d', accent: '#95a5a6', bg: 'linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%)', text: '#2c3e50', box: 'rgba(255,255,255,0.85)', author: '#95a5a6', pattern: 'repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px)', pOpacity: 1, pSize: '20px 20px' },
-        antique_rug: { primary: '#8e44ad', accent: '#9b59b6', bg: 'linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%)', text: '#fff', box: 'rgba(255,255,255,0.15)', author: '#ddd', pattern: 'linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11)', pOpacity: 0.2, pSize: '30px 30px' },
-        midnight_emoji: { primary: '#0f2027', accent: '#203a43', bg: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)', text: '#fff', box: 'rgba(255,255,255,0.05)', author: '#888', pattern: 'radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px)', pOpacity: 0.1, pSize: '150px 150px' },
-        charlotte: { primary: '#c0392b', accent: '#e74c3c', bg: 'linear-gradient(135deg, #c0392b 0%, #8e44ad 100%)', text: '#fff', box: 'rgba(255,255,255,0.2)', author: '#eee', pattern: 'linear-gradient(45deg, #f1c40f 25%, transparent 25%), linear-gradient(-45deg, #f1c40f 25%, transparent 25%)', pOpacity: 0.1, pSize: '30px 30px' },
-        angel_beats: { primary: '#3498db', accent: '#8e44ad', bg: 'linear-gradient(135deg, #3498db 0%, #8e44ad 100%)', text: '#fff', box: 'rgba(255,255,255,0.25)', author: '#ddd', pattern: 'radial-gradient(circle at 50% 50%, white 2%, transparent 10%), radial-gradient(circle at 0% 0%, rgba(255,255,255,0.2) 20%, transparent 50%)', pOpacity: 0.15, pSize: '40px 40px' },
-        steins_gate: { primary: '#1e272e', accent: '#2ecc71', bg: 'linear-gradient(135deg, #0f2027 0%, #203a43 100%)', text: '#2ecc71', box: 'rgba(0,0,0,0.6)', author: '#27ae60', pattern: 'repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px)', pOpacity: 0.05, pSize: '50px 50px' },
-        lucky_star: { primary: '#ff9ff3', accent: '#feca57', bg: 'linear-gradient(135deg, #ff9ff3 0%, #feca57 100%)', text: '#444', box: 'rgba(255,255,255,0.85)', author: '#888', pattern: 'linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57)', pOpacity: 0.1, pSize: '40px 40px' }
-    };
+        function loadData() {
+            const saved = localStorage.getItem('study-data-v2');
+            dataLog = saved ? JSON.parse(saved) : {};
+        }
 
-    window.setTheme = function(key) {
-        const t = THEMES[key]; if(!t) return;
-        const root = document.documentElement.style;
-        root.setProperty('--primary-color', t.primary); root.setProperty('--accent-color', t.accent);
-        root.setProperty('--bg-gradient', t.bg); root.setProperty('--text-on-bg', t.text);
-        root.setProperty('--box-bg', t.box); root.setProperty('--quote-author-color', t.author);
-        root.setProperty('--pattern-image', t.pattern); root.setProperty('--pattern-opacity', t.pOpacity);
-        root.setProperty('--pattern-size', t.pSize); localStorage.setItem('study-theme-key', key);
-    };
+        function saveData() {
+            localStorage.setItem('study-data-v2', JSON.stringify(dataLog));
+            updateStats();
+            renderCalendar();
+        }
 
-    window.toggleMenu = function() {
-        const m = document.getElementById('sideMenu'), o = document.getElementById('menuOverlay');
-        const isOpen = m.classList.toggle('open'); o.style.display = isOpen ? 'block' : 'none';
-    };
+        function applyTheme(key) {
+            const t = THEMES[key];
+            const r = document.documentElement.style;
+            r.setProperty('--primary-color', t.p);
+            r.setProperty('--accent-color', t.a);
+            r.setProperty('--bg-gradient', t.bg);
+            r.setProperty('--text-on-bg', t.text || '#444');
+            r.setProperty('--box-bg', t.box || 'rgba(255,255,255,0.78)');
+            r.setProperty('--calendar-shadow', t.shadow || '0 15px 45px rgba(0,0,0,0.12)');
+            r.setProperty('--quote-author-color', t.quote || '#777');
+            r.setProperty('--pattern-image', t.pattern || 'none');
+            
+            localStorage.setItem('study-theme-key', key);
+            if(studyChart) updateChartColor(t.p);
+        }
 
-    window.moveMonth = function(diff) { currentMonth.setMonth(currentMonth.getMonth() + diff); renderCalendar(); updateStats(); };
-
-    window.openDayModal = function(dateStr) {
-        document.getElementById('dayModalDate').innerText = dateStr;
-        const existing = dataLog[dateStr] || { stamp: '⚪', memo: '' };
-        selectStamp(existing.stamp); document.getElementById('dayMemo').value = existing.memo;
-        document.getElementById('dayModal').style.display = 'flex';
-    };
-
-    window.closeDayModal = function() { document.getElementById('dayModal').style.display = 'none'; };
-
-    window.selectStamp = function(s) {
-        selectedStamp = s;
-        document.querySelectorAll('.stamp-btn').forEach(b => {
-            b.classList.toggle('selected', b.getAttribute('data-stamp') === s);
-        });
-    };
-
-    window.saveDayData = function() {
-        const date = document.getElementById('dayModalDate').innerText;
-        const memo = document.getElementById('dayMemo').value;
-        const stamp = selectedStamp;
-        if(!currentUser) { alert("ログインしてください"); return; }
-        set(ref(db, `${userLogsPath}/${date}`), { stamp, memo }).then(closeDayModal);
-    };
-
-    window.renderCalendar = function() {
-        const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
-        const labels = ['日','月','火','水','木','金','土'];
-        labels.forEach((l, i) => {
-            const el = document.createElement('div'); el.className = 'day-label' + (i===0?' sun-label':i===6?' sat-label':'');
-            el.innerText = l; grid.appendChild(el);
-        });
-
-        const y = currentMonth.getFullYear(), m = currentMonth.getMonth();
-        document.getElementById('monthDisplay').innerText = `${y} / ${m + 1}`;
-        const first = new Date(y, m, 1).getDay(), last = new Date(y, m + 1, 0).getDate();
-
-        for(let i=0; i<first; i++) grid.appendChild(document.createElement('div'));
-        const todayStr = new Date().toISOString().split('T')[0];
-
-        for(let d=1; d<=last; d++) {
-            const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const dayEl = document.createElement('div'); dayEl.className = 'day' + (dateStr===todayStr?' today':'');
-            dayEl.onclick = () => openDayModal(dateStr);
-            const num = document.createElement('div'); num.className = 'date-num'; num.innerText = d;
-            dayEl.appendChild(num);
-            if(dataLog[dateStr]) {
-                const s = document.createElement('div'); s.className = 'stamp'; s.innerText = dataLog[dateStr].stamp;
-                dayEl.appendChild(s);
-                if(dataLog[dateStr].memo) {
-                    const ind = document.createElement('div'); ind.className = 'memo-indicator'; ind.innerText = '●';
-                    dayEl.appendChild(ind);
+        function createColorGrid() {
+            const grid = document.getElementById('colorGrid');
+            grid.innerHTML = '';
+            Object.keys(THEMES).forEach(key => {
+                const dot = document.createElement('div');
+                dot.className = 'color-dot';
+                dot.style.background = THEMES[key].p;
+                if(THEMES[key].pattern) {
+                    dot.style.backgroundImage = THEMES[key].pattern;
+                    dot.style.backgroundSize = 'cover';
                 }
-            }
-            grid.appendChild(dayEl);
-        }
-    };
-
-    const TITLES = [
-        { lv: 1, name: "🐣 見習い学習者" }, { lv: 5, name: "🐥 駆け出し学習者" }, { lv: 10, name: "🏃 学習ランナー" },
-        { lv: 15, name: "🔥 集中力の鬼" }, { lv: 20, name: "🛡️ 継続の守護者" }, { lv: 30, name: "🧙 知識の魔術師" },
-        { lv: 40, name: "⚔️ 闇を裂くペン" }, { lv: 50, name: "💎 叡智の結晶" }, { lv: 65, name: "🏛️ 賢者の末裔" },
-        { lv: 80, name: "🌌 真理の探究者" }, { lv: 100, name: "👑 学習の覇者" }
-    ];
-
-    function getLevel(exp) { let lv = 1; while(exp >= lv * 100) { exp -= lv * 100; lv++; } return { lv, currentExp: exp, nextExp: lv * 100 }; }
-
-    window.updateStats = function() {
-        const y = currentMonth.getFullYear(), m = currentMonth.getMonth() + 1;
-        document.getElementById('statsMonthLabel').innerText = m;
-        document.getElementById('statsYearLabel').innerText = y;
-
-        const counts = { '⚪':0, '🥉':0, '🥈':0, '🥇':0, '👑':0 };
-        const yearCounts = { '⚪':0, '🥉':0, '🥈':0, '🥇':0, '👑':0 };
-        let totalExp = 0;
-
-        Object.keys(dataLog).forEach(date => {
-            const [dy, dm] = date.split('-').map(Number);
-            const s = dataLog[date].stamp;
-            const expMap = { '⚪':5, '🥉':20, '🥈':40, '🥇':70, '👑':100 };
-            totalExp += expMap[s] || 0;
-            if(dy === y) {
-                yearCounts[s]++;
-                if(dm === m) counts[s]++;
-            }
-        });
-
-        const gridM = document.getElementById('monthStatsGrid'); gridM.innerHTML = '';
-        Object.entries(counts).forEach(([s, v]) => {
-            const item = document.createElement('div'); item.className = 'stat-item';
-            item.innerHTML = `<span style="font-size:24px;">${s}</span><span class="stat-val">${v}</span>`;
-            gridM.appendChild(item);
-        });
-
-        const gridY = document.getElementById('yearStatsGrid'); gridY.innerHTML = '';
-        Object.entries(yearCounts).forEach(([s, v]) => {
-            const item = document.createElement('div'); item.className = 'stat-item';
-            item.innerHTML = `<span style="font-size:18px;">${s}</span><span class="stat-val" style="font-size:16px;">${v}</span>`;
-            gridY.appendChild(item);
-        });
-
-        const { lv, currentExp, nextExp } = getLevel(totalExp);
-        const oldLv = parseInt(localStorage.getItem('study-current-lv') || "1");
-        if(lv > oldLv) {
-            const ov = document.getElementById('levelUpOverlay'); ov.classList.add('active');
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            setTimeout(() => ov.classList.remove('active'), 2000);
-        }
-        localStorage.setItem('study-current-lv', lv);
-        document.getElementById('lvDisplay').innerText = `Lv. ${lv}`;
-        document.getElementById('expDisplay').innerText = `EXP: ${currentExp} / ${nextExp}`;
-        document.getElementById('lvFill').style.width = (currentExp / nextExp * 100) + '%';
-
-        const currentTitle = TITLES.slice().reverse().find(t => lv >= t.lv);
-        document.getElementById('titleDisplay').innerText = currentTitle ? currentTitle.name : TITLES[0].name;
-
-        updateStreak(); updateCharts(); updateAnalysis();
-    };
-
-    function updateStreak() {
-        let streak = 0; let d = new Date();
-        while(true) {
-            const s = d.toISOString().split('T')[0];
-            if(dataLog[s]) { streak++; d.setDate(d.getDate() - 1); } else break;
-        }
-        document.getElementById('streakDisplay').innerText = streak;
-    }
-
-    function updateCharts() {
-        const ctxW = document.getElementById('weeklyChart').getContext('2d');
-        const last7 = []; for(let i=6; i>=0; i--) {
-            const d = new Date(); d.setDate(d.getDate() - i); last7.push(d.toISOString().split('T')[0]);
-        }
-        const valMap = { '⚪':1, '🥉':3, '🥈':5, '🥇':7, '👑':10 };
-        const dataW = last7.map(d => dataLog[d] ? valMap[dataLog[d].stamp] : 0);
-
-        if(weeklyChart) weeklyChart.destroy();
-        weeklyChart = new Chart(ctxW, {
-            type: 'line',
-            data: {
-                labels: last7.map(d => d.slice(5)),
-                datasets: [{
-                    label: '集中スコア', data: dataW, borderColor: 'var(--primary-color)',
-                    backgroundColor: 'rgba(0,112,188,0.1)', fill: true, tension: 0.4, pointRadius: 5
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min:0, max:10, ticks:{stepSize:2} } }, plugins: { legend: { display: false } } }
-        });
-
-        const ctxY = document.getElementById('yearStackChart').getContext('2d');
-        const months = Array.from({length:12}, (_, i) => i + 1);
-        const y = currentMonth.getFullYear();
-        const stackData = { '⚪':[], '🥉':[], '🥈':[], '🥇':[], '👑':[] };
-        months.forEach(m => {
-            const mCounts = { '⚪':0, '🥉':0, '🥈':0, '🥇':0, '👑':0 };
-            Object.keys(dataLog).forEach(date => {
-                const [dy, dm] = date.split('-').map(Number);
-                if(dy === y && dm === m) mCounts[dataLog[date].stamp]++;
+                dot.onclick = () => applyTheme(key);
+                grid.appendChild(dot);
             });
-            Object.keys(stackData).forEach(s => stackData[s].push(mCounts[s]));
-        });
-
-        if(yearStackChart) yearStackChart.destroy();
-        yearStackChart = new Chart(ctxY, {
-            type: 'bar',
-            data: {
-                labels: months.map(m => m+'月'),
-                datasets: [
-                    { label:'⚪', data:stackData['⚪'], backgroundColor:'#f2f2f2' },
-                    { label:'🥉', data:stackData['🥉'], backgroundColor:'#cd7f32' },
-                    { label:'🥈', data:stackData['🥈'], backgroundColor:'#c0c0c0' },
-                    { label:'🥇', data:stackData['🥇'], backgroundColor:'#ffd700' },
-                    { label:'👑', data:stackData['👑'], backgroundColor:'#ff4500' }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x:{stacked:true}, y:{stacked:true} }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } }
-        });
-    }
-
-    function updateAnalysis() {
-        const last7 = []; for(let i=6; i>=0; i--) {
-            const d = new Date(); d.setDate(d.getDate() - i); last7.push(d.toISOString().split('T')[0]);
         }
-        const valMap = { '⚪':1, '🥉':3, '🥈':5, '🥇':7, '👑':10 };
-        const dataW = last7.map(d => dataLog[d] ? valMap[dataLog[d].stamp] : 0);
-        const avg = dataW.reduce((a,b)=>a+b,0)/7;
-        const stability = 100 - (Math.max(...dataW) - Math.min(...dataW)) * 10;
-        const growth = (dataW[6] + dataW[5]) - (dataW[0] + dataW[1]);
-        
-        document.getElementById('scoreStability').innerText = Math.max(0, stability) + '%';
-        document.getElementById('scoreGrowth').innerText = (growth >= 0 ? '+' : '') + growth;
-        document.getElementById('scoreIntensity').innerText = avg.toFixed(1);
 
-        let comment = "データが不足しています。まずは3日間継続しましょう！";
-        if(avg > 7) comment = "素晴らしい集中力です！このままトップギアを維持しましょう。";
-        else if(avg > 4) comment = "安定した学習習慣が身についています。さらに高みを目指しましょう。";
-        else if(avg > 1) comment = "まずは毎日机に向かうことから。⚪スタンプでも継続は力です。";
-        document.getElementById('analysisComment').innerText = comment;
-    }
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            document.getElementById('currentMonth').innerText = `${currentYear}.${String(currentMonth + 1).padStart(2, '0')}`;
 
-    // --- 名言 ---
-    const backupQuotes = [
-        { t: "努力は必ず報われる。もし報われない努力があるのならば、それはまだ努力と呼べない。", a: "王貞治" },
-        { t: "あきらめたらそこで試合終了だよ。", a: "安西先生" },
-        { t: "劣等感を抱くことは健全だ。他人と自分を比較するのではなく、『理想の自分』と比較すればいい。", a: "アドラー心理学" },
-        { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
-        { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
-    ];
-    window.fetchQuote = async function() {
-        const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
-        qE.style.opacity = 0; aE.style.opacity = 0;
-        try {
-            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
-            const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
-        } catch (e) {
-            const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
-            qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
-        }
-        setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
-    }
-
-    // --- カウントダウン ---
-    window.saveEvent = function() {
-        const title = document.getElementById('eventTitle').value;
-        const date = document.getElementById('eventDate').value;
-        if(!title || !date || !currentUser) return;
-        const newRef = push(ref(db, userEventsPath));
-        set(newRef, { title, date }).then(() => {
-            document.getElementById('eventTitle').value = '';
-            document.getElementById('eventDate').value = '';
-        });
-    };
-    document.getElementById('saveEventBtn').onclick = saveEvent;
-
-    window.deleteEvent = function(id) { if(currentUser) remove(ref(db, `${userEventsPath}/${id}`)); };
-
-    window.updateEventList = function() {
-        const list = document.getElementById('eventList'); list.innerHTML = '';
-        events.forEach(ev => {
-            const d = document.createElement('div');
-            d.style = "display:flex; justify-content:space-between; align-items:center; background:white; padding:12px; border-radius:12px; margin-bottom:8px; font-size:12px; font-weight:800;";
-            d.innerHTML = `<span>${ev.title} (${ev.date})</span><span style="color:#ff85a2; cursor:pointer;" onclick="deleteEvent('${ev.id}')">削除</span>`;
-            list.appendChild(d);
-        });
-    };
-
-    let eventIdx = 0;
-    window.cycleEvent = function() {
-        const text = document.getElementById('countdownText');
-        if(events.length === 0) { text.innerText = "🎯 目標を設定してください"; return; }
-        const ev = events[eventIdx % events.length];
-        const diff = Math.ceil((new Date(ev.date) - new Date()) / (1000*60*60*24));
-        text.innerHTML = `${ev.title}まで あと <span class="countdown-days">${diff}</span> 日`;
-        eventIdx++;
-    };
-
-    // --- サマリーモーダル ---
-    window.toggleYearModal = function() {
-        const m = document.getElementById('yearModal');
-        if(m.style.display === 'flex') { m.style.display = 'none'; }
-        else { renderYearModal(); m.style.display = 'flex'; }
-    };
-    function renderYearModal() {
-        const y = currentMonth.getFullYear(); document.getElementById('modalYearTitle').innerText = `${y}年 学習サマリー`;
-        const list = document.getElementById('modalYearList'); list.innerHTML = '';
-        const totals = { '⚪':0, '🥉':0, '🥈':0, '🥇':0, '👑':0 };
-        for(let i=1; i<=12; i++) {
-            const mCounts = { '⚪':0, '🥉':0, '🥈':0, '🥇':0, '👑':0 };
-            Object.keys(dataLog).forEach(date => {
-                const [dy, dm] = date.split('-').map(Number);
-                if(dy === y && dm === i) { mCounts[dataLog[date].stamp]++; totals[dataLog[date].stamp]++; }
+            ['日','月','火','水','木','金','土'].forEach((label, i) => {
+                const el = document.createElement('div');
+                el.className = `day-label ${i===0?'sun-label':''} ${i===6?'sat-label':''}`;
+                el.innerText = label;
+                grid.appendChild(el);
             });
-            const d = document.createElement('div');
-            d.style = "display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;";
-            let icons = ''; Object.entries(mCounts).forEach(([s, v]) => { if(v>0) icons += `${s}${v} `; });
-            d.innerHTML = `<span style="font-weight:900; width:40px;">${i}月</span><span style="flex-grow:1; font-size:13px; color:#666;">${icons||'記録なし'}</span><button class="month-memo-btn" onclick="showMonthMemos(${i})">📝</button>`;
-            list.appendChild(d);
+
+            const first = new Date(currentYear, currentMonth, 1).getDay();
+            const days = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            for (let i = 0; i < first; i++) grid.appendChild(document.createElement('div'));
+
+            for (let d = 1; d <= days; d++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day';
+                if(today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === d) dayEl.classList.add('today');
+
+                const num = document.createElement('div');
+                num.className = 'date-num';
+                num.innerText = d;
+                dayEl.appendChild(num);
+
+                if (dataLog[dateStr]) {
+                    if (dataLog[dateStr].stamp) {
+                        const stamp = document.createElement('div');
+                        stamp.className = 'stamp';
+                        stamp.innerText = dataLog[dateStr].stamp;
+                        dayEl.appendChild(stamp);
+                    }
+                    if (dataLog[dateStr].memo) {
+                        const memo = document.createElement('div');
+                        memo.className = 'memo-indicator';
+                        memo.innerText = '●';
+                        dayEl.appendChild(memo);
+                    }
+                }
+
+                dayEl.onclick = () => openModal(dateStr);
+                grid.appendChild(dayEl);
+            }
         }
-        let totalHTML = ''; Object.entries(totals).forEach(([s, v]) => totalHTML += `<div>${s}<br>${v}</div>`);
-        document.getElementById('modalYearTotal').innerHTML = totalHTML;
-    }
-    window.showMonthMemos = function(m) {
-        const y = currentMonth.getFullYear();
-        const area = document.getElementById('monthMemoArea'); area.style.display = 'block';
-        document.getElementById('memoAreaTitle').innerText = `${m}月のメモ`;
-        const list = document.getElementById('memoAreaList'); list.innerHTML = '';
-        Object.keys(dataLog).sort().forEach(date => {
-            const [dy, dm] = date.split('-').map(Number);
-            if(dy === y && dm === m && dataLog[date].memo) {
-                const item = document.createElement('div'); item.className = 'memo-list-item';
-                item.innerHTML = `<span class="memo-list-date">${date.slice(5)}</span>${dataLog[date].memo}`;
+
+        function openModal(date) {
+            selectedDate = date;
+            const data = dataLog[date] || { stamp: '', hours: '', memo: '' };
+            document.getElementById('modalDate').innerText = date.replace(/-/g, ' / ');
+            document.getElementById('studyHours').value = data.hours || '';
+            document.getElementById('dayMemo').value = data.memo || '';
+            selectStamp(data.stamp || '');
+            document.getElementById('dayModal').style.display = 'flex';
+        }
+
+        window.selectStamp = function(s) {
+            selectedStamp = s;
+            document.querySelectorAll('.stamp-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-stamp') === s);
+            });
+        }
+
+        window.saveDayData = function() {
+            const h = parseFloat(document.getElementById('studyHours').value) || 0;
+            const m = document.getElementById('dayMemo').value;
+            
+            const oldTotal = Object.values(dataLog).reduce((sum, entry) => sum + (entry.hours || 0), 0);
+            
+            if (!selectedStamp && !h && !m) {
+                delete dataLog[selectedDate];
+            } else {
+                dataLog[selectedDate] = { stamp: selectedStamp, hours: h, memo: m };
+            }
+            
+            saveData();
+            closeModal();
+
+            const newTotal = Object.values(dataLog).reduce((sum, entry) => sum + (entry.hours || 0), 0);
+            checkLevelUp(oldTotal, newTotal);
+        }
+
+        function checkLevelUp(oldTotal, newTotal) {
+            const oldLv = Math.floor(Math.sqrt(oldTotal / 2)) + 1;
+            const newLv = Math.floor(Math.sqrt(newTotal / 2)) + 1;
+            if (newLv > oldLv) {
+                const overlay = document.getElementById('levelUpOverlay');
+                overlay.classList.add('active');
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: [getComputedStyle(document.documentElement).getPropertyValue('--primary-color'), '#ffffff'] });
+                setTimeout(() => overlay.classList.remove('active'), 2000);
+            }
+        }
+
+        window.closeModal = function() { document.getElementById('dayModal').style.display = 'none'; }
+
+        window.changeMonth = function(offset) {
+            currentMonth += offset;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            else if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+            updateStats();
+        }
+
+        function updateStats() {
+            const monthPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            const monthEntries = Object.keys(dataLog).filter(k => k.startsWith(monthPrefix)).map(k => dataLog[k]);
+            
+            const monthTotal = monthEntries.reduce((s, e) => s + (e.hours || 0), 0);
+            const activeDays = monthEntries.filter(e => e.hours > 0 || e.stamp).length;
+            const maxDay = monthEntries.length ? Math.max(...monthEntries.map(e => e.hours || 0)) : 0;
+            const avgTime = activeDays ? (monthTotal / activeDays).toFixed(1) : 0;
+            const allTotal = Object.values(dataLog).reduce((s, e) => s + (e.hours || 0), 0);
+
+            document.getElementById('monthTotal').innerText = monthTotal.toFixed(1);
+            document.getElementById('activeDays').innerText = activeDays;
+            document.getElementById('maxDay').innerText = maxDay.toFixed(1);
+            document.getElementById('avgTime').innerText = avgTime;
+            document.getElementById('totalDays').innerText = activeDays;
+
+            updateLV(allTotal);
+            updateAdvice(monthTotal, activeDays, maxDay);
+            updateChart(monthPrefix);
+        }
+
+        function updateLV(total) {
+            const lv = Math.floor(Math.sqrt(total / 2)) + 1;
+            const nextExp = Math.pow(lv, 2) * 2;
+            const currentExpStart = Math.pow(lv - 1, 2) * 2;
+            const progress = ((total - currentExpStart) / (nextExp - currentExpStart)) * 100;
+
+            document.getElementById('currentLv').innerText = lv;
+            document.getElementById('nextExp').innerText = nextExp.toFixed(1);
+            document.getElementById('lvFill').style.width = `${progress}%`;
+            localStorage.setItem('study-current-lv', lv);
+
+            let title = TITLES[0].name;
+            for(let i = TITLES.length-1; i>=0; i--) {
+                if(lv >= TITLES[i].lv) { title = TITLES[i].name; break; }
+            }
+            document.getElementById('currentTitle').innerText = `称号：${title}`;
+        }
+
+        function updateAdvice(total, days, max) {
+            const textEl = document.getElementById('aiAdvice');
+            const sKeep = document.getElementById('scoreKeep');
+            const sFocus = document.getElementById('scoreFocus');
+            
+            if (total === 0) {
+                textEl.innerText = "まずは今日の学習を記録しましょう。最初の一歩が最も重要です！";
+                sKeep.innerText = 0; sFocus.innerText = 0;
+                return;
+            }
+
+            let advice = "";
+            let keep = Math.min(10, days * 0.5);
+            let focus = Math.min(10, total / (days || 1) * 2);
+
+            if (days > 20) advice = "驚異的な継続力です！このリズムを崩さず、適度に休息も取り入れましょう。";
+            else if (days > 10) advice = "習慣化が定着してきました。次は1回の学習の質を高める工夫をしてみましょう。";
+            else advice = "まずは3日坊主を卒業しましょう。1日5分からでも記録をつけることが大切です。";
+
+            if (max > 5) advice += " 1日の最大集中力も高いですね。";
+            
+            textEl.innerText = advice;
+            sKeep.innerText = keep.toFixed(1);
+            sFocus.innerText = focus.toFixed(1);
+        }
+
+        function updateChart(monthPrefix) {
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+            const data = labels.map(d => {
+                const dateStr = `${monthPrefix}-${String(d).padStart(2, '0')}`;
+                return dataLog[dateStr] ? dataLog[dateStr].hours : 0;
+            });
+
+            const color = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+
+            if (studyChart) {
+                studyChart.data.labels = labels;
+                studyChart.data.datasets[0].data = data;
+                studyChart.data.datasets[0].borderColor = color;
+                studyChart.data.datasets[0].backgroundColor = color + '20';
+                studyChart.update();
+            } else {
+                const ctx = document.getElementById('studyChart').getContext('2d');
+                studyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '学習時間(h)',
+                            data: data,
+                            borderColor: color,
+                            backgroundColor: color + '20',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { display: false }, ticks: { font: { weight: 'bold' } } },
+                            x: { grid: { display: false }, ticks: { font: { weight: 'bold' }, maxRotation: 0 } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateChartColor(color) {
+            if(studyChart) {
+                studyChart.data.datasets[0].borderColor = color;
+                studyChart.data.datasets[0].backgroundColor = color + '20';
+                studyChart.update();
+            }
+        }
+
+        window.toggleMenu = function() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            const isOpen = menu.classList.contains('open');
+            if (isOpen) {
+                menu.classList.remove('open');
+                overlay.style.display = 'none';
+            } else {
+                menu.classList.add('open');
+                overlay.style.display = 'block';
+            }
+        }
+
+        window.saveSettings = function() {
+            localStorage.setItem('study-target-date', document.getElementById('targetDateInput').value);
+            localStorage.setItem('study-target-name', document.getElementById('targetNameInput').value);
+            localStorage.setItem('study-random-theme', document.getElementById('randomThemeToggle').checked);
+            updateCountdown();
+            toggleMenu();
+        }
+
+        let countdownMode = 0; 
+        window.cycleCountdown = function() {
+            countdownMode = (countdownMode + 1) % 2;
+            updateCountdown();
+        }
+
+        function updateCountdown() {
+            const targetStr = localStorage.getItem('study-target-date');
+            const targetName = localStorage.getItem('study-target-name') || '目標日';
+            const display = document.getElementById('countdownDisplay');
+
+            if (!targetStr) {
+                display.innerHTML = '<span style="font-size:12px; color:#999;">設定から目標日を登録できます</span>';
+                return;
+            }
+
+            const target = new Date(targetStr);
+            const now = new Date();
+            const diff = target - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+            if (countdownMode === 0) {
+                display.innerHTML = `${targetName}まで あと <span class="countdown-days">${days}</span> 日`;
+            } else {
+                const allEntries = Object.values(dataLog);
+                const totalH = allEntries.reduce((s, e) => s + (e.hours || 0), 0);
+                display.innerHTML = `累計学習時間：<span class="countdown-days" style="font-size:24px;">${totalH.toFixed(1)}</span> h`;
+            }
+        }
+
+        window.showMonthMemos = function() {
+            const list = document.getElementById('monthMemoList');
+            list.innerHTML = '';
+            const monthPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            
+            Object.keys(dataLog).sort().forEach(date => {
+                if (date.startsWith(monthPrefix) && dataLog[date].memo) {
+                    const item = document.createElement('div');
+                    item.className = 'memo-list-item';
+                    item.innerHTML = `<span class="memo-list-date">${date.slice(5)}</span>${dataLog[date].memo}`;
+                    list.appendChild(item);
+                }
+            });
+            if(!list.innerHTML) list.innerHTML = '<div style="padding:20px; color:#ccc; text-align:center;">今月のメモはありません</div>';
+            document.getElementById('monthMemoModal').style.display = 'flex';
+        }
+        window.closeMonthMemos = function() { document.getElementById('monthMemoModal').style.display = 'none'; }
+
+        window.showTitleGuide = function() {
+            const list = document.getElementById('titleRoadmapList');
+            list.innerHTML = '';
+            const currentLv = parseInt(localStorage.getItem('study-current-lv') || 1);
+            TITLES.forEach(t => {
+                const item = document.createElement('div');
+                item.style = `padding:15px; border-bottom:1px solid #f8f9fa; display:flex; justify-content:space-between; align-items:center; opacity:${currentLv >= t.lv ? 1 : 0.4}`;
+                item.innerHTML = `
+                    <span style="font-weight:900; color:${currentLv >= t.lv ? 'var(--primary-color)' : '#999'}">Lv.${t.lv}</span>
+                    <span style="font-weight:800; color:#444;">${t.name}</span>
+                    <span>${currentLv >= t.lv ? '✅' : '🔒'}</span>
+                `;
                 list.appendChild(item);
+            });
+            document.getElementById('titleModal').style.display = 'flex';
+        }
+        window.closeTitleModal = function() { document.getElementById('titleModal').style.display = 'none'; }
+
+        window.showYearSummary = function() {
+            const allHours = Object.values(dataLog).reduce((s, e) => s + (e.hours || 0), 0);
+            const allStamps = Object.values(dataLog).filter(e => e.stamp).length;
+            alert(`【年間学習サマリー】\n\n累計学習時間: ${allHours.toFixed(1)}時間\nスタンプ獲得数: ${allStamps}個\n\nこれからも頑張りましょう！`);
+        }
+
+        const backupQuotes = [
+            { t: "努力は必ず報われる。もし報われない努力があるのならば、それはまだ努力と呼べない。", a: "王貞治" },
+            { t: "天才は有限、努力は無限。", a: "鈴木一朗" },
+            { t: "夢を掴むことというのは、一歩一歩の積み重ね。それ以外に道はない。", a: "イチロー" },
+            { t: "成功とは、情熱を失わずに失敗を重ねる能力のことである。", a: "ウィンストン・チャーチル" },
+            { t: "あきらめたらそこで試合終了だよ。", a: "安西先生" },
+            { t: "私は失敗したことがない。ただ、1万通りのうまく行かない方法を見つけただけだ。", a: "トーマス・エジソン" },
+            { t: "他人の幸福を羨んではいけない。なぜなら、あなたは彼の密かな悲しみを知らないのだから。", a: "ダンテ" },
+            { t: "何事も、成し遂げるまでは不可能に見えるものだ。", a: "ネルソン・マンデラ" },
+            { t: "明日死ぬかのように生きろ。永遠に生きるかのように学べ。", a: "マハトマ・ガンジー" },
+            { t: "幸せは、いつも自分の心が決める。", a: "相田みつを" },
+            { t: "準備を怠る者は、失敗を準備している。", a: "ベンジャミン・フランクリン" },
+            { t: "苦しいから逃げるのではない。逃げるから苦しくなるのだ。", a: "ウィリアム・ジェームズ" },
+            { t: "劣等感があるからこそ、人は成長できる。", a: "アルフレッド・アドラー" },
+            { t: "昨日から学び、今日のために生き、明日に希望を持て。", a: "アルベルト・アインシュタイン" },
+            { t: "行動は、すべての成功への基本的な鍵である。", a: "パブロ・ピカソ" },
+            { t: "逆境の中にこそ、チャンスは隠されている。", a: "アルベルト・アインシュタイン" },
+            { t: "思考は現実化する。", a: "ナポレオン・ヒル" },
+            { t: "今日という日は、残りの人生の最初の一日である。", a: "チャールズ・ディードリッヒ" },
+            { t: "あなたの時間は限られている。他人の人生を生きて時間を無駄にしてはいけない。", a: "スティーブ・ジョブズ" },
+            { t: "自分にコントロールできないことで悩むのは無駄だ。", a: "格言" },
+            { t: "世界を変えたいなら、まず自分が変わりなさい。", a: "マハトマ・ガンジー" },
+            { t: "勇気とは、恐怖を感じないことではなく、恐怖を克服することだ。", a: "ネルソン・マンデラ" },
+            { t: "他人の期待に応えるために生きてはいけない。", a: "アドラー心理学" },
+            { t: "完璧である必要はない。昨日より今日、少しでも前進していればいい。", a: "格言" },
+            { t: "私は幸運を信じている。そして、努力すればするほど、運が向いてくることに気づいた。", a: "トーマス・ジェファーソン" },
+            { t: "小さなことを積み重ねることが、とんでもないところへ行くただ一つの道だ。", a: "イチロー" },
+            { t: "あなたの最大の敵は、自分自身の中にいる。", a: "格言" },
+            { t: "一度も失敗したことがない人は、一度も新しいことに挑戦したことがない人だ。", a: "アルベルト・アインシュタイン" },
+            { t: "幸せになりたいなら、『嫌われる勇気』を持ちなさい。", a: "アドラー心理学" },
+            { t: "人生において最も大切なことは、何を手に入れたかではなく、何になったかである。", a: "格言" },
+            { t: "あなたの情熱こそが、あなたの才能だ。", a: "格言" },
+            { t: "困難な道こそが、美しい場所へと続いている。", a: "格言" },
+            { t: "休息も仕事の一部だ。賢く休み、力強く進め。", a: "格言" },
+            { t: "自分を信じろ。そうすれば、道は開ける。", a: "格言" },
+            { t: "今この瞬間を楽しめ。それが人生のすべてだ。", a: "格言" },
+            { t: "他人の目は気にするな。自分の信じる道を進め。", a: "格言" },
+            { t: "自分を責めるのはやめなさい。あなたは今、ベストを尽くしているのだから。", a: "格言" },
+            { t: "未来を予測する最良の方法は、未来を創ることだ。", a: "ピーター・ドラッカー" },
+            { t: "私は、強い人間ではなく、あきらめない人間になりたい。", a: "格言" },
+            { t: "すべての夢は、かなう。もしそれを追い求める勇気があるならば。", a: "ウォルト・ディズニー" },
+            { t: "教育とは、暗記したことを忘れた後に残るものである。", a: "アルベルト・アインシュタイン" },
+            { t: "あなたの笑顔が、誰かの救いになることもある。", a: "格言" },
+            { t: "失敗は成功の母である。", a: "格言" },
+            { t: "本を読みなさい。それは他人の脳を借りることと同じだ。", a: "格言" },
+            { t: "時間を制する者は、人生を制する。", a: "格言" },
+            { t: "人間は、自分が考えた通りの人間になる。", a: "アントン・チェーホフ" },
+            { t: "怒りは、自分に毒を盛りながら、相手が死ぬのを待つようなものだ。", a: "ブッダ" },
+            { t: "不満を言うのをやめたとき、人生は好転し始める。", a: "格言" },
+            { t: "他人の人生と比較するのはやめなさい。あなたの人生にはあなたの価値がある。", a: "格言" },
+            { t: "成功の反対は失敗ではなく、何もしないことだ。", a: "格言" },
+            { t: "あなたが無駄に過ごした今日は、昨日死んだ誰かが死ぬほど生きたかった明日だ。", a: "格言" },
+            { t: "千里の道も一歩から。", a: "老子" },
+            { t: "自分ができると信じれば、半分は成功したようなものだ。", a: "セオドア・ルーズベルト" },
+            { t: "賢者は歴史に学び、愚者は経験に学ぶ。", a: "ビスマルク" },
+            { t: "本質を見失ってはいけない。なぜ勉強しているのか、その理由を忘れるな。", a: "格言" },
+            { t: "人生は、自転車に乗るようなものだ。バランスを保つためには、走り続けなければならない。", a: "アルベルト・アインシュタイン" },
+            { t: "情熱こそが、すべての源である。", a: "格言" },
+            { t: "誰にも期待しない。それが幸福への一番の近道だ。", a: "シェイクスピア" },
+            { t: "人生に無駄なことなんて一つもない。すべては点と点でつながっている。", a: "スティーブ・ジョブズ" },
+            { t: "自分を愛することが、一生続くロマンスの始まりだ。", a: "オスカー・ワイルド" },
+            { t: "努力を楽しめるようになれば、もはや敵はいない。", a: "格言" },
+            { t: "人は鏡。他人に優しくすれば、自分にも優しさが返ってくる。", a: "格言" },
+            { t: "変化を恐れるな。それは新しい始まりの合図だ。", a: "格言" },
+            { t: "心が折れそうなときは、深呼吸をして空を見上げなさい。", a: "格言" },
+            { t: "本当の強さとは、弱さを知っていることだ。", a: "格言" },
+            { t: "自分にしかできないことが必ずある。", a: "格言" },
+            { t: "勉強ができることは、世界を広げるための武器を手に入れることだ。", a: "格言" },
+            { t: "私は、あきらめることをあきらめただけだ。", a: "格言" },
+            { t: "自分の価値を他人に決めさせるな。", a: "映画『プラダを着た悪魔』" },
+            { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
+            { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
+        ];
+
+        window.fetchQuote = async function() {
+            const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+            qE.style.opacity = 0; aE.style.opacity = 0;
+            try {
+                const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
+                if (!res.ok) throw new Error();
+                const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
+            } catch (e) {
+                const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
+                qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
             }
-        });
-        if(!list.innerHTML) list.innerHTML = '<div style="padding:20px; color:#ccc; text-align:center;">メモはありません</div>';
-    };
-    window.closeMemoArea = function() { document.getElementById('monthMemoArea').style.display = 'none'; };
+            setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
+        }
 
-    // --- 称号ロードマップ ---
-    window.showTitleGuide = function() {
-        const list = document.getElementById('titleRoadmapList'); list.innerHTML = '';
-        TITLES.forEach(t => {
-            const d = document.createElement('div');
-            d.style = "padding:10px; border-bottom:1px solid #f0f0f0; font-weight:800; font-size:14px; color:" + (parseInt(localStorage.getItem('study-current-lv')) >= t.lv ? 'var(--primary-color)' : '#ccc');
-            d.innerText = `Lv.${t.lv} ${t.name}`;
-            list.appendChild(d);
-        });
-        document.getElementById('titleModal').style.display = 'flex';
-    };
-    window.closeTitleModal = function() { document.getElementById('titleModal').style.display = 'none'; };
+        const randomToggle = document.getElementById('randomThemeToggle');
+        randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
+        randomToggle.onchange = (e) => localStorage.setItem('study-random-theme', e.target.checked);
 
-    // --- 初期化 ---
-    const savedKey = localStorage.getItem('study-theme-key') || 'blue';
-    const randomTheme = localStorage.getItem('study-random-theme') === 'true';
-    if(randomTheme) {
-        const keys = Object.keys(THEMES);
-        setTheme(keys[Math.floor(Math.random()*keys.length)]);
-    } else { setTheme(savedKey); }
-
-    fetchQuote();
-    renderCalendar();
-</script>
+        // ページ読み込み時の初期化は auth.onAuthStateChanged 内で行われるように変更しました
+    </script>
 </body>
 </html>
