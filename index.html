@@ -353,7 +353,7 @@
 
         <!-- テーマページャー -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 2px 6px;">
-            <span style="font-size:11px; font-weight:900; color:#aaa;" id="themePageLabel">1 / 3</span>
+            <span style="font-size:11px; font-weight:900; color:#aaa;" id="themePageLabel">1 / 4</span>
             <div style="display:flex; gap:6px;">
                 <button id="themePrevBtn" onclick="themePageChange(-1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;" disabled>&#8249;</button>
                 <button id="themeNextBtn" onclick="themePageChange(1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;">&#8250;</button>
@@ -382,16 +382,27 @@
             <div class="color-dot" style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;" onclick="setTheme('steins_gate')">🕰️</div>
             <div class="color-dot" style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;" onclick="setTheme('lucky_star')">🍀</div>
         </div>
-        <!-- ページ3：美しい・豪華 -->
+        <!-- ページ3：模様強め新作 -->
         <div class="color-grid theme-page" id="themePage2" style="display:none;">
             <div class="color-dot" style="background:#1a0533; background-image: repeating-conic-gradient(#7c3aed 0deg 10deg, transparent 10deg 20deg); background-size: 24px 24px;" onclick="setTheme('kaleidoscope')">🔮</div>
             <div class="color-dot" style="background:#003d2b; background-image: repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px); background-size: 5px 5px;" onclick="setTheme('matrix')">👾</div>
             <div class="color-dot" style="background:#2d0a1e; background-image: repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%); background-size: 14px 24px;" onclick="setTheme('neon_tribal')">⚡</div>
             <div class="color-dot" style="background:#0a1628; background-image: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,220,100,0.22) 0%, transparent 70%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.18) 0deg 5deg, transparent 5deg 10deg); background-size: cover, 30px 30px;" onclick="setTheme('sun_temple')">🌅</div>
-            <div class="color-dot" style="background:#0d0820; background-image: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(120,80,255,0.55) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(255,100,200,0.45) 0%, transparent 50%), radial-gradient(ellipse 70% 50% at 60% 80%, rgba(0,200,255,0.4) 0%, transparent 55%), radial-gradient(2px 2px at 15px 15px,#fff 100%,transparent 0), radial-gradient(1px 1px at 40px 8px,#ffffffcc 100%,transparent 0), radial-gradient(1.5px 1.5px at 55px 35px,#fff 100%,transparent 0); background-size: cover,cover,cover,70px 70px,70px 70px,70px 70px;" onclick="setTheme('aurora_night')">🌠</div>
-            <div class="color-dot" style="background:#1a0a00; background-image: radial-gradient(ellipse 100% 60% at 50% 100%, rgba(255,140,0,0.7) 0%, rgba(255,60,0,0.4) 30%, transparent 65%), radial-gradient(ellipse 60% 40% at 50% 90%, rgba(255,220,80,0.5) 0%, transparent 50%), linear-gradient(to top, #ff4500 0%, #ff8c00 20%, #1a0a00 60%);" onclick="setTheme('sunset_desert')">🏜️</div>
-            <div class="color-dot" style="background:#0a1a0a; background-image: radial-gradient(ellipse 120% 80% at 50% 50%, rgba(34,197,94,0.18) 0%, transparent 60%), repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(34,197,94,0.12) 18px, rgba(34,197,94,0.12) 19px), repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(34,197,94,0.12) 18px, rgba(34,197,94,0.12) 19px), radial-gradient(1.5px 1.5px at 9px 9px, rgba(34,197,94,0.6) 100%, transparent 0); background-size: cover, 19px 19px, 19px 19px, 19px 19px;" onclick="setTheme('deep_jungle')">🌿</div>
-            <div class="color-dot" style="background:#12001a; background-image: radial-gradient(ellipse 90% 70% at 50% 50%, rgba(180,50,255,0.35) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 25% 25%, rgba(255,100,200,0.3) 0%, transparent 50%), radial-gradient(ellipse 40% 60% at 75% 75%, rgba(80,100,255,0.35) 0%, transparent 50%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(200,100,255,0.12) 0deg 30deg, rgba(255,80,180,0.08) 30deg 60deg); background-size: cover,cover,cover,60px 60px;" onclick="setTheme('galaxy_rose')">🌸</div>
+            <div class="color-dot" style="background:linear-gradient(160deg,#0d0820 0%,#0a1a1a 100%); background-image: radial-gradient(ellipse 80% 60% at 20% 40%,rgba(120,80,255,.55) 0%,transparent 55%),radial-gradient(ellipse 60% 80% at 80% 20%,rgba(255,100,200,.45) 0%,transparent 50%),radial-gradient(ellipse 70% 50% at 60% 80%,rgba(0,200,255,.4) 0%,transparent 55%); background-size:cover,cover,cover;" onclick="setTheme('aurora_night')">🌠</div>
+            <div class="color-dot" style="background:linear-gradient(to top,#ff2200 0%,#ff6a00 18%,#ff9d00 32%,#c0392b 52%,#4a0e2a 76%,#1a0010 100%); background-image:radial-gradient(ellipse 100% 35% at 50% 100%,rgba(255,220,80,.45) 0%,transparent 60%); background-size:cover;" onclick="setTheme('sunset_desert')">🏜️</div>
+            <div class="color-dot" style="background:linear-gradient(160deg,#0a1a0a 0%,#0d2a10 100%); background-image:radial-gradient(ellipse 120% 80% at 50% 50%,rgba(34,197,94,.18) 0%,transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 18px,rgba(34,197,94,.13) 18px,rgba(34,197,94,.13) 19px),repeating-linear-gradient(90deg,transparent,transparent 18px,rgba(34,197,94,.13) 18px,rgba(34,197,94,.13) 19px); background-size:cover,19px 19px,19px 19px;" onclick="setTheme('deep_jungle')">🌿</div>
+            <div class="color-dot" style="background:linear-gradient(135deg,#12001a 0%,#0a0015 100%); background-image:radial-gradient(ellipse 90% 70% at 50% 50%,rgba(180,50,255,.35) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 25% 25%,rgba(255,100,200,.3) 0%,transparent 50%),radial-gradient(ellipse 40% 60% at 75% 75%,rgba(80,100,255,.35) 0%,transparent 50%); background-size:cover,cover,cover;" onclick="setTheme('galaxy_rose')">🌸</div>
+        </div>
+        <!-- ページ4：イラストチック -->
+        <div class="color-grid theme-page" id="themePage3" style="display:none;">
+            <div class="color-dot" style="background:#f5e6d0; background-image:radial-gradient(ellipse 60% 40% at 50% 100%,#a8d8a8 0%,transparent 60%),radial-gradient(circle 18px at 20% 35%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 12px at 35% 25%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 15px at 70% 30%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 10px at 80% 20%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 8px at 55% 42%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%); background-size:cover;" onclick="setTheme('sakura_spring')">🌸</div>
+            <div class="color-dot" style="background:linear-gradient(180deg,#1a3a5c 0%,#0d4f6b 40%,#0a6b7a 70%,#0d8a7a 100%); background-image:radial-gradient(ellipse 120% 30% at 50% 100%,rgba(13,138,122,.8) 0%,transparent 100%),repeating-linear-gradient(180deg,transparent,transparent 6px,rgba(100,200,220,.12) 6px,rgba(100,200,220,.12) 7px),radial-gradient(ellipse 40% 20% at 50% 55%,rgba(255,255,255,.06) 0%,transparent 100%); background-size:cover,100% 7px,cover;" onclick="setTheme('umi_natsuyoru')">🌊</div>
+            <div class="color-dot" style="background:#1a0f00; background-image:radial-gradient(ellipse 70% 50% at 50% 60%,rgba(220,100,20,.7) 0%,rgba(180,60,0,.4) 40%,transparent 70%),repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(180,80,10,.35) 22px,rgba(180,80,10,.35) 24px),repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(180,80,10,.35) 22px,rgba(180,80,10,.35) 24px); background-size:cover,24px 24px,24px 24px;" onclick="setTheme('koyo_autumn')">🍂</div>
+            <div class="color-dot" style="background:linear-gradient(160deg,#0a0f1a 0%,#0d1a2e 60%,#0a0f1a 100%); background-image:radial-gradient(circle 2px at 15% 20%,rgba(255,255,255,.9) 0%,transparent 100%),radial-gradient(circle 1px at 40% 10%,rgba(200,220,255,.8) 0%,transparent 100%),radial-gradient(circle 2px at 65% 30%,rgba(255,255,255,.7) 0%,transparent 100%),radial-gradient(circle 1px at 85% 15%,rgba(200,220,255,.9) 0%,transparent 100%),radial-gradient(circle 3px at 30% 70%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(circle 1px at 75% 65%,rgba(200,220,255,.7) 0%,transparent 100%),radial-gradient(ellipse 30% 15% at 50% 50%,rgba(150,170,220,.15) 0%,transparent 100%); background-size:cover;" onclick="setTheme('fuyu_hoshi')">❄️</div>
+            <div class="color-dot" style="background:#f0ede4; background-image:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),radial-gradient(circle 3px at 15px 15px,rgba(160,140,100,.4) 0%,transparent 100%); background-size:30px 30px,30px 30px,30px 30px;" onclick="setTheme('washi_paper')">📄</div>
+            <div class="color-dot" style="background:#2c1810; background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(220,160,60,.22) 0deg 22.5deg,transparent 22.5deg 45deg),repeating-conic-gradient(from 22.5deg at 50% 50%,rgba(180,100,30,.15) 0deg 22.5deg,transparent 22.5deg 45deg),radial-gradient(circle at 50% 50%,rgba(240,180,80,.08) 0%,transparent 70%); background-size:40px 40px,40px 40px,cover;" onclick="setTheme('edo_komon')">⛩️</div>
+            <div class="color-dot" style="background:#0f1a2e; background-image:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(60,120,220,.4) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 20% 70%,rgba(100,60,200,.35) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 80% 60%,rgba(0,160,220,.3) 0%,transparent 50%),repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(80,140,255,.06) 18px,rgba(80,140,255,.06) 19px); background-size:cover,cover,cover,19px 19px;" onclick="setTheme('vogue_blue')">💙</div>
+            <div class="color-dot" style="background:#1a0a14; background-image:radial-gradient(ellipse 90% 60% at 50% 50%,rgba(200,80,140,.4) 0%,transparent 55%),radial-gradient(ellipse 40% 70% at 15% 50%,rgba(255,120,60,.3) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 30%,rgba(180,60,200,.35) 0%,transparent 50%),repeating-linear-gradient(135deg,transparent,transparent 14px,rgba(255,100,150,.05) 14px,rgba(255,100,150,.05) 15px); background-size:cover,cover,cover,15px 15px;" onclick="setTheme('fashion_mag')">🌺</div>
         </div>
         <div class="login-section">
             <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
@@ -577,11 +588,19 @@
         kaleidoscope: { primary: '#a855f7', accent: '#ec4899', bg: 'linear-gradient(135deg, #1a0533 0%, #2d1060 100%)', text: '#f0e6ff', box: 'rgba(255,255,255,0.12)', author: '#d8b4fe', pattern: 'repeating-conic-gradient(#7c3aed 0deg 10deg, rgba(168,85,247,0.15) 10deg 20deg)', pOpacity: 0.7, pSize: '24px 24px' },
         matrix: { primary: '#00ff80', accent: '#00cc55', bg: 'linear-gradient(180deg, #001a0f 0%, #003d2b 100%)', text: '#00ff80', box: 'rgba(0,255,100,0.08)', author: '#00cc55', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px)', pOpacity: 1, pSize: '5px 5px' },
         neon_tribal: { primary: '#e91e8c', accent: '#ff6ef7', bg: 'linear-gradient(135deg, #2d0a1e 0%, #1a0030 100%)', text: '#ffe0f5', box: 'rgba(255,255,255,0.1)', author: '#ff9ff3', pattern: 'repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%)', pOpacity: 0.5, pSize: '14px 24px' },
-        sun_temple: { primary: '#f5c842', accent: '#ff9a00', bg: 'linear-gradient(160deg, #0a1628 0%, #1e2d50 100%)', text: '#ffe9a0', box: 'rgba(255,220,100,0.1)', author: '#ffd060', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.22) 0deg 5deg, transparent 5deg 10deg)', pOpacity: 0.8, pSize: '30px 30px' },
-        aurora_night: { primary: '#a78bfa', accent: '#34d399', bg: 'linear-gradient(160deg, #0d0820 0%, #0a1a1a 100%)', text: '#e0f0ff', box: 'rgba(255,255,255,0.08)', author: '#a0d4ff', pattern: 'radial-gradient(ellipse 80% 60% at 20% 40%, rgba(120,80,255,0.55) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(255,100,200,0.45) 0%, transparent 50%), radial-gradient(ellipse 70% 50% at 60% 80%, rgba(0,200,255,0.4) 0%, transparent 55%)', pOpacity: 1, pSize: '100% 100%' },
-        sunset_desert: { primary: '#ff8c00', accent: '#ff4500', bg: 'linear-gradient(to top, #ff2200 0%, #ff6a00 15%, #ff9d00 30%, #c0392b 50%, #4a0e2a 75%, #1a0010 100%)', text: '#ffe0c0', box: 'rgba(255,150,0,0.15)', author: '#ffd090', pattern: 'radial-gradient(ellipse 100% 40% at 50% 100%, rgba(255,220,80,0.45) 0%, transparent 60%)', pOpacity: 1, pSize: '100% 100%' },
-        deep_jungle: { primary: '#22c55e', accent: '#16a34a', bg: 'linear-gradient(160deg, #0a1a0a 0%, #0d2a10 100%)', text: '#d0f0d8', box: 'rgba(34,197,94,0.1)', author: '#86efac', pattern: 'radial-gradient(ellipse 120% 80% at 50% 50%, rgba(34,197,94,0.18) 0%, transparent 60%), repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(34,197,94,0.12) 18px, rgba(34,197,94,0.12) 19px), repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(34,197,94,0.12) 18px, rgba(34,197,94,0.12) 19px)', pOpacity: 1, pSize: 'cover, 19px 19px, 19px 19px' },
-        galaxy_rose: { primary: '#e879f9', accent: '#818cf8', bg: 'linear-gradient(135deg, #12001a 0%, #0a0015 100%)', text: '#f5d0fe', box: 'rgba(232,121,249,0.1)', author: '#f0abfc', pattern: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(180,50,255,0.35) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 25% 25%, rgba(255,100,200,0.3) 0%, transparent 50%), radial-gradient(ellipse 40% 60% at 75% 75%, rgba(80,100,255,0.35) 0%, transparent 50%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(200,100,255,0.12) 0deg 30deg, rgba(255,80,180,0.08) 30deg 60deg)', pOpacity: 1, pSize: 'cover,cover,cover,60px 60px' }
+        sun_temple:    { primary: '#f5c842', accent: '#ff9a00', bg: 'linear-gradient(160deg, #0a1628 0%, #1e2d50 100%)', text: '#ffe9a0', box: 'rgba(255,220,100,0.1)', author: '#ffd060', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.22) 0deg 5deg, transparent 5deg 10deg)', pOpacity: 0.8, pSize: '30px 30px' },
+        aurora_night:  { primary: '#a78bfa', accent: '#34d399', bg: 'linear-gradient(160deg,#0d0820 0%,#0a1a1a 100%)', text: '#e0f0ff', box: 'rgba(255,255,255,0.08)', author: '#a0d4ff', pattern: 'radial-gradient(ellipse 80% 60% at 20% 40%,rgba(120,80,255,.55) 0%,transparent 55%),radial-gradient(ellipse 60% 80% at 80% 20%,rgba(255,100,200,.45) 0%,transparent 50%),radial-gradient(ellipse 70% 50% at 60% 80%,rgba(0,200,255,.4) 0%,transparent 55%)', pOpacity: 1, pSize: 'cover' },
+        sunset_desert: { primary: '#ff8c00', accent: '#ff4500', bg: 'linear-gradient(to top,#ff2200 0%,#ff6a00 18%,#ff9d00 32%,#c0392b 52%,#4a0e2a 76%,#1a0010 100%)', text: '#ffe0c0', box: 'rgba(255,150,0,0.15)', author: '#ffd090', pattern: 'radial-gradient(ellipse 100% 35% at 50% 100%,rgba(255,220,80,.45) 0%,transparent 60%)', pOpacity: 1, pSize: 'cover' },
+        deep_jungle:   { primary: '#22c55e', accent: '#16a34a', bg: 'linear-gradient(160deg,#0a1a0a 0%,#0d2a10 100%)', text: '#d0f0d8', box: 'rgba(34,197,94,0.1)', author: '#86efac', pattern: 'radial-gradient(ellipse 120% 80% at 50% 50%,rgba(34,197,94,.18) 0%,transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 18px,rgba(34,197,94,.13) 18px,rgba(34,197,94,.13) 19px),repeating-linear-gradient(90deg,transparent,transparent 18px,rgba(34,197,94,.13) 18px,rgba(34,197,94,.13) 19px)', pOpacity: 1, pSize: 'cover,19px 19px,19px 19px' },
+        galaxy_rose:   { primary: '#e879f9', accent: '#818cf8', bg: 'linear-gradient(135deg,#12001a 0%,#0a0015 100%)', text: '#f5d0fe', box: 'rgba(232,121,249,0.1)', author: '#f0abfc', pattern: 'radial-gradient(ellipse 90% 70% at 50% 50%,rgba(180,50,255,.35) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 25% 25%,rgba(255,100,200,.3) 0%,transparent 50%),radial-gradient(ellipse 40% 60% at 75% 75%,rgba(80,100,255,.35) 0%,transparent 50%)', pOpacity: 1, pSize: 'cover,cover,cover' },
+        sakura_spring: { primary: '#e91e8c', accent: '#ff9eb5', bg: 'linear-gradient(160deg,#fff0f5 0%,#ffe4ec 50%,#f5e6d0 100%)', text: '#5a2a3a', box: 'rgba(255,255,255,0.7)', author: '#c06080', pattern: 'radial-gradient(circle 18px at 20% 35%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 12px at 35% 25%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 15px at 70% 30%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(circle 10px at 80% 20%,#f9c6c6 0%,#f9c6c6 40%,transparent 41%),radial-gradient(ellipse 60% 40% at 50% 100%,#a8d8a8 0%,transparent 60%)', pOpacity: 1, pSize: 'cover' },
+        umi_natsuyoru: { primary: '#00b4d8', accent: '#0077b6', bg: 'linear-gradient(180deg,#1a3a5c 0%,#0d4f6b 40%,#0a6b7a 70%,#0d8a7a 100%)', text: '#e0f7fa', box: 'rgba(0,180,216,0.12)', author: '#80deea', pattern: 'repeating-linear-gradient(180deg,transparent,transparent 6px,rgba(100,200,220,.12) 6px,rgba(100,200,220,.12) 7px),radial-gradient(ellipse 40% 20% at 50% 55%,rgba(255,255,255,.06) 0%,transparent 100%)', pOpacity: 1, pSize: '100% 7px,cover' },
+        koyo_autumn:   { primary: '#e85d04', accent: '#dc2f02', bg: 'linear-gradient(160deg,#1a0f00 0%,#2d1200 100%)', text: '#ffe0c0', box: 'rgba(232,93,4,0.12)', author: '#ffb380', pattern: 'radial-gradient(ellipse 70% 50% at 50% 60%,rgba(220,100,20,.7) 0%,rgba(180,60,0,.4) 40%,transparent 70%),repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(180,80,10,.35) 22px,rgba(180,80,10,.35) 24px),repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(180,80,10,.35) 22px,rgba(180,80,10,.35) 24px)', pOpacity: 1, pSize: 'cover,24px 24px,24px 24px' },
+        fuyu_hoshi:    { primary: '#7dd3fc', accent: '#e0f2fe', bg: 'linear-gradient(160deg,#0a0f1a 0%,#0d1a2e 60%,#0a0f1a 100%)', text: '#e0f0ff', box: 'rgba(125,211,252,0.1)', author: '#bae6fd', pattern: 'radial-gradient(circle 2px at 15% 20%,rgba(255,255,255,.9) 0%,transparent 100%),radial-gradient(circle 1px at 40% 10%,rgba(200,220,255,.8) 0%,transparent 100%),radial-gradient(circle 2px at 65% 30%,rgba(255,255,255,.7) 0%,transparent 100%),radial-gradient(circle 1px at 85% 15%,rgba(200,220,255,.9) 0%,transparent 100%),radial-gradient(circle 3px at 30% 70%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(circle 1px at 75% 65%,rgba(200,220,255,.7) 0%,transparent 100%)', pOpacity: 1, pSize: 'cover' },
+        washi_paper:   { primary: '#8b7355', accent: '#a0896a', bg: 'linear-gradient(160deg,#f0ede4 0%,#e8e0d0 100%)', text: '#3a2e20', box: 'rgba(255,255,255,0.6)', author: '#6b5a40', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),radial-gradient(circle 3px at 15px 15px,rgba(160,140,100,.4) 0%,transparent 100%)', pOpacity: 1, pSize: '30px 30px,30px 30px,30px 30px' },
+        edo_komon:     { primary: '#c8860a', accent: '#e8a020', bg: 'linear-gradient(135deg,#2c1810 0%,#1a0e08 100%)', text: '#f5e0c0', box: 'rgba(200,134,10,0.12)', author: '#e0b870', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%,rgba(220,160,60,.22) 0deg 22.5deg,transparent 22.5deg 45deg),repeating-conic-gradient(from 22.5deg at 50% 50%,rgba(180,100,30,.15) 0deg 22.5deg,transparent 22.5deg 45deg),radial-gradient(circle at 50% 50%,rgba(240,180,80,.08) 0%,transparent 70%)', pOpacity: 1, pSize: '40px 40px,40px 40px,cover' },
+        vogue_blue:    { primary: '#3b82f6', accent: '#60a5fa', bg: 'linear-gradient(160deg,#0f1a2e 0%,#1a2a4a 100%)', text: '#e0ecff', box: 'rgba(59,130,246,0.12)', author: '#93c5fd', pattern: 'radial-gradient(ellipse 80% 60% at 50% 40%,rgba(60,120,220,.4) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 20% 70%,rgba(100,60,200,.35) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 80% 60%,rgba(0,160,220,.3) 0%,transparent 50%)', pOpacity: 1, pSize: 'cover,cover,cover' },
+        fashion_mag:   { primary: '#ec4899', accent: '#f97316', bg: 'linear-gradient(135deg,#1a0a14 0%,#0f0510 100%)', text: '#fde8f0', box: 'rgba(236,72,153,0.12)', author: '#fbcfe8', pattern: 'radial-gradient(ellipse 90% 60% at 50% 50%,rgba(200,80,140,.4) 0%,transparent 55%),radial-gradient(ellipse 40% 70% at 15% 50%,rgba(255,120,60,.3) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 30%,rgba(180,60,200,.35) 0%,transparent 50%)', pOpacity: 1, pSize: 'cover,cover,cover' }
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
@@ -756,8 +775,20 @@
         });
     }
 
-    const RANK_PER_PAGE = 10;
+    const RANK_FIRST_PAGE = 6;
+    const RANK_REST_PAGE  = 8;
     let rankAllEntries = [], rankCurrentPage = 0, rankMyUid = '';
+
+    function rankPageStart(page) {
+        if (page === 0) return 0;
+        return RANK_FIRST_PAGE + (page - 1) * RANK_REST_PAGE;
+    }
+    function rankTotalPages() {
+        const n = rankAllEntries.length;
+        if (n === 0) return 1;
+        if (n <= RANK_FIRST_PAGE) return 1;
+        return 1 + Math.ceil((n - RANK_FIRST_PAGE) / RANK_REST_PAGE);
+    }
 
     function renderRanking(data, myUid) {
         rankMyUid = myUid;
@@ -766,7 +797,13 @@
             .sort((a, b) => b.exp - a.exp);
         rankCurrentPage = 0;
         const myIdx = rankAllEntries.findIndex(e => e.uid === myUid);
-        if (myIdx >= 0) rankCurrentPage = Math.floor(myIdx / RANK_PER_PAGE);
+        if (myIdx >= 0) {
+            if (myIdx < RANK_FIRST_PAGE) {
+                rankCurrentPage = 0;
+            } else {
+                rankCurrentPage = 1 + Math.floor((myIdx - RANK_FIRST_PAGE) / RANK_REST_PAGE);
+            }
+        }
         renderRankingPage();
     }
 
@@ -778,7 +815,7 @@
     function renderRankingPage() {
         const list = document.getElementById('rankingList');
         const pager = document.getElementById('rankingPager');
-        const totalPages = Math.max(1, Math.ceil(rankAllEntries.length / RANK_PER_PAGE));
+        const totalPages = rankTotalPages();
 
         if (rankAllEntries.length === 0) {
             list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀<br><span style="font-size:11px;">設定でランキング表示をONにしよう！</span></div>';
@@ -786,8 +823,9 @@
             return;
         }
 
-        const start = rankCurrentPage * RANK_PER_PAGE;
-        const pageEntries = rankAllEntries.slice(start, start + RANK_PER_PAGE);
+        const start = rankPageStart(rankCurrentPage);
+        const perPage = rankCurrentPage === 0 ? RANK_FIRST_PAGE : RANK_REST_PAGE;
+        const pageEntries = rankAllEntries.slice(start, start + perPage);
         list.innerHTML = '';
 
         pageEntries.forEach((entry, pageIdx) => {
@@ -855,8 +893,7 @@
     }
 
     window.rankChangePage = function(dir) {
-        const total = Math.ceil(rankAllEntries.length / RANK_PER_PAGE);
-        rankCurrentPage = Math.max(0, Math.min(total - 1, rankCurrentPage + dir));
+        rankCurrentPage = Math.max(0, Math.min(rankTotalPages() - 1, rankCurrentPage + dir));
         renderRankingPage();
     };
 
@@ -1121,7 +1158,7 @@
 
     // テーマページング
     let _themePage = 0;
-    const _themePageCount = 3;
+    const _themePageCount = 4;
     window.themePageChange = function(dir) {
         _themePage = Math.max(0, Math.min(_themePageCount - 1, _themePage + dir));
         for (let i = 0; i < _themePageCount; i++) {
@@ -1161,7 +1198,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-    emailjs.init({ publicKey: "iKnQEZKU9n8i6c-SL" });
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init({ publicKey: "iKnQEZKU9n8i6c-SL" });
+            console.log('EmailJS initialized');
+        } else {
+            console.error('EmailJS not loaded');
+        }
+    });
 
     window.openFeedback = function() {
         window.toggleMenu();
@@ -1211,9 +1255,11 @@
             btn.textContent = '送信済み ✓';
             setTimeout(() => window.closeFeedback(), 2000);
         } catch (err) {
-            console.error('EmailJS error status:', err.status, 'text:', err.text, err);
+            console.error('EmailJS ERR:', JSON.stringify(err), err);
+            const code = err.status || err.code || '?';
+            const msg  = err.text  || err.message || 'unknown';
             statusEl.style.color = '#e74c3c';
-            statusEl.textContent = `❌ 送信失敗 (${err.status || 'unknown'})。もう一度お試しください。`;
+            statusEl.textContent = `❌ 失敗(${code}): ${msg}`;
             btn.disabled = false;
             btn.textContent = '送信する 🚀';
         }
