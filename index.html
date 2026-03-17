@@ -195,6 +195,24 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* ランキング */
+        .ranking-container { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; margin-top: 20px; }
+        .ranking-row { display: flex; align-items: center; gap: 12px; padding: 14px 10px; border-bottom: 1.5px solid #f5f5f5; transition: background 0.15s; cursor: default; }
+        .ranking-row:last-child { border-bottom: none; }
+        .ranking-row.me { background: #f0f7ff; border-radius: 16px; border-bottom: none; margin: 4px 0; }
+        .rank-num { font-size: 18px; font-weight: 900; min-width: 32px; text-align: center; color: #ccc; }
+        .rank-num.gold { color: #f1c40f; font-size: 22px; }
+        .rank-num.silver { color: #b0bec5; font-size: 22px; }
+        .rank-num.bronze { color: #cd7f32; font-size: 22px; }
+        .rank-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; overflow: hidden; }
+        .rank-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .rank-info { flex: 1; min-width: 0; }
+        .rank-name { font-size: 14px; font-weight: 900; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rank-lv { font-size: 12px; color: #999; font-weight: 700; margin-top: 2px; }
+        .rank-badge { font-size: 12px; font-weight: 900; color: var(--primary-color); background: #e8f4fd; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+        .ranking-empty { text-align: center; color: #ccc; font-size: 13px; padding: 30px; font-weight: 700; }
+        .setting-input-label { font-size: 12px; font-weight: 900; color: #666; display: block; margin-bottom: 5px; margin-top: 14px; }
     </style>
 </head>
 <body>
@@ -275,23 +293,20 @@
                     <div class="user-email" id="menuUserEmail">-</div>
                 </div>
             </div>
-            <button class="logout-btn" id="logoutBtn">🚪 ログアウト</button>
+            <label class="setting-input-label">🏷️ ランキング表示名</label>
+            <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：たろう" maxlength="20" style="margin:0 0 10px;">
+            <div class="setting-switch">
+                <span class="switch-label">🏆 ランキングに表示する</span>
+                <label class="switch">
+                    <input type="checkbox" id="showInRankingToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="save-btn" id="saveProfileBtn" style="margin-top:8px;">プロフィールを保存</button>
+            <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
         </div>
     </div>
-    <button onclick="openFeedback()" style="width:100%; margin-top:16px; padding:16px; background:linear-gradient(135deg,#e8f4fd,#dbeeff); border:2px solid #c5dff8; border-radius:18px; font-weight:900; color:#0070bc; cursor:pointer; font-size:14px;">💬 ご意見・フィードバックを送る</button>
-    <button style="width:100%; margin-top:10px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
-</div>
-
-<!-- フィードバックパネル（設定の上にスライドイン） -->
-<div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:rgba(255,255,255,0.98); z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); padding:24px 20px; box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column; gap:0;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
-        <button onclick="closeFeedback()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#bbb; padding:0; line-height:1; flex-shrink:0;">&#8249;</button>
-        <h3 style="margin:0; font-size:20px; font-weight:900; color:#222;">💬 フィードバック</h3>
-    </div>
-    <p style="font-size:13px; color:#aaa; margin:0 0 18px; line-height:1.8; font-weight:600;">ご意見・ご要望をお気軽にどうぞ。<br>開発チームに直接届きます 🙏</p>
-    <textarea id="feedbackMessage" style="flex:1; min-height:220px; width:100%; padding:16px; border:2.5px solid #f0f0f0; border-radius:18px; background:#fafafa; font-size:15px; box-sizing:border-box; outline:none; resize:none; font-family:inherit; line-height:1.7; color:#333; transition:border-color 0.2s;" placeholder="例：〇〇の機能がほしい、〇〇が使いにくい、など" onfocus="this.style.borderColor='#0070bc'" onblur="this.style.borderColor='#f0f0f0'"></textarea>
-    <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:20px; margin:10px 0 4px; font-weight:800;"></div>
-    <button id="sendFeedbackBtn" onclick="sendFeedback()" style="width:100%; padding:16px; background:var(--primary-color); color:white; border:none; border-radius:16px; font-weight:900; font-size:16px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15);">送信する 🚀</button>
+    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
 <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
@@ -356,6 +371,12 @@
             <div class="lv-track"><div class="lv-fill" id="lvFill"></div></div>
         </div>
     </div>
+
+    <!-- ランキング -->
+    <div class="ranking-container">
+        <div class="stats-title">🏆 学習レベルランキング</div>
+        <div id="rankingList"><div class="ranking-empty">読み込み中...</div></div>
+    </div>
 </div>
 
 <div id="titleModal" class="modal" onclick="closeTitleModal()">
@@ -403,7 +424,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -419,6 +440,8 @@
 
     let logsRef = null;
     let eventsRef = null;
+    let rankingRef = null;
+    let profileRef = null;
 
     const THEMES = {
         blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
@@ -532,8 +555,18 @@
             // ユーザーごとのパスで購読開始
             logsRef = ref(db, `users/${user.uid}/my_logs`);
             eventsRef = ref(db, `users/${user.uid}/my_events`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); });
+            profileRef = ref(db, `users/${user.uid}/profile`);
+            rankingRef = ref(db, `ranking`);
+            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
+            // プロフィール読み込み
+            get(profileRef).then(snap => {
+                const p = snap.val() || {};
+                document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
+                document.getElementById('showInRankingToggle').checked = (p.showInRanking !== false);
+            });
+            // ランキング購読
+            onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
         } else {
             // 未ログイン：Loadingを隠してログイン画面表示
             document.getElementById('loading').style.display = 'none';
@@ -572,6 +605,73 @@
         }
         currentLv = level; lvDisplay.innerText = `Lv. ${level}`; document.getElementById('expDisplay').innerText = `EXP: ${progress} / 100`; document.getElementById('lvFill').style.width = `${progress}%`;
     }
+
+    // ── ランキング関連 ────────────────────────
+    async function pushRankingData() {
+        if (!window._currentUser || !rankingRef) return;
+        const user = window._currentUser;
+        const snap = await get(profileRef);
+        const profile = snap.val() || {};
+        const showInRanking = (profile.showInRanking !== false);
+        const rankEntry = ref(db, `ranking/${user.uid}`);
+        if (!showInRanking) { remove(rankEntry); return; }
+        let totalExp = 0;
+        Object.keys(remoteData).forEach(k => totalExp += (EXP_MAP[getLogData(k).stamp] || 0));
+        const level = Math.floor(totalExp / 100) + 1;
+        const displayName = profile.displayName || user.displayName || 'ゲスト';
+        await set(rankEntry, {
+            displayName,
+            photoURL: user.photoURL || '',
+            level,
+            exp: totalExp,
+            updatedAt: Date.now()
+        });
+    }
+
+    function renderRanking(data, myUid) {
+        const list = document.getElementById('rankingList');
+        const entries = Object.entries(data)
+            .map(([uid, v]) => ({ uid, ...v }))
+            .sort((a, b) => b.exp - a.exp);
+        if (entries.length === 0) { list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀</div>'; return; }
+        list.innerHTML = '';
+        entries.forEach((entry, i) => {
+            const isMe = entry.uid === myUid;
+            const row = document.createElement('div');
+            row.className = 'ranking-row' + (isMe ? ' me' : '');
+            const rankNum = i + 1;
+            let rankClass = '', rankLabel = rankNum;
+            if (rankNum === 1) { rankClass = 'gold'; rankLabel = '🥇'; }
+            else if (rankNum === 2) { rankClass = 'silver'; rankLabel = '🥈'; }
+            else if (rankNum === 3) { rankClass = 'bronze'; rankLabel = '🥉'; }
+            const avatarHTML = entry.photoURL
+                ? `<div class="rank-avatar"><img src="${entry.photoURL}" referrerpolicy="no-referrer"></div>`
+                : `<div class="rank-avatar" style="font-size:18px;">👤</div>`;
+            row.innerHTML = `
+                <div class="rank-num ${rankClass}">${rankLabel}</div>
+                ${avatarHTML}
+                <div class="rank-info">
+                    <div class="rank-name">${entry.displayName}${isMe ? ' <span style="font-size:10px;color:var(--primary-color);">（あなた）</span>' : ''}</div>
+                    <div class="rank-lv">Lv. ${entry.level} ／ EXP ${entry.exp}</div>
+                </div>
+                <div class="rank-badge">Lv.${entry.level}</div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    document.getElementById('saveProfileBtn').onclick = async () => {
+        if (!window._currentUser || !profileRef) return;
+        const displayName = document.getElementById('rankDisplayName').value.trim();
+        const showInRanking = document.getElementById('showInRankingToggle').checked;
+        if (!displayName) { alert('表示名を入力してください'); return; }
+        await set(profileRef, { displayName, photoURL: window._currentUser.photoURL || '', showInRanking });
+        await pushRankingData();
+        const btn = document.getElementById('saveProfileBtn');
+        btn.textContent = '✅ 保存しました！'; btn.disabled = true;
+        setTimeout(() => { btn.textContent = 'プロフィールを保存'; btn.disabled = false; }, 2000);
+    };
+    // ─────────────────────────────────────────
 
     function renderWeeklyChart() {
         const ctx = document.getElementById('weeklyChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(), labels = [], values = [];
@@ -818,71 +918,6 @@
     }
     setTheme(initialTheme);
     fetchQuote();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-    emailjs.init({ publicKey: "iKnQEZKU9n8i6c-SL" });
-
-    window.openFeedback = function() {
-        toggleMenu();
-        setTimeout(() => {
-            document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
-            document.getElementById('feedbackMessage').value = '';
-            document.getElementById('feedbackStatus').textContent = '';
-            const btn = document.getElementById('sendFeedbackBtn');
-            btn.disabled = false;
-            btn.textContent = '送信する 🚀';
-        }, 360);
-    };
-
-    window.closeFeedback = function() {
-        document.getElementById('feedbackPanel').style.transform = 'translateX(0)';
-    };
-
-    window.sendFeedback = async function() {
-        const message = document.getElementById('feedbackMessage').value.trim();
-        const statusEl = document.getElementById('feedbackStatus');
-        const btn = document.getElementById('sendFeedbackBtn');
-
-        if (!message) {
-            statusEl.style.color = '#e74c3c';
-            statusEl.textContent = '⚠️ メッセージを入力してください';
-            return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = '送信中...';
-        statusEl.style.color = '#999';
-        statusEl.textContent = '';
-
-        const user = window._currentUser || null;
-        const userName = user ? (user.displayName || user.email || '不明') : '未ログイン';
-        const userEmail = user ? (user.email || '-') : '-';
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
-        const subject = dateStr + ' フィードバック';
-
-        try {
-            await emailjs.send("service_f1phsus", "template_awtudth", {
-                subject: subject,
-                message: message,
-                user_name: userName,
-                user_email: userEmail,
-                sent_at: now.toLocaleString('ja-JP')
-            });
-            statusEl.style.color = '#27ae60';
-            statusEl.textContent = '✅ 送信しました！ありがとうございます 🙏';
-            btn.textContent = '送信済み ✓';
-            setTimeout(() => closeFeedback(), 2000);
-        } catch (err) {
-            console.error('EmailJS error:', err);
-            statusEl.style.color = '#e74c3c';
-            statusEl.textContent = '❌ 送信失敗。もう一度お試しください。';
-            btn.disabled = false;
-            btn.textContent = '送信する 🚀';
-        }
-    };
 </script>
 </body>
 </html>
