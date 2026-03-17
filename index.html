@@ -675,18 +675,32 @@
 
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+        if (!qE || !aE) return; // 要素がない場合はスキップ
+    
         qE.style.opacity = 0; aE.style.opacity = 0;
+    
+        // タイムアウト付きのフェッチ、または失敗しても必ずカレンダーを表示するようにする
         try {
-            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
-            if (!res.ok) throw new Error();
-            const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
+            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`).catch(() => ({ok: false}));
+            
+            if (res.ok) {
+                const data = await res.json();
+                qE.innerText = `"${data.text}"`;
+                aE.innerText = `― ${data.author || '賢者'}`;
+            } else {
+                throw new Error('API不調');
+            }
         } catch (e) {
+            // APIがダメならバックアップ（backupQuotes）から出す
             const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
-            qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
+            qE.innerText = `"${rq.t}"`;
+            aE.innerText = `― ${rq.a}`;
         }
-        setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
+        
+        setTimeout(() => { 
+            qE.style.opacity = 1; aE.style.opacity = 1; 
+        }, 100);
     }
-
     const randomToggle = document.getElementById('randomThemeToggle');
     randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
     randomToggle.onchange = (e) => localStorage.setItem('study-random-theme', e.target.checked);
@@ -1609,19 +1623,32 @@
 
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+        if (!qE || !aE) return; // 要素がない場合はスキップ
+    
         qE.style.opacity = 0; aE.style.opacity = 0;
+    
+        // タイムアウト付きのフェッチ、または失敗しても必ずカレンダーを表示するようにする
         try {
-            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
+            const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`).catch(() => ({ok: false}));
+            
+            if (res.ok) {
+                const data = await res.json();
+                qE.innerText = `"${data.text}"`;
+                aE.innerText = `― ${data.author || '賢者'}`;
+            } else {
+                throw new Error('API不調');
+            }
         } catch (e) {
+            // APIがダメならバックアップ（backupQuotes）から出す
             const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
-            qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
+            qE.innerText = `"${rq.t}"`;
+            aE.innerText = `― ${rq.a}`;
         }
-        setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
-    }
-
+    
+    setTimeout(() => { 
+        qE.style.opacity = 1; aE.style.opacity = 1; 
+    }, 100);
+}
     setTheme(localStorage.getItem('study-calendar-theme') || 'blue');
     fetchQuote();
 </script>
