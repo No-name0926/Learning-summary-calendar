@@ -773,8 +773,8 @@
                     <div class="rank-num-1">🥇</div>
                     ${avatar('rank-avatar-1', entry.photoURL, '👤')}
                     <div class="rank-info">
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b8860b;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#c8980a;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-1">👑 Lv.${entry.level}</div>`;
@@ -784,8 +784,8 @@
                     <div class="rank-num-2">🥈</div>
                     ${avatar('rank-avatar-2', entry.photoURL, '👤')}
                     <div class="rank-info">
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#8a9aaa;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#888;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-2">Lv.${entry.level}</div>`;
@@ -795,8 +795,8 @@
                     <div class="rank-num-3">🥉</div>
                     ${avatar('rank-avatar-3', entry.photoURL, '👤')}
                     <div class="rank-info">
+                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07840;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
-                        ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07040;letter-spacing:0.3px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-3">Lv.${entry.level}</div>`;
@@ -806,8 +806,8 @@
                     <div class="rank-num-n">${rank}</div>
                     ${avatar('rank-avatar-n', entry.photoURL, '👤')}
                     <div class="rank-info">
+                        ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.4px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
-                        ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.2px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
                     <div class="rank-badge-n">Lv.${entry.level}</div>`;
