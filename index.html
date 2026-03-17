@@ -1229,14 +1229,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // EmailJS初期化（スクリプト直後に即実行）
+    (function initEmailJS() {
         if (typeof emailjs !== 'undefined') {
-            emailjs.init({ publicKey: "iKnQEZKU9n8i6c-SL" });
-            console.log('EmailJS initialized');
+            emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" });
+            console.log('EmailJS initialized OK');
         } else {
-            console.error('EmailJS not loaded');
+            // まだ読み込まれていなければonloadで再試行
+            window.addEventListener('load', function() {
+                if (typeof emailjs !== 'undefined') {
+                    emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" });
+                    console.log('EmailJS initialized on load');
+                } else {
+                    console.error('EmailJS failed to load');
+                }
+            });
         }
-    });
+    })();
 
     window.openFeedback = function() {
         window.toggleMenu();
