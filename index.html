@@ -200,69 +200,77 @@
         /* ── ランキング全体 ── */
         .ranking-container { background: white; border-radius: 28px; padding: 24px 20px 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; margin-top: 20px; }
 
-        /* 1位 ── 黄金の玉座 */
+        /* 1位 */
         .rank-row-1 {
-            display:flex; align-items:center; gap:10px; padding:14px 12px; margin-bottom:5px;
+            display:flex; align-items:center; gap:11px; padding:14px 13px; margin-bottom:5px;
             border-radius:18px;
-            background: linear-gradient(135deg, #2c1a00 0%, #5a3600 40%, #2c1a00 100%);
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            box-shadow: 0 0 0 2px #f1c40f, 0 0 0 4px rgba(241,196,15,0.25), 0 8px 24px rgba(0,0,0,0.35);
+            background: #fffdf5;
+            border: 1.5px solid #e8c96a;
+            box-shadow: 0 4px 16px rgba(200,160,60,0.13);
             position:relative; overflow:hidden;
         }
         .rank-row-1::before {
-            content:''; position:absolute; inset:0;
-            background: repeating-linear-gradient(45deg, rgba(241,196,15,0.04) 0px, rgba(241,196,15,0.04) 1px, transparent 1px, transparent 8px);
+            content:'';
+            position:absolute; top:0; right:0; bottom:0; left:0;
+            background-image:
+                radial-gradient(ellipse 18px 18px at 92% 20%, rgba(220,180,80,0.18) 60%, transparent 100%),
+                radial-gradient(ellipse 12px 12px at 80% 80%, rgba(220,180,80,0.13) 60%, transparent 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='none' stroke='%23d4a850' stroke-width='0.6' opacity='0.22'%3E%3Ccircle cx='48' cy='12' r='5'/%3E%3Ccircle cx='48' cy='12' r='8'/%3E%3Cline x1='48' y1='4' x2='48' y2='0'/%3E%3Cline x1='48' y1='20' x2='48' y2='24'/%3E%3Cline x1='40' y1='12' x2='36' y2='12'/%3E%3Cline x1='56' y1='12' x2='60' y2='12'/%3E%3Cline x1='43' y1='7' x2='40' y2='4'/%3E%3Cline x1='53' y1='7' x2='56' y2='4'/%3E%3Cline x1='43' y1='17' x2='40' y2='20'/%3E%3Cline x1='53' y1='17' x2='56' y2='20'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat, no-repeat, no-repeat;
+            background-position: right top, right bottom, right top;
             pointer-events:none;
         }
-        .rank-row-1::after {
-            content:'✦'; position:absolute; top:5px; right:9px;
-            font-size:9px; color:rgba(241,196,15,0.45); pointer-events:none;
-            text-shadow: 0 0 6px #f1c40f;
-        }
-        .rank-num-1 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; filter:drop-shadow(0 0 6px rgba(241,196,15,0.8)); }
-        .rank-avatar-1 { width:40px; height:40px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; overflow:hidden; border:2px solid #f1c40f; box-shadow:0 0 10px rgba(241,196,15,0.6), 0 0 20px rgba(241,196,15,0.2); }
-        .rank-name-1 { font-size:14px; font-weight:900; color:#ffd700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 3px rgba(0,0,0,0.5); }
-        .rank-sub-1 { font-size:10px; color:rgba(255,215,0,0.7); font-weight:800; margin-top:2px; }
-        .rank-badge-1 { font-size:11px; font-weight:900; color:#2c1a00; background:linear-gradient(135deg,#ffd700,#f1a400); border:none; padding:4px 9px; border-radius:14px; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 6px rgba(241,196,15,0.4); }
+        .rank-num-1 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; }
+        .rank-avatar-1 { width:40px; height:40px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; overflow:hidden; border:2px solid #d4a850; box-shadow:0 0 0 3px rgba(212,168,80,0.15); }
+        .rank-name-1 { font-size:14px; font-weight:900; color:#5a3e00; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-1 { font-size:10px; color:#a07830; font-weight:800; margin-top:2px; }
+        .rank-badge-1 { font-size:11px; font-weight:900; color:#7a5000; background:linear-gradient(135deg,#f5d97a,#e0b840); border:none; padding:4px 9px; border-radius:12px; white-space:nowrap; flex-shrink:0; }
 
-        /* 2位 ── 白銀の品格 */
+        /* 2位 */
         .rank-row-2 {
-            display:flex; align-items:center; gap:10px; padding:12px 12px; margin-bottom:4px;
+            display:flex; align-items:center; gap:11px; padding:13px 13px; margin-bottom:4px;
             border-radius:16px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%);
-            box-shadow: 0 0 0 2px #b0b8c8, 0 0 0 3.5px rgba(176,184,200,0.2), 0 6px 18px rgba(0,0,0,0.3);
+            background: #f8f9fc;
+            border: 1.5px solid #b8c0cc;
+            box-shadow: 0 3px 12px rgba(140,150,170,0.1);
             position:relative; overflow:hidden;
         }
         .rank-row-2::before {
-            content:''; position:absolute; inset:0;
-            background: repeating-linear-gradient(-45deg, rgba(176,184,200,0.04) 0px, rgba(176,184,200,0.04) 1px, transparent 1px, transparent 8px);
+            content:'';
+            position:absolute; top:0; right:0; bottom:0; left:0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Cg fill='none' stroke='%23a0a8b8' stroke-width='0.6' opacity='0.25'%3E%3Ccircle cx='40' cy='10' r='4'/%3E%3Ccircle cx='40' cy='10' r='7'/%3E%3Cline x1='40' y1='3' x2='40' y2='0'/%3E%3Cline x1='40' y1='17' x2='40' y2='20'/%3E%3Cline x1='33' y1='10' x2='30' y2='10'/%3E%3Cline x1='47' y1='10' x2='50' y2='10'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right top;
             pointer-events:none;
         }
-        .rank-num-2 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; filter:drop-shadow(0 0 4px rgba(200,210,220,0.7)); }
-        .rank-avatar-2 { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; overflow:hidden; border:2px solid #b0b8c8; box-shadow:0 0 8px rgba(176,184,200,0.5); }
-        .rank-name-2 { font-size:14px; font-weight:900; color:#dde4f0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 3px rgba(0,0,0,0.4); }
-        .rank-sub-2 { font-size:10px; color:rgba(200,210,220,0.65); font-weight:800; margin-top:2px; }
-        .rank-badge-2 { font-size:11px; font-weight:900; color:#1a1a2e; background:linear-gradient(135deg,#c8d0e0,#a0aabb); padding:4px 9px; border-radius:14px; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+        .rank-num-2 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; }
+        .rank-avatar-2 { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; overflow:hidden; border:2px solid #b0b8c8; }
+        .rank-name-2 { font-size:14px; font-weight:900; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-2 { font-size:10px; color:#999; font-weight:800; margin-top:2px; }
+        .rank-badge-2 { font-size:11px; font-weight:900; color:#555; background:#e4e8f0; padding:4px 9px; border-radius:12px; white-space:nowrap; flex-shrink:0; }
 
-        /* 3位 ── 赤銅の炎 */
+        /* 3位 */
         .rank-row-3 {
-            display:flex; align-items:center; gap:10px; padding:12px 12px; margin-bottom:10px;
+            display:flex; align-items:center; gap:11px; padding:13px 13px; margin-bottom:10px;
             border-radius:16px;
-            background: linear-gradient(135deg, #1e0f00 0%, #3d1f00 50%, #1e0f00 100%);
-            box-shadow: 0 0 0 2px #c87941, 0 0 0 3.5px rgba(200,121,65,0.2), 0 6px 18px rgba(0,0,0,0.3);
+            background: #fdf7f2;
+            border: 1.5px solid #d4a07a;
+            box-shadow: 0 3px 12px rgba(180,120,60,0.1);
             position:relative; overflow:hidden;
         }
         .rank-row-3::before {
-            content:''; position:absolute; inset:0;
-            background: repeating-linear-gradient(45deg, rgba(200,121,65,0.05) 0px, rgba(200,121,65,0.05) 1px, transparent 1px, transparent 8px);
+            content:'';
+            position:absolute; top:0; right:0; bottom:0; left:0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Cg fill='none' stroke='%23c08050' stroke-width='0.6' opacity='0.22'%3E%3Ccircle cx='40' cy='10' r='4'/%3E%3Ccircle cx='40' cy='10' r='7'/%3E%3Cline x1='40' y1='3' x2='40' y2='0'/%3E%3Cline x1='40' y1='17' x2='40' y2='20'/%3E%3Cline x1='33' y1='10' x2='30' y2='10'/%3E%3Cline x1='47' y1='10' x2='50' y2='10'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right top;
             pointer-events:none;
         }
-        .rank-num-3 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; filter:drop-shadow(0 0 4px rgba(200,121,65,0.7)); }
-        .rank-avatar-3 { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; overflow:hidden; border:2px solid #c87941; box-shadow:0 0 8px rgba(200,121,65,0.5); }
-        .rank-name-3 { font-size:14px; font-weight:900; color:#f0c090; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 1px 3px rgba(0,0,0,0.5); }
-        .rank-sub-3 { font-size:10px; color:rgba(240,192,144,0.65); font-weight:800; margin-top:2px; }
-        .rank-badge-3 { font-size:11px; font-weight:900; color:#1e0f00; background:linear-gradient(135deg,#e09050,#b86020); padding:4px 9px; border-radius:14px; white-space:nowrap; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,0.25); }
+        .rank-num-3 { font-size:20px; min-width:26px; text-align:center; flex-shrink:0; }
+        .rank-avatar-3 { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:var(--primary-color); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; overflow:hidden; border:2px solid #c8905a; }
+        .rank-name-3 { font-size:14px; font-weight:900; color:#4a2e10; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .rank-sub-3 { font-size:10px; color:#a06030; font-weight:800; margin-top:2px; }
+        .rank-badge-3 { font-size:11px; font-weight:900; color:#6a3a10; background:linear-gradient(135deg,#edb07a,#cc8040); padding:4px 9px; border-radius:12px; white-space:nowrap; flex-shrink:0; }
 
         /* 4位以降 ── シンプル・小さめ */
         .rank-row-n { display:flex; align-items:center; gap:8px; padding:9px 6px; border-bottom:1px solid #f2f2f2; }
@@ -1133,21 +1141,22 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
         try {
-            await emailjs.send("service_f1phsus", "template_ifp0q9y", {
+            const result = await emailjs.send("service_f1phsus", "template_ifp0q9y", {
                 subject: dateStr + ' フィードバック',
                 message: message,
                 user_name: userName,
                 user_email: userEmail,
                 sent_at: now.toLocaleString('ja-JP')
             });
+            console.log('EmailJS success:', result);
             statusEl.style.color = '#27ae60';
             statusEl.textContent = '✅ 送信しました！ありがとうございます 🙏';
             btn.textContent = '送信済み ✓';
-            setTimeout(() => closeFeedback(), 2000);
+            setTimeout(() => window.closeFeedback(), 2000);
         } catch (err) {
-            console.error('EmailJS error:', err);
+            console.error('EmailJS error status:', err.status, 'text:', err.text, err);
             statusEl.style.color = '#e74c3c';
-            statusEl.textContent = '❌ 送信失敗。もう一度お試しください。';
+            statusEl.textContent = `❌ 送信失敗 (${err.status || 'unknown'})。もう一度お試しください。`;
             btn.disabled = false;
             btn.textContent = '送信する 🚀';
         }
