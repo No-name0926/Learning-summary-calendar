@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
-    <meta id="vapidPublicKey" content="YOUR_VAPID_PUBLIC_KEY">
+    <meta id="vapidPublicKey" content="BDvU-sXOzAcNzeEaaaowQ9z26SmDNa-bjYfBBw1eW56snJfSICqCjxCXfPVVoq4768yHHrCERZKp0aIl5cGcD50">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style id="theme-variables">
@@ -1595,7 +1595,7 @@ window.togglePushNotification = async function() {
             alert('通知が許可されませんでした'); _updateNotifyBtn(); return;
         }
 
-        if (!_VAPID_KEY || _VAPID_KEY === 'YOUR_VAPID_PUBLIC_KEY') {
+        if (!_VAPID_KEY || _VAPID_KEY === 'BDvU-sXOzAcNzeEaaaowQ9z26SmDNa-bjYfBBw1eW56snJfSICqCjxCXfPVVoq4768yHHrCERZKp0aIl5cGcD50') {
             alert('VAPIDキーが未設定です'); return;
         }
 
