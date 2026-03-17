@@ -365,16 +365,13 @@
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:35px;">🎨 テーマカラー & テクスチャ</p>
         
         <div class="setting-switch">
-            <span class="switch-label">🔄 起動時ランダム <span style="font-size:10px;color:#aaa;">（★から）</span></span>
+            <span class="switch-label">🔄 お気に入りランダム</span>
             <label class="switch">
                 <input type="checkbox" id="randomThemeToggle">
                 <span class="slider"></span>
             </label>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin:6px 10px 2px;">
-            <span style="font-size:12px; font-weight:800; color:#aaa;">タップでテーマ選択　★でお気に入り登録</span>
-            <button id="favStarBtn" onclick="toggleFavCurrent()" title="現在のテーマをお気に入り" style="background:none; border:2px solid #ddd; border-radius:10px; padding:4px 10px; font-size:16px; cursor:pointer; color:#ddd; font-weight:900; line-height:1;">★</button>
-        </div>
+
 
         <!-- テーマページャー -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin:8px 2px 6px;">
@@ -383,6 +380,10 @@
                 <button id="themePrevBtn" onclick="themePageChange(-1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;" disabled>&#8249;</button>
                 <button id="themeNextBtn" onclick="themePageChange(1)" style="background:#f0f0f0; border:none; border-radius:8px; width:28px; height:28px; font-size:14px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center;">&#8250;</button>
             </div>
+        </div>
+        <!-- ★お気に入りボタン -->
+        <div style="text-align:center; margin:6px 0 4px;">
+            <button id="favStarBtn" onclick="toggleFavCurrent()" title="現在のテーマをお気に入り" style="background:none; border:2px solid #ddd; border-radius:12px; width:100%; padding:6px 0; font-size:18px; cursor:pointer; color:#ddd; font-weight:900; line-height:1; transition:0.2s;">☆</button>
         </div>
 
         <!-- ページ1 -->
