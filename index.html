@@ -729,7 +729,7 @@
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); });
+            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); if(typeof checkTutorial==='function') checkTutorial(); });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
             // プロフィール読み込み
             get(profileRef).then(snap => {
@@ -1229,6 +1229,119 @@
     </div>
 </div>
 
+<script>
+// ── チュートリアル ──────────────────────────────
+const TUT_STEPS = [
+    {
+        color: '#f0f7ff',
+        accent: '#0070bc',
+        icon: '📅',
+        title: 'カレンダーに記録しよう',
+        body: '日付をタップするとその日の記録画面が開きます。学習時間に合ったメダルを選んでスタンプしましょう！',
+        tip: '⚪ 〜3h　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜'
+    },
+    {
+        color: '#fff8f0',
+        accent: '#e85d04',
+        icon: '📊',
+        title: 'グラフ・メダルで振り返る',
+        body: 'カレンダーの下にはメダル集計・直近7日間のグラフ・学習分析レポートが自動で表示されます。',
+        tip: '右上の「記録 📊」から年間の記録もまとめて確認できます！'
+    },
+    {
+        color: '#f0fff6',
+        accent: '#16a34a',
+        icon: '⭐',
+        title: 'レベルアップを目指せ',
+        body: 'スタンプを貯めるとEXPが溜まり、レベルが上がります。レベルアップ時は紙吹雪が舞います🎉',
+        tip: '👑スタンプを貯めると称号も解放されます。タイトルをタップして確認！'
+    },
+    {
+        color: '#fdf4ff',
+        accent: '#7c3aed',
+        icon: '🏆',
+        title: 'ランキングに参加しよう',
+        body: '設定（左上 ☰）→ アカウント欄で表示名を入力して「ランキングに表示する」をONにして保存！',
+        tip: '画面一番下にみんなのランキングが表示されます👀'
+    },
+    {
+        color: '#fffbf0',
+        accent: '#ca8a04',
+        icon: '🎨',
+        title: 'テーマを着せ替えよう',
+        body: '設定（左上 ☰）→「テーマカラー & テクスチャ」から好きなデザインに変えられます。',
+        tip: '全5ページ・40種類以上！アニメーション付きテーマもあります ✨'
+    },
+    {
+        color: '#f0f8ff',
+        accent: '#0070bc',
+        icon: '🚀',
+        title: '準備完了！',
+        body: 'さあ、今日の学習記録をつけてみましょう。毎日の積み重ねが最強の武器になります。',
+        tip: 'ご意見・要望は設定の「📮 フィードバック」からいつでもどうぞ！'
+    }
+];
+
+let _tutStep = 0;
+
+function _tutBuild() {
+    const wrap = document.getElementById('tutSlideWrap');
+    wrap.innerHTML = '';
+    TUT_STEPS.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.id = 'tutSlide' + i;
+        div.style.cssText = `display:${i===0?'block':'none'}; padding:28px 22px 4px;`;
+        div.innerHTML = `
+            <div style="text-align:center; margin-bottom:18px;">
+                <div style="width:64px; height:64px; border-radius:20px; background:${s.color}; border:2px solid ${s.accent}22; display:inline-flex; align-items:center; justify-content:center; font-size:32px;">${s.icon}</div>
+            </div>
+            <div style="font-size:17px; font-weight:900; color:#222; text-align:center; margin-bottom:12px;">${s.title}</div>
+            <div style="font-size:13px; line-height:1.8; color:#555; font-weight:600; text-align:center; margin-bottom:14px;">${s.body}</div>
+            <div style="background:${s.color}; border-left:3px solid ${s.accent}; border-radius:0 12px 12px 0; padding:10px 14px; font-size:12px; color:#444; font-weight:700; line-height:1.6;">${s.tip}</div>
+        `;
+        wrap.appendChild(div);
+    });
+    _tutUpdateDots();
+}
+
+function _tutUpdateDots() {
+    const dots = document.getElementById('tutDots');
+    dots.innerHTML = '';
+    TUT_STEPS.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.style.cssText = `width:7px; height:7px; border-radius:50%; background:${i === _tutStep ? 'var(--primary-color)' : '#ddd'}; transition:0.3s;`;
+        dots.appendChild(d);
+    });
+    const btn = document.getElementById('tutBtn');
+    btn.textContent = _tutStep === TUT_STEPS.length - 1 ? 'はじめる 🚀' : '次へ →';
+}
+
+window.tutNext = function() {
+    document.getElementById('tutSlide' + _tutStep).style.display = 'none';
+    _tutStep++;
+    if (_tutStep >= TUT_STEPS.length) {
+        document.getElementById('tutorialOverlay').style.display = 'none';
+        localStorage.setItem('lsc-tutorial-done', '1');
+        return;
+    }
+    document.getElementById('tutSlide' + _tutStep).style.display = 'block';
+    _tutUpdateDots();
+};
+
+window.showTutorial = function() {
+    _tutStep = 0;
+    _tutBuild();
+    document.getElementById('tutorialOverlay').style.display = 'flex';
+};
+
+window.checkTutorial = function() {
+    if (!localStorage.getItem('lsc-tutorial-done')) {
+        setTimeout(showTutorial, 800);
+    }
+};
+// ────────────────────────────────────────────────
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
     // EmailJS初期化（スクリプト直後に即実行）
@@ -1307,5 +1420,25 @@
         }
     };
 </script>
+
+<!-- チュートリアルモーダル -->
+<div id="tutorialOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9000; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+    <div style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
+
+        <!-- スライドコンテナ -->
+        <div id="tutSlideWrap" style="overflow:hidden; position:relative;">
+            <!-- スライドはJSで生成 -->
+        </div>
+
+        <!-- フッター -->
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
+            <!-- ドット -->
+            <div id="tutDots" style="display:flex; gap:6px;"></div>
+            <!-- ボタン -->
+            <button id="tutBtn" onclick="tutNext()" style="background:var(--primary-color); color:white; border:none; padding:11px 22px; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer; transition:0.2s; white-space:nowrap;">次へ →</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
