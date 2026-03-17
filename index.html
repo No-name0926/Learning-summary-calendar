@@ -198,43 +198,19 @@
 
         /* ランキング */
         .ranking-container { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; margin-top: 20px; }
-
-        /* 1位特別カード */
-        .ranking-row-1st { display: flex; align-items: center; gap: 14px; padding: 20px 16px; margin-bottom: 8px; border-radius: 22px; background: linear-gradient(135deg, #fffbe6 0%, #fff3b0 60%, #ffe066 100%); border: 2.5px solid #f1c40f; box-shadow: 0 6px 24px rgba(241,196,15,0.25); position: relative; overflow: hidden; }
-        .ranking-row-1st::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: radial-gradient(circle, rgba(255,220,0,0.35), transparent 70%); pointer-events: none; }
-        .ranking-row { display: flex; align-items: center; gap: 12px; padding: 13px 10px; border-bottom: 1.5px solid #f5f5f5; transition: background 0.15s; cursor: default; }
+        .ranking-row { display: flex; align-items: center; gap: 12px; padding: 14px 10px; border-bottom: 1.5px solid #f5f5f5; transition: background 0.15s; cursor: default; }
         .ranking-row:last-child { border-bottom: none; }
-        .ranking-row.me { background: #f0f7ff; border-radius: 16px; border-bottom: none; margin: 3px 0; box-shadow: 0 2px 10px rgba(0,112,188,0.08); }
-
-        /* 1位の数字 */
-        .rank-num-1st { font-size: 30px; min-width: 36px; text-align: center; filter: drop-shadow(0 2px 4px rgba(241,196,15,0.5)); }
-        .rank-num { font-size: 17px; font-weight: 900; min-width: 32px; text-align: center; color: #ccc; }
-        .rank-num.silver { color: #9e9e9e; font-size: 20px; }
-        .rank-num.bronze { color: #cd7f32; font-size: 20px; }
-
-        /* アバター */
-        .rank-avatar-1st { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; overflow: hidden; border: 3px solid #f1c40f; box-shadow: 0 0 12px rgba(241,196,15,0.5); }
-        .rank-avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 17px; overflow: hidden; }
-        .rank-avatar img, .rank-avatar-1st img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-        /* テキスト */
+        .ranking-row.me { background: #f0f7ff; border-radius: 16px; border-bottom: none; margin: 4px 0; }
+        .rank-num { font-size: 18px; font-weight: 900; min-width: 32px; text-align: center; color: #ccc; }
+        .rank-num.gold { color: #f1c40f; font-size: 22px; }
+        .rank-num.silver { color: #b0bec5; font-size: 22px; }
+        .rank-num.bronze { color: #cd7f32; font-size: 22px; }
+        .rank-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; overflow: hidden; }
+        .rank-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         .rank-info { flex: 1; min-width: 0; }
-        .rank-name-1st { font-size: 16px; font-weight: 900; color: #7d5a00; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rank-lv-1st { font-size: 12px; color: #b8860b; font-weight: 800; margin-top: 3px; }
         .rank-name { font-size: 14px; font-weight: 900; color: #333; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rank-lv { font-size: 12px; color: #aaa; font-weight: 700; margin-top: 2px; }
-
-        /* バッジ */
-        .rank-badge-1st { font-size: 13px; font-weight: 900; color: #7d5a00; background: rgba(255,255,255,0.7); border: 1.5px solid #f1c40f; padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
-        .rank-badge { font-size: 12px; font-weight: 900; color: var(--primary-color); background: #f0f7ff; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-
-        /* ページング */
-        .ranking-pager { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 18px; }
-        .pager-btn { background: #f5f7fa; border: none; width: 38px; height: 38px; border-radius: 12px; font-size: 18px; cursor: pointer; font-weight: 900; color: #aaa; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .pager-btn:hover:not(:disabled) { background: var(--primary-color); color: white; }
-        .pager-btn:disabled { opacity: 0.3; cursor: default; }
-        .pager-info { font-size: 13px; font-weight: 900; color: #bbb; }
-
+        .rank-lv { font-size: 12px; color: #999; font-weight: 700; margin-top: 2px; }
+        .rank-badge { font-size: 12px; font-weight: 900; color: var(--primary-color); background: #e8f4fd; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
         .ranking-empty { text-align: center; color: #ccc; font-size: 13px; padding: 30px; font-weight: 700; }
         .setting-input-label { font-size: 12px; font-weight: 900; color: #666; display: block; margin-bottom: 5px; margin-top: 14px; }
     </style>
@@ -271,7 +247,7 @@
 <div id="sideMenu">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
         <h3 style="margin:0; color:#222; font-weight:900; font-size:22px;">設定</h3>
-        <button onclick="openFeedback()" title="フィードバックを送る" style="background:#f0f7ff; border:none; border-radius:12px; width:36px; height:36px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0;">💬</button>
+        <button onclick="openFeedback()" title="フィードバックを送る" style="background:#f0f7ff; border:none; border-radius:12px; width:36px; height:36px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;">💬</button>
     </div>
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
@@ -325,7 +301,7 @@
             <div class="setting-switch">
                 <span class="switch-label">🏆 ランキングに表示する</span>
                 <label class="switch">
-                    <input type="checkbox" id="showInRankingToggle">
+                    <input type="checkbox" id="showInRankingToggle" checked>
                     <span class="slider"></span>
                 </label>
             </div>
@@ -333,19 +309,7 @@
             <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
         </div>
     </div>
-    <button style="width:100%; margin-top:16px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
-</div>
-
-<!-- フィードバックパネル -->
-<div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:rgba(255,255,255,0.98); z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); padding:24px 20px; box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
-        <button onclick="closeFeedback()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#bbb; padding:0; line-height:1; flex-shrink:0;">&#8249;</button>
-        <h3 style="margin:0; font-size:20px; font-weight:900; color:#222;">💬 フィードバック</h3>
-    </div>
-    <p style="font-size:13px; color:#aaa; margin:0 0 18px; line-height:1.8; font-weight:600;">ご意見・ご要望をお気軽にどうぞ。<br>開発チームに直接届きます 🙏</p>
-    <textarea id="feedbackMessage" style="flex:1; min-height:220px; width:100%; padding:16px; border:2.5px solid #f0f0f0; border-radius:18px; background:#fafafa; font-size:15px; box-sizing:border-box; outline:none; resize:none; font-family:inherit; line-height:1.7; color:#333;" placeholder="例：〇〇の機能がほしい、〇〇が使いにくい、など"></textarea>
-    <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:20px; margin:10px 0 4px; font-weight:800;"></div>
-    <button class="save-btn" id="sendFeedbackBtn" onclick="sendFeedback()">送信する 🚀</button>
+    <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
 <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
@@ -415,11 +379,6 @@
     <div class="ranking-container">
         <div class="stats-title">🏆 学習レベルランキング</div>
         <div id="rankingList"><div class="ranking-empty">読み込み中...</div></div>
-        <div class="ranking-pager" id="rankingPager" style="display:none;">
-            <button class="pager-btn" id="rankPrevBtn" onclick="rankChangePage(-1)" disabled>&#8249;</button>
-            <span class="pager-info" id="rankPageInfo">1 / 1</span>
-            <button class="pager-btn" id="rankNextBtn" onclick="rankChangePage(1)">&#8250;</button>
-        </div>
     </div>
 </div>
 
@@ -463,21 +422,6 @@
         <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
         <button class="save-btn" onclick="saveDayData()">保存する</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
-    </div>
-</div>
-
-<!-- チュートリアルモーダル -->
-<div id="tutorialModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:8000; justify-content:center; align-items:center; backdrop-filter:blur(8px);">
-    <div style="background:white; width:88%; max-width:400px; border-radius:28px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.4); position:relative;">
-        <!-- ステップ表示 -->
-        <div id="tutSlides" style="overflow:hidden;">
-            <!-- スライド1〜5はJSで生成 -->
-        </div>
-        <!-- 下部ナビ -->
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px 22px;">
-            <div id="tutDots" style="display:flex; gap:7px;"></div>
-            <button id="tutNextBtn" onclick="tutNext()" style="background:var(--primary-color); color:white; border:none; padding:12px 24px; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer;">次へ →</button>
-        </div>
     </div>
 </div>
 
@@ -616,13 +560,13 @@
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); showTutorialIfFirst(); });
+            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
             // プロフィール読み込み
             get(profileRef).then(snap => {
                 const p = snap.val() || {};
                 document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
-                document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
+                document.getElementById('showInRankingToggle').checked = (p.showInRanking !== false);
             });
             // ランキング購読
             onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
@@ -671,7 +615,7 @@
         const user = window._currentUser;
         const snap = await get(profileRef);
         const profile = snap.val() || {};
-        const showInRanking = (profile.showInRanking === true);
+        const showInRanking = (profile.showInRanking !== false);
         const rankEntry = ref(db, `ranking/${user.uid}`);
         if (!showInRanking) { remove(rankEntry); return; }
         let totalExp = 0;
@@ -687,101 +631,37 @@
         });
     }
 
-    const RANK_PER_PAGE = 10;
-    let rankAllEntries = [];
-    let rankCurrentPage = 0;
-    let rankMyUid = '';
-
     function renderRanking(data, myUid) {
-        rankMyUid = myUid;
-        rankAllEntries = Object.entries(data)
+        const list = document.getElementById('rankingList');
+        const entries = Object.entries(data)
             .map(([uid, v]) => ({ uid, ...v }))
             .sort((a, b) => b.exp - a.exp);
-        rankCurrentPage = 0;
-        // 自分のページに自動ジャンプ
-        const myIdx = rankAllEntries.findIndex(e => e.uid === myUid);
-        if (myIdx >= 0) rankCurrentPage = Math.floor(myIdx / RANK_PER_PAGE);
-        renderRankingPage();
-    }
-
-    function renderRankingPage() {
-        const list = document.getElementById('rankingList');
-        const pager = document.getElementById('rankingPager');
-        const totalPages = Math.ceil(rankAllEntries.length / RANK_PER_PAGE);
-
-        if (rankAllEntries.length === 0) {
-            list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀<br><span style="font-size:11px;">設定からランキング表示をONにしよう！</span></div>';
-            pager.style.display = 'none';
-            return;
-        }
-
-        const start = rankCurrentPage * RANK_PER_PAGE;
-        const pageEntries = rankAllEntries.slice(start, start + RANK_PER_PAGE);
-
+        if (entries.length === 0) { list.innerHTML = '<div class="ranking-empty">まだ誰も参加していません 👀</div>'; return; }
         list.innerHTML = '';
-        pageEntries.forEach((entry, pageIdx) => {
-            const globalIdx = start + pageIdx;
-            const rankNum = globalIdx + 1;
-            const isMe = entry.uid === rankMyUid;
-            const meTag = isMe ? ' <span style="font-size:10px;color:var(--primary-color);font-weight:900;">（あなた）</span>' : '';
-
-            if (rankNum === 1) {
-                // 1位 特別デザイン
-                const avatarHTML = entry.photoURL
-                    ? `<div class="rank-avatar-1st"><img src="${entry.photoURL}" referrerpolicy="no-referrer"></div>`
-                    : `<div class="rank-avatar-1st">👤</div>`;
-                const row = document.createElement('div');
-                row.className = 'ranking-row-1st' + (isMe ? ' me' : '');
-                row.innerHTML = `
-                    <div class="rank-num-1st">🥇</div>
-                    ${avatarHTML}
-                    <div class="rank-info">
-                        <div class="rank-name-1st">${entry.displayName}${meTag}</div>
-                        <div class="rank-lv-1st">Lv. ${entry.level} ／ EXP ${entry.exp}</div>
-                    </div>
-                    <div class="rank-badge-1st">👑 Lv.${entry.level}</div>
-                `;
-                list.appendChild(row);
-            } else {
-                // 2位以降
-                let rankLabel = rankNum;
-                let rankNumClass = '';
-                if (rankNum === 2) { rankLabel = '🥈'; rankNumClass = 'silver'; }
-                else if (rankNum === 3) { rankLabel = '🥉'; rankNumClass = 'bronze'; }
-                const avatarHTML = entry.photoURL
-                    ? `<div class="rank-avatar"><img src="${entry.photoURL}" referrerpolicy="no-referrer"></div>`
-                    : `<div class="rank-avatar">👤</div>`;
-                const row = document.createElement('div');
-                row.className = 'ranking-row' + (isMe ? ' me' : '');
-                row.innerHTML = `
-                    <div class="rank-num ${rankNumClass}">${rankLabel}</div>
-                    ${avatarHTML}
-                    <div class="rank-info">
-                        <div class="rank-name">${entry.displayName}${meTag}</div>
-                        <div class="rank-lv">Lv. ${entry.level} ／ EXP ${entry.exp}</div>
-                    </div>
-                    <div class="rank-badge">Lv.${entry.level}</div>
-                `;
-                list.appendChild(row);
-            }
+        entries.forEach((entry, i) => {
+            const isMe = entry.uid === myUid;
+            const row = document.createElement('div');
+            row.className = 'ranking-row' + (isMe ? ' me' : '');
+            const rankNum = i + 1;
+            let rankClass = '', rankLabel = rankNum;
+            if (rankNum === 1) { rankClass = 'gold'; rankLabel = '🥇'; }
+            else if (rankNum === 2) { rankClass = 'silver'; rankLabel = '🥈'; }
+            else if (rankNum === 3) { rankClass = 'bronze'; rankLabel = '🥉'; }
+            const avatarHTML = entry.photoURL
+                ? `<div class="rank-avatar"><img src="${entry.photoURL}" referrerpolicy="no-referrer"></div>`
+                : `<div class="rank-avatar" style="font-size:18px;">👤</div>`;
+            row.innerHTML = `
+                <div class="rank-num ${rankClass}">${rankLabel}</div>
+                ${avatarHTML}
+                <div class="rank-info">
+                    <div class="rank-name">${entry.displayName}${isMe ? ' <span style="font-size:10px;color:var(--primary-color);">（あなた）</span>' : ''}</div>
+                    <div class="rank-lv">Lv. ${entry.level} ／ EXP ${entry.exp}</div>
+                </div>
+                <div class="rank-badge">Lv.${entry.level}</div>
+            `;
+            list.appendChild(row);
         });
-
-        // ページャー
-        if (totalPages > 1) {
-            pager.style.display = 'flex';
-            document.getElementById('rankPageInfo').textContent = `${rankCurrentPage + 1} / ${totalPages}`;
-            document.getElementById('rankPrevBtn').disabled = (rankCurrentPage === 0);
-            document.getElementById('rankNextBtn').disabled = (rankCurrentPage >= totalPages - 1);
-        } else {
-            pager.style.display = 'none';
-        }
     }
-
-    window.rankChangePage = function(dir) {
-        const totalPages = Math.ceil(rankAllEntries.length / RANK_PER_PAGE);
-        rankCurrentPage = Math.max(0, Math.min(totalPages - 1, rankCurrentPage + dir));
-        renderRankingPage();
-    };
 
     document.getElementById('saveProfileBtn').onclick = async () => {
         if (!window._currentUser || !profileRef) return;
@@ -1041,130 +921,25 @@
     }
     setTheme(initialTheme);
     fetchQuote();
-
-    // ── チュートリアル ────────────────────────
-    const TUTORIAL_STEPS = [
-        {
-            emoji: '📅',
-            title: 'カレンダーに記録しよう',
-            body: '日付をタップすると記録画面が開きます。
-その日の学習時間に合ったメダルを選んでスタンプしましょう！
-
-⚪ 〜3h　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜',
-            color: '#e8f4fd',
-            accent: '#0070bc'
-        },
-        {
-            emoji: '📝',
-            title: 'メモも残せます',
-            body: 'スタンプと一緒に、その日の学習内容や気づきをメモできます。
-
-後から振り返ったり、右上の「記録 📊」からまとめて読めます。',
-            color: '#fff8e1',
-            accent: '#f39c12'
-        },
-        {
-            emoji: '🎯',
-            title: '目標カウントダウン',
-            body: '設定メニュー（左上 ☰）から試験や資格などの目標日を登録できます。
-
-画面上部に「あと○日」と表示され、モチベーションをキープ！',
-            color: '#f0fff4',
-            accent: '#11998e'
-        },
-        {
-            emoji: '🎨',
-            title: 'テーマを変えよう',
-            body: '設定メニューからカラーテーマを16種類から選べます。
-気分によって変えると新鮮な気持ちで学習できます ✨
-
-起動時ランダムテーマも試してみて！',
-            color: '#fdf4ff',
-            accent: '#9b59b6'
-        },
-        {
-            emoji: '🏆',
-            title: 'ランキングに参加しよう',
-            body: '設定メニューのアカウント欄で表示名を決めて
-「ランキングに表示する」をONにすると
-他のユーザーとレベルを競えます！
-
-画面一番下のランキングをチェック 👀',
-            color: '#fffbe6',
-            accent: '#f1c40f'
-        }
-    ];
-
-    let tutStep = 0;
-
-    function buildTutorial() {
-        const slides = document.getElementById('tutSlides');
-        slides.innerHTML = '';
-        TUTORIAL_STEPS.forEach((s, i) => {
-            const div = document.createElement('div');
-            div.id = `tutSlide${i}`;
-            div.style.cssText = `display:${i===0?'block':'none'}; padding:32px 28px 16px;`;
-            div.innerHTML = `
-                <div style="text-align:center; margin-bottom:18px;">
-                    <div style="font-size:56px; line-height:1;">${s.emoji}</div>
-                </div>
-                <div style="background:${s.color}; border-radius:18px; padding:20px; border-left:4px solid ${s.accent};">
-                    <div style="font-size:16px; font-weight:900; color:${s.accent}; margin-bottom:10px;">${s.title}</div>
-                    <div style="font-size:13px; line-height:1.9; color:#555; font-weight:600; white-space:pre-wrap;">${s.body}</div>
-                </div>
-            `;
-            slides.appendChild(div);
-        });
-        buildDots();
-    }
-
-    function buildDots() {
-        const dots = document.getElementById('tutDots');
-        dots.innerHTML = '';
-        TUTORIAL_STEPS.forEach((_, i) => {
-            const d = document.createElement('div');
-            d.style.cssText = `width:8px; height:8px; border-radius:50%; background:${i===tutStep?'var(--primary-color)':'#ddd'}; transition:0.3s;`;
-            dots.appendChild(d);
-        });
-    }
-
-    window.tutNext = function() {
-        document.getElementById(`tutSlide${tutStep}`).style.display = 'none';
-        tutStep++;
-        if (tutStep >= TUTORIAL_STEPS.length) {
-            document.getElementById('tutorialModal').style.display = 'none';
-            localStorage.setItem('study-tutorial-done', '1');
-            return;
-        }
-        document.getElementById(`tutSlide${tutStep}`).style.display = 'block';
-        buildDots();
-        const btn = document.getElementById('tutNextBtn');
-        btn.textContent = tutStep === TUTORIAL_STEPS.length - 1 ? 'はじめる 🚀' : '次へ →';
-    };
-
-    function showTutorialIfFirst() {
-        if (!localStorage.getItem('study-tutorial-done')) {
-            tutStep = 0;
-            buildTutorial();
-            const modal = document.getElementById('tutorialModal');
-            modal.style.display = 'flex';
-            document.getElementById('tutNextBtn').textContent = '次へ →';
-        }
-    }
-    // ─────────────────────────────────────────
 </script>
+<!-- フィードバックパネル -->
+<div id="feedbackPanel" style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:rgba(255,255,255,0.98); z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); padding:24px 20px; box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
+        <button onclick="closeFeedback()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#bbb; padding:0; line-height:1;">&#8249;</button>
+        <h3 style="margin:0; font-size:20px; font-weight:900; color:#222;">💬 フィードバック</h3>
+    </div>
+    <p style="font-size:13px; color:#aaa; margin:0 0 18px; line-height:1.8; font-weight:600;">ご意見・ご要望をお気軽にどうぞ。<br>開発チームに直接届きます 🙏</p>
+    <textarea id="feedbackMessage" style="flex:1; min-height:220px; width:100%; padding:16px; border:2.5px solid #f0f0f0; border-radius:18px; background:#fafafa; font-size:15px; box-sizing:border-box; outline:none; resize:none; font-family:inherit; line-height:1.7; color:#333; transition:border-color 0.2s;" placeholder="例：〇〇の機能がほしい、〇〇が使いにくい、など" onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='#f0f0f0'"></textarea>
+    <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:20px; margin:10px 0 4px; font-weight:800;"></div>
+    <button id="sendFeedbackBtn" onclick="sendFeedback()" style="width:100%; padding:16px; background:var(--primary-color); color:white; border:none; border-radius:16px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.15);">送信する 🚀</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
     emailjs.init({ publicKey: "iKnQEZKU9n8i6c-SL" });
 
     window.openFeedback = function() {
-        // サイドメニューが開いていれば閉じてからスライドイン
-        const menu = document.getElementById('sideMenu');
-        if (menu.classList.contains('open')) {
-            menu.classList.remove('open');
-            document.getElementById('menuOverlay').style.display = 'none';
-        }
+        toggleMenu();
         setTimeout(() => {
             document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
             document.getElementById('feedbackMessage').value = '';
@@ -1172,7 +947,7 @@
             const btn = document.getElementById('sendFeedbackBtn');
             btn.disabled = false;
             btn.textContent = '送信する 🚀';
-        }, 50);
+        }, 360);
     };
 
     window.closeFeedback = function() {
@@ -1183,9 +958,15 @@
         const message = document.getElementById('feedbackMessage').value.trim();
         const statusEl = document.getElementById('feedbackStatus');
         const btn = document.getElementById('sendFeedbackBtn');
-        if (!message) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '⚠️ メッセージを入力してください'; return; }
-        btn.disabled = true; btn.textContent = '送信中...';
-        statusEl.style.color = '#999'; statusEl.textContent = '';
+        if (!message) {
+            statusEl.style.color = '#e74c3c';
+            statusEl.textContent = '⚠️ メッセージを入力してください';
+            return;
+        }
+        btn.disabled = true;
+        btn.textContent = '送信中...';
+        statusEl.style.color = '#999';
+        statusEl.textContent = '';
         const user = window._currentUser || null;
         const userName = user ? (user.displayName || user.email || '不明') : '未ログイン';
         const userEmail = user ? (user.email || '-') : '-';
@@ -1194,7 +975,9 @@
         try {
             await emailjs.send("service_f1phsus", "template_ifp0q9y", {
                 subject: dateStr + ' フィードバック',
-                message, user_name: userName, user_email: userEmail,
+                message: message,
+                user_name: userName,
+                user_email: userEmail,
                 sent_at: now.toLocaleString('ja-JP')
             });
             statusEl.style.color = '#27ae60';
@@ -1205,7 +988,8 @@
             console.error('EmailJS error:', err);
             statusEl.style.color = '#e74c3c';
             statusEl.textContent = '❌ 送信失敗。もう一度お試しください。';
-            btn.disabled = false; btn.textContent = '送信する 🚀';
+            btn.disabled = false;
+            btn.textContent = '送信する 🚀';
         }
     };
 </script>
