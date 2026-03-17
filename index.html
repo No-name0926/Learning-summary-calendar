@@ -340,10 +340,16 @@
 <div id="sideMenu">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
         <h3 style="margin:0; color:#222; font-weight:900; font-size:22px;">設定</h3>
-        <button onclick="openFeedback()" title="ご意見・フィードバック" style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; flex-shrink:0; transition:0.2s;">
-            <span style="font-size:15px;">📮</span>
-            <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">意見を送る</span>
-        </button>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button onclick="showTutorial(); toggleMenu();" title="使い方を見る" style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
+                <span style="font-size:15px;">📖</span>
+                <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">使い方</span>
+            </button>
+            <button onclick="openFeedback()" title="ご意見・フィードバック" style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
+                <span style="font-size:15px;">📮</span>
+                <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">意見を送る</span>
+            </button>
+        </div>
     </div>
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
@@ -1238,7 +1244,7 @@ const TUT_STEPS = [
         icon: '📅',
         title: 'カレンダーに記録しよう',
         body: '日付をタップするとその日の記録画面が開きます。学習時間に合ったメダルを選んでスタンプ！メモも一緒に残せます📝',
-        tip: '⚪ 0h～　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜'
+        tip: '⚪ 〜3h　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜'
     },
     {
         color: '#fff8f0',
@@ -1270,7 +1276,7 @@ const TUT_STEPS = [
         icon: '🏆',
         title: 'ランキングに参加しよう',
         body: '設定（左上 ☰）→ アカウント欄で表示名を入力し「ランキングに表示する」をONにして保存！レベルで全ユーザーと競えます。',
-        tip: '画面一番下のランキングをチェック👀　※デフォルトはOFFなので自分で参加設定が必要です'
+        tip: '画面一番下のランキングをチェック👀　デフォルトはOFFなので自分で参加設定が必要です'
     },
     {
         color: '#fffbf0',
