@@ -1,0 +1,13 @@
+{
+  "name": "lsc-push-notifier",
+  "version": "1.0.0",
+  "description": "Push notification sender for Learning Summary Calendar",
+  "main": "notify.js",
+  "scripts": {
+    "notify": "node notify.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "web-push": "^3.6.7"
+  }
+}
