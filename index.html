@@ -1143,7 +1143,13 @@
             ...TITLES.filter(t => crowns >= t.req).map(t => t.name),
             ...STAR_TITLES.filter(t => stars >= t.req).map(t => t.name)
         ];
-        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        let saved = null;
+        try {
+            const parsed = JSON.parse(localStorage.getItem(key) || 'null');
+            saved = Array.isArray(parsed) ? parsed : null;
+        } catch {
+            saved = null;
+        }
         if (!saved) {
             localStorage.setItem(key, JSON.stringify(unlocked));
             return;
