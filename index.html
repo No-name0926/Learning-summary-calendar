@@ -163,7 +163,7 @@
         .chart-wrapper { width: 100%; height: 210px; margin-bottom: 20px; }
         .analysis-box { background: #f9fbff; border-radius: 20px; padding: 18px; border: 1px solid #eef2ff; margin-bottom: 10px; }
         .analysis-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; font-weight: 900; color: var(--primary-color); }
-        .analysis-text { font-size: 13px; line-height: 1.7; color: #555; font-weight: 600; min-height: 60px; }
+        .analysis-text { font-size: 13px; line-height: 1.7; color: #555; font-weight: 600; min-height: 60px; white-space: pre-line; }
         .analysis-score { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #d0d7e6; }
         .score-val { font-size: 14px; font-weight: 900; }
         .lv-bar-container { width: 100%; margin-top: 30px; padding: 0 5px; box-sizing: border-box; }
@@ -1069,16 +1069,45 @@
         }
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: values, borderColor: themeColor, backgroundColor: themeColor + '28', fill: true, tension: 0.45, borderWidth: 4, pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } } });
-        const avg = totalVal / 7, streak = parseInt(document.getElementById('streakDisplay').innerText); let comment = "";
-        if (totalVal === 0) comment = "まずは今日最初のスタンプを。小さな一歩がすべての結果を連れてきます。";
-        else if (streak >= 14) comment = `驚異的です！${streak}日間一度も足を止めていません。努力はあなたの「才能」です。`;
-        else if (highDays >= 5) comment = "圧倒的な熱量です。週のほとんどを「集中モード（7h〜）」で過ごせています。";
-        else if (zeroDays === 0 && avg >= 5) comment = "理想的な推移です。毎日コンスタントに5時間以上を確保できています。";
-        else if (zeroDays === 0) comment = "素晴らしい！今週は「穴」がありません。短時間でも毎日触れることが大切です。";
-        else if (lastDayVal >= 7 && zeroDays > 0) comment = "昨日の爆発力は素晴らしいものでした。この勢いを維持しましょう。";
-        else if (zeroDays >= 4) comment = "少し休息が長くなっているようです。「5分だけやる」から再開してみませんか？";
-        else comment = "波はありますが、着実に前進しています。自分のペースを掴みつつありますね。";
-        document.getElementById('analysisComment').innerText = comment; document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%"; document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中")); document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
+        const avg = totalVal / 7, streak = parseInt(document.getElementById('streakDisplay').innerText);
+        const daysInMonth = new Date(viewY, viewM, 0).getDate();
+        const now = new Date();
+        const isCurrentViewedMonth = (viewY === now.getFullYear() && viewM === now.getMonth() + 1);
+        const targetDays = isCurrentViewedMonth ? now.getDate() : daysInMonth;
+        let monthTotal = 0, monthActive = 0, monthStars = 0;
+        let peak = { day: '-', val: -1 }, low = { day: '-', val: 999 };
+        for (let d = 1; d <= targetDays; d++) {
+            const data = getLogData(`log-${viewY}-${viewM}-${d}`);
+            const v = VALUE_MAP[data.stamp] || 0;
+            monthTotal += v;
+            if (v > 0) {
+                monthActive++;
+                if (v > peak.val) peak = { day: d, val: v };
+                if (v < low.val) low = { day: d, val: v };
+            }
+            if (data.star) monthStars++;
+        }
+        const monthAvg = targetDays > 0 ? (monthTotal / targetDays) : 0;
+        const activeRate = targetDays > 0 ? Math.round((monthActive / targetDays) * 100) : 0;
+        const goalRate = targetDays > 0 ? Math.round((monthStars / targetDays) * 100) : 0;
+
+        let trend = "安定";
+        if (avg >= 6) trend = "急上昇";
+        else if (avg < 2) trend = "準備中";
+
+        const periodLabel = monthActive === 0 ? '記録なし' : `${viewM}/${peak.day}（High ${peak.val}）〜 ${viewM}/${low.day}（Low ${low.val}）`;
+        const comment = [
+            `📌 今月の目標達成: ${monthStars}日（達成率 ${goalRate}%）`,
+            `⏱ 勉強量: 合計 ${monthTotal}pt / 平均 ${monthAvg.toFixed(1)}pt（${targetDays}日基準）`,
+            `📅 学習継続: 実施 ${monthActive}/${targetDays}日（稼働率 ${activeRate}%）`,
+            `📈 期間内ロー↔ハイ: ${periodLabel}`,
+            `🔥 直近7日: 合計 ${totalVal}pt・平均 ${avg.toFixed(1)}pt・連続 ${streak}日`
+        ].join('\n');
+
+        document.getElementById('analysisComment').innerText = comment;
+        document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%";
+        document.getElementById('scoreGrowth').innerText = trend;
+        document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
     const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 200, type:'crown' }, { name: "🚀 学習の先駆者", req: 150, type:'crown' }, { name: "👑 努力の王様", req: 100, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
@@ -1107,6 +1136,31 @@
         return resolved;
     }
 
+    function triggerTitleUnlockEffect(crowns, stars) {
+        if (!window._currentUser) return;
+        const key = `lsc-unlocked-titles-${window._currentUser.uid}`;
+        const unlocked = [
+            ...TITLES.filter(t => crowns >= t.req).map(t => t.name),
+            ...STAR_TITLES.filter(t => stars >= t.req).map(t => t.name)
+        ];
+        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        if (!saved) {
+            localStorage.setItem(key, JSON.stringify(unlocked));
+            return;
+        }
+        const newOnes = unlocked.filter(t => !saved.includes(t));
+        if (newOnes.length === 0) return;
+        localStorage.setItem(key, JSON.stringify(unlocked));
+
+        const newest = newOnes[newOnes.length - 1];
+        confetti({ particleCount: 220, spread: 85, origin: { y: 0.62 } });
+        const pop = document.createElement('div');
+        pop.style = 'position:fixed;left:50%;top:20%;transform:translateX(-50%);z-index:12000;background:linear-gradient(135deg,#fff7d1,#ffe8a3);color:#7a5400;padding:14px 18px;border-radius:16px;font-weight:900;font-size:14px;box-shadow:0 12px 35px rgba(0,0,0,0.25);border:2px solid rgba(255,200,30,0.5);';
+        pop.innerText = `🏆 新称号を獲得！ ${newest}`;
+        document.body.appendChild(pop);
+        setTimeout(() => pop.remove(), 2200);
+    }
+
     function updateStats() {
         let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
         if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1); while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
@@ -1118,6 +1172,7 @@
         let stars = 0;
         Object.keys(remoteData).forEach(k => { if (getLogData(k).star) stars++; });
         document.getElementById('titleDisplay').innerText = resolveCurrentTitle(crowns, stars);
+        triggerTitleUnlockEffect(crowns, stars);
 
         const barCtx = document.getElementById('yearStackChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if(yearStackChart) yearStackChart.destroy();
@@ -1229,8 +1284,16 @@
         document.getElementById('dayModal').style.display = 'flex';
     };
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
-    window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } }); document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
-    window.saveDayData = () => { if(!logsRef) return; const memo = document.getElementById('dayMemo').value.trim(); set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => { closeDayModal(); }); };
+    window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
+    window.saveDayData = () => {
+        if(!logsRef) return;
+        const memo = document.getElementById('dayMemo').value.trim();
+        const before = getLogData(selectedDateKey).stamp;
+        set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => {
+            if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
+            closeDayModal();
+        });
+    };
     window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); updateGoalBanner(); };
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
     window.deleteEvent = (id) => { if(eventsRef) remove(child(eventsRef, id)); };
@@ -1362,6 +1425,56 @@
         { t: "自分の価値を他人に決めさせるな。", a: "映画『プラダを着た悪魔』" },
         { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
         { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
+        { t: "限界は、超えるためにある。", a: "孫悟空（ドラゴンボール）" },
+        { t: "何度でも立ち上がる、それが主人公だ。", a: "ナルト（NARUTO）" },
+        { t: "最後まで諦めない者が流れを変える。", a: "日向翔陽（ハイキュー!!）" },
+        { t: "逆境のときこそ、成長の角度は大きい。", a: "緑谷出久（ヒロアカ）" },
+        { t: "仲間を信じる勇気が、次の一歩になる。", a: "モンキー・D・ルフィ（ONE PIECE）" },
+        { t: "一歩ずつ積み重ねた者が、遠くへ行ける。", a: "煉獄杏寿郎（鬼滅の刃）" },
+        { t: "焦るな、準備した分だけ強くなれる。", a: "五条悟（呪術廻戦）" },
+        { t: "勝負は、折れない心が決める。", a: "黒崎一護（BLEACH）" },
+        { t: "地道な鍛錬が、最後に武器になる。", a: "炭治郎（鬼滅の刃）" },
+        { t: "努力は、見えないところで差を作る。", a: "エレン・イェーガー（進撃の巨人）" },
+        { t: "信じた道を、静かに進めばいい。", a: "ヨル・フォージャー（SPY×FAMILY）" },
+        { t: "明日の自分を助けるのは、今日の自分だ。", a: "アーニャ（SPY×FAMILY）" },
+        { t: "迷ってもいい、止まらなければ前進だ。", a: "ロイド・フォージャー（SPY×FAMILY）" },
+        { t: "本気の一回は、百回の迷いを超える。", a: "リヴァイ（進撃の巨人）" },
+        { t: "準備を笑う者は、本番で泣く。", a: "怪盗キッド（名探偵コナン）" },
+        { t: "失敗は、次の成功への設計図になる。", a: "江戸川コナン" },
+        { t: "目標は高く、足元は着実に。", a: "安室透（名探偵コナン）" },
+        { t: "遠回りでも、続ける人が一番強い。", a: "工藤新一" },
+        { t: "勝てる日まで、挑み続ければいい。", a: "桜木花道（SLAM DUNK）" },
+        { t: "努力の量は、いずれ自信の量になる。", a: "流川楓（SLAM DUNK）" },
+        { t: "昨日より上手くなる、それが最短距離だ。", a: "宮城リョータ（SLAM DUNK）" },
+        { t: "実力は、反復の先にしかない。", a: "赤木剛憲（SLAM DUNK）" },
+        { t: "小さな達成を、毎日ひとつ増やせ。", a: "アシタカ（もののけ姫）" },
+        { t: "準備した者だけが、風を味方にできる。", a: "キキ（魔女の宅急便）" },
+        { t: "挑戦は怖くて当たり前、でもやる。", a: "千尋（千と千尋の神隠し）" },
+        { t: "自分のペースでいい、止まらなければ。", a: "トトロ（となりのトトロ）" },
+        { t: "積み重ねは、静かに人生を変える。", a: "ハウル（ハウルの動く城）" },
+        { t: "希望は、行動した人の前に現れる。", a: "ルパン三世" },
+        { t: "一度の失敗で、物語は終わらない。", a: "次元大介" },
+        { t: "自分で決めた道なら、最後まで貫け。", a: "石川五ェ門" },
+        { t: "本気の継続は、才能を超えていく。", a: "峰不二子" },
+        { t: "続けた時間は、必ず君を裏切らない。", a: "ドラえもん" },
+        { t: "できることから始めれば、景色は変わる。", a: "のび太" },
+        { t: "勇気は、最初の一歩に宿る。", a: "しずかちゃん" },
+        { t: "努力のメモは、未来の自信になる。", a: "ジャイアン" },
+        { t: "今日の反省は、明日の武器になる。", a: "スネ夫" },
+        { t: "焦らず磨けば、必ず光る。", a: "ジェダイ（スター・ウォーズ）" },
+        { t: "訓練は裏切らない、感情は変えられる。", a: "ダース・ベイダー" },
+        { t: "逆境は、主人公を強くする装置だ。", a: "アイアンマン（MCU）" },
+        { t: "挑戦し続ける人に、チャンスは集まる。", a: "キャプテン・アメリカ" },
+        { t: "迷っても、仲間と進めば道は開く。", a: "スパイダーマン" },
+        { t: "準備と実行、その繰り返しが勝利を作る。", a: "ドクター・ストレンジ" },
+        { t: "物語の転機は、だいたい努力の直後に来る。", a: "ハリー・ポッター" },
+        { t: "学ぶことを止めない者が、未来を掴む。", a: "ハーマイオニー" },
+        { t: "小さな勇気が、大きな運命を変える。", a: "ロン・ウィーズリー" },
+        { t: "積み重ねた者だけが、静かな自信を持てる。", a: "アーサー・モーガン（RDR2）" },
+        { t: "結果は後からついてくる。先にやるのは自分だ。", a: "エレン・ポンペオ（俳優）" },
+        { t: "昨日より1%成長すれば、1年で別人になれる。", a: "トム・ホランド（俳優）" },
+        { t: "休む日があっても、諦める日は作らない。", a: "菅田将暉（俳優）" },
+        { t: "継続は派手じゃない。でも最強だ。", a: "長澤まさみ（俳優）" },
     ];
 
     // ── 月目標 & 🌟 ──────────────────────────────
