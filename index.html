@@ -622,7 +622,7 @@
         <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
         <div id="starToggleWrap" style="display:none; background:#fffbe6; border:1.5px solid rgba(255,200,30,0.4); border-radius:14px; padding:10px 16px; margin-bottom:14px; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleStar()">
             <div>
-                <div style="font-size:12px; font-weight:900; color:#b8860b;">今月の目標達成？</div>
+                <div style="font-size:12px; font-weight:900; color:#b8860b;">今月の目標達成！</div>
                 <div id="starGoalPreview" style="font-size:11px; color:#999; margin-top:2px;"></div>
             </div>
             <span id="starToggleIcon" style="font-size:26px;">☆</span>
@@ -1082,7 +1082,7 @@
     }
 
     const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 180, type:'crown' }, { name: "🚀 学習の先駆者", req: 120, type:'crown' }, { name: "👑 努力の王様", req: 80, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
-    const STAR_TITLES = [ { name: "🌠 流星の達人", req: 200, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "☆ 目標設定中", req: 0, type:'star' } ];
+    const STAR_TITLES = [ { name: "🌠 流星の達人", req: 200, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
 
     function getUnlockedTopTitle(crowns, stars, type = 'crown') {
         const arr = type === 'star' ? STAR_TITLES : TITLES;
