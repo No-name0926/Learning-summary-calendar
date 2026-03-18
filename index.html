@@ -1070,46 +1070,75 @@
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: values, borderColor: themeColor, backgroundColor: themeColor + '28', fill: true, tension: 0.45, borderWidth: 4, pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } } });
         const avg = totalVal / 7, streak = parseInt(document.getElementById('streakDisplay').innerText);
+        let monthStars = 0;
         const daysInMonth = new Date(viewY, viewM, 0).getDate();
-        const now = new Date();
-        const isCurrentViewedMonth = (viewY === now.getFullYear() && viewM === now.getMonth() + 1);
-        const targetDays = isCurrentViewedMonth ? now.getDate() : daysInMonth;
-        let monthTotal = 0, monthActive = 0, monthStars = 0;
-        let peak = { day: '-', val: -1 }, low = { day: '-', val: 999 };
-        for (let d = 1; d <= targetDays; d++) {
-            const data = getLogData(`log-${viewY}-${viewM}-${d}`);
-            const v = VALUE_MAP[data.stamp] || 0;
-            monthTotal += v;
-            if (v > 0) {
-                monthActive++;
-                if (v > peak.val) peak = { day: d, val: v };
-                if (v < low.val) low = { day: d, val: v };
-            }
-            if (data.star) monthStars++;
+        for (let d = 1; d <= daysInMonth; d++) {
+            if (getLogData(`log-${viewY}-${viewM}-${d}`).star) monthStars++;
         }
-        const monthAvg = targetDays > 0 ? (monthTotal / targetDays) : 0;
-        const activeRate = targetDays > 0 ? Math.round((monthActive / targetDays) * 100) : 0;
-        const goalRate = targetDays > 0 ? Math.round((monthStars / targetDays) * 100) : 0;
 
-        let trend = "安定";
-        if (avg >= 6) trend = "急上昇";
-        else if (avg < 2) trend = "準備中";
+        let candidates = [];
+        if (totalVal === 0) candidates = [
+            "まずは5分だけ着手して、学習モードをONにしよう。",
+            "0→1がいちばん難しい日。1スタンプだけでも最高の前進です。",
+            "今日は準備運動の日。まずは小さな一歩から始めよう。"
+        ];
+        else if (streak >= 30) candidates = [
+            `神継続！${streak}日連続は完全に習慣化できています。`,
+            `${streak}日連続達成、もはや努力が日常に溶け込んでいます。`,
+            `連続${streak}日、ここまで来た自分を全力で誇ってOK！`
+        ];
+        else if (streak >= 14) candidates = [
+            `${streak}日連続、勢いが本物です。このリズムをキープしよう。`,
+            `2週間以上の継続、伸びる人の動きになっています。`,
+            `連続記録${streak}日、次は「質」を1段上げるタイミングです。`
+        ];
+        else if (highDays >= 5) candidates = [
+            "集中力が高水準！週の大半で高負荷学習ができています。",
+            "今週はハイパフォーマンス週。難問に挑むには最高の状態です。",
+            "高強度の日が多く、成長曲線がぐっと立ち上がっています。"
+        ];
+        else if (zeroDays === 0 && avg >= 5) candidates = [
+            "毎日安定して高水準。理想的な学習ペースです。",
+            "穴なし＋高平均、実力が着実に積み上がっています。",
+            "バランスと量の両立ができていて、かなり良い流れです。"
+        ];
+        else if (zeroDays === 0) candidates = [
+            "今週は学習の空白日ゼロ！継続力がしっかり育っています。",
+            "毎日触れられているのが素晴らしい。次は質を少し上げよう。",
+            "連日ログあり、習慣化の土台はもう完成に近いです。"
+        ];
+        else if (monthStars >= 20) candidates = [
+            `今月の目標達成が${monthStars}日！目標管理がかなり上手いです。`,
+            `🌟達成${monthStars}日、やるべき日にやれているのが強みです。`,
+            `目標達成ペース良好（${monthStars}日）。この調子で積み上げよう。`
+        ];
+        else if (monthStars >= 5) candidates = [
+            `今月の🌟達成は${monthStars}日。ここから伸ばしていこう。`,
+            `${monthStars}日達成できているのは大きな前進。`,
+            `目標達成の流れができ始めています（${monthStars}日）。`
+        ];
+        else if (lastDayVal >= 7) candidates = [
+            "昨日の集中が光っています。再現できれば一気に伸びます。",
+            "直近の高集中が良いサイン。今日も短時間で良いので継続を。",
+            "高強度の日が出ています。勢いを次の1日に繋げよう。"
+        ];
+        else if (zeroDays >= 4) candidates = [
+            "少し間が空き気味。まずは最短タスクで再始動しよう。",
+            "休憩が長めなので、5〜10分学習で流れを戻すのがおすすめ。",
+            "再開のハードルを下げて、小さく勝つ日を作ろう。"
+        ];
+        else candidates = [
+            "波はあるけど前進中。ペースを整えればさらに伸びます。",
+            "着実に積み上がっています。次は高集中日を1日増やそう。",
+            "土台はできているので、あと一段だけ負荷を上げてみよう。"
+        ];
 
-        const periodLabel = monthActive === 0 ? '記録なし' : `${viewM}/${peak.day}（High ${peak.val}）〜 ${viewM}/${low.day}（Low ${low.val}）`;
-        const comment = [
-            `📌 今月の目標達成: ${monthStars}日（達成率 ${goalRate}%）`,
-            `⏱ 勉強量: 合計 ${monthTotal}pt / 平均 ${monthAvg.toFixed(1)}pt（${targetDays}日基準）`,
-            `📅 学習継続: 実施 ${monthActive}/${targetDays}日（稼働率 ${activeRate}%）`,
-            `📈 期間内ロー↔ハイ: ${periodLabel}`,
-            `🔥 直近7日: 合計 ${totalVal}pt・平均 ${avg.toFixed(1)}pt・連続 ${streak}日`
-        ].join('\n');
-
+        const comment = candidates[Math.floor(Math.random() * candidates.length)];
         document.getElementById('analysisComment').innerText = comment;
         document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%";
-        document.getElementById('scoreGrowth').innerText = trend;
+        document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中"));
         document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
-
     const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 180, type:'crown' }, { name: "🚀 学習の先駆者", req: 120, type:'crown' }, { name: "👑 努力の王様", req: 80, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
     const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 365, type:'star' }, { name: "🌌 銀河級達成者", req: 250, type:'star' }, { name: "🌠 流星の達人", req: 150, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
 
@@ -1122,7 +1151,7 @@
         if (!window._currentUser) return getUnlockedTopTitle(crowns, stars, 'crown').name;
         const key = `lsc-title-${window._currentUser.uid}`;
         const rawSaved = localStorage.getItem(key) || '';
-        const saved = rawSaved === '☆ 目標設定中' ? '🔅 見習い挑戦者' : rawSaved;
+        const saved = rawSaved === '☆ 目標設定中' ? '☆ 見習い挑戦者' : rawSaved;
         if (rawSaved !== saved) localStorage.setItem(key, saved);
         const savedStar = STAR_TITLES.find(t => t.name === saved);
         const savedCrown = TITLES.find(t => t.name === saved);
@@ -1136,36 +1165,6 @@
         return resolved;
     }
 
-    function triggerTitleUnlockEffect(crowns, stars) {
-        if (!window._currentUser) return;
-        const key = `lsc-unlocked-titles-${window._currentUser.uid}`;
-        const unlocked = [
-            ...TITLES.filter(t => crowns >= t.req).map(t => t.name),
-            ...STAR_TITLES.filter(t => stars >= t.req).map(t => t.name)
-        ];
-        let saved = null;
-        try {
-            const parsed = JSON.parse(localStorage.getItem(key) || 'null');
-            saved = Array.isArray(parsed) ? parsed : null;
-        } catch {
-            saved = null;
-        }
-        if (!saved) {
-            localStorage.setItem(key, JSON.stringify(unlocked));
-            return;
-        }
-        const newOnes = unlocked.filter(t => !saved.includes(t));
-        if (newOnes.length === 0) return;
-        localStorage.setItem(key, JSON.stringify(unlocked));
-
-        const newest = newOnes[newOnes.length - 1];
-        confetti({ particleCount: 220, spread: 85, origin: { y: 0.62 } });
-        const pop = document.createElement('div');
-        pop.style = 'position:fixed;left:50%;top:20%;transform:translateX(-50%);z-index:12000;background:linear-gradient(135deg,#fff7d1,#ffe8a3);color:#7a5400;padding:14px 18px;border-radius:16px;font-weight:900;font-size:14px;box-shadow:0 12px 35px rgba(0,0,0,0.25);border:2px solid rgba(255,200,30,0.5);';
-        pop.innerText = `🏆 新称号を獲得！ ${newest}`;
-        document.body.appendChild(pop);
-        setTimeout(() => pop.remove(), 2200);
-    }
 
     function updateStats() {
         let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
@@ -1178,7 +1177,6 @@
         let stars = 0;
         Object.keys(remoteData).forEach(k => { if (getLogData(k).star) stars++; });
         document.getElementById('titleDisplay').innerText = resolveCurrentTitle(crowns, stars);
-        triggerTitleUnlockEffect(crowns, stars);
 
         const barCtx = document.getElementById('yearStackChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if(yearStackChart) yearStackChart.destroy();
