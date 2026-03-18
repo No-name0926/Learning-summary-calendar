@@ -501,10 +501,10 @@
     <div class="goal-banner" id="goalBanner" onclick="openGoalModal()">
         <span style="font-size:18px;">🌟</span>
         <div style="flex:1; min-width:0;">
-            <div style="font-size:10px; font-weight:900; color:#b8860b; margin-bottom:2px;">今月の目標</div>
-            <div id="goalText" style="font-size:13px; font-weight:900; color:#5a4000; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">タップして目標を設定</div>
+            <div style="font-size:10px; font-weight:900; color:var(--text-on-bg); opacity:0.7; margin-bottom:2px;">今月の目標</div>
+            <div id="goalText" style="font-size:13px; font-weight:900; color:var(--text-on-bg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">タップして目標を設定</div>
         </div>
-        <div id="goalStarCount" style="font-size:11px; font-weight:900; color:#b8860b; white-space:nowrap;"></div>
+        <div id="goalStarCount" style="font-size:11px; font-weight:900; color:var(--text-on-bg); opacity:0.8; white-space:nowrap;"></div>
     </div>
     <div class="legend-area">
         <div style="display:flex;align-items:center;gap:4px;">⚪ 0h~</div>
@@ -601,14 +601,14 @@
             <div class="stamp-btn" onclick="selectStamp('🥇')" data-stamp="🥇">🥇</div>
             <div class="stamp-btn" onclick="selectStamp('👑')" data-stamp="👑">👑</div>
         </div>
-        <div id="starToggleWrap" style="display:none; background:#fffbe6; border:1.5px solid rgba(255,200,30,0.4); border-radius:14px; padding:12px 16px; margin-bottom:14px; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleStar()">
+        <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
+        <div id="starToggleWrap" style="display:none; background:#fffbe6; border:1.5px solid rgba(255,200,30,0.4); border-radius:14px; padding:10px 16px; margin-bottom:14px; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleStar()">
             <div>
                 <div style="font-size:12px; font-weight:900; color:#b8860b;">今月の目標達成？</div>
                 <div id="starGoalPreview" style="font-size:11px; color:#999; margin-top:2px;"></div>
             </div>
             <span id="starToggleIcon" style="font-size:26px;">☆</span>
         </div>
-        <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
         <button class="save-btn" onclick="saveDayData()">保存する</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
     </div>
@@ -1132,7 +1132,7 @@
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
     window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } }); document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
     window.saveDayData = () => { if(!logsRef) return; const memo = document.getElementById('dayMemo').value.trim(); set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => { closeDayModal(); }); };
-    window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); };
+    window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); updateGoalBanner(); };
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
     window.deleteEvent = (id) => { if(eventsRef) remove(child(eventsRef, id)); };
     function updateCountdown() {
@@ -1339,7 +1339,10 @@
         const icon = document.getElementById('starToggleIcon');
         const preview = document.getElementById('starGoalPreview');
         if (!wrap) return;
-        if (_currentGoal) {
+        // 表示中の月の目標があるときだけ表示
+        const modalDate = document.getElementById('dayModalDate').innerText;
+        const isCurrentViewMonth = modalDate.includes(`${viewY}年${viewM}月`);
+        if (_currentGoal && isCurrentViewMonth) {
             wrap.style.display = 'flex';
             preview.innerText = _currentGoal;
         } else {
@@ -1513,6 +1516,14 @@ const TUT_STEPS = [
         tip: '★を押してお気に入り登録できます。「お気に入りランダム」をONにするとお気に入りの中からランダムで選ばれます 🎲'
     },
     {
+        color: '#f0fff4',
+        accent: '#16a34a',
+        icon: '📲',
+        title: 'ホーム画面に追加しよう',
+        body: 'アプリとしてホーム画面に追加すると、毎回URLを入力せず一発で開けます！',
+        tip: '📱 iPhone → Safariで開く → 下の共有ボタン（□↑）→「ホーム画面に追加」\n\n🤖 Android → Chromeで開く → メニュー（⋮）→「ホーム画面に追加」→「インストール」'
+    },
+    {
         color: '#f0f8ff',
         accent: '#0070bc',
         icon: '🚀',
@@ -1537,7 +1548,7 @@ function _tutBuild() {
             </div>
             <div style="font-size:17px; font-weight:900; color:#222; text-align:center; margin-bottom:12px;">${s.title}</div>
             <div style="font-size:13px; line-height:1.8; color:#555; font-weight:600; text-align:center; margin-bottom:14px;">${s.body}</div>
-            <div style="background:${s.color}; border-left:3px solid ${s.accent}; border-radius:0 12px 12px 0; padding:10px 14px; font-size:12px; color:#444; font-weight:700; line-height:1.6;">${s.tip}</div>
+            <div style="background:${s.color}; border-left:3px solid ${s.accent}; border-radius:0 12px 12px 0; padding:10px 14px; font-size:12px; color:#444; font-weight:700; line-height:1.8; white-space:pre-wrap;">${s.tip}</div>
         `;
         wrap.appendChild(div);
     });
