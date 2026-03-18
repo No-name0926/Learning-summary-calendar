@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
-    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style id="theme-variables">
@@ -147,6 +146,12 @@
         .date-num { width: 100%; padding: 12px 0; font-size: 14px; color: #bbb; font-weight: 900; text-align: center; }
         .stamp { font-size: 38px; height: 42px; line-height: 42px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15)); }
         .memo-indicator { font-size: 10px; color: var(--primary-color); height: 12px; margin-top: 2px; }
+        .star-indicator { font-size: 13px; height: 14px; line-height: 14px; margin-bottom: 1px; }
+        .goal-banner { background:rgba(255,220,50,0.18); border:1.5px solid rgba(255,200,30,0.4); border-radius:16px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px; cursor:pointer; transition:0.2s; }
+        .goal-banner:active { opacity:0.8; }
+        .rank-tab-wrap { display:flex; gap:0; margin-bottom:16px; border-radius:14px; overflow:hidden; border:1.5px solid #f0f0f0; }
+        .rank-tab { flex:1; padding:10px 0; font-size:13px; font-weight:900; text-align:center; cursor:pointer; background:#fafafa; color:#bbb; border:none; transition:0.2s; }
+        .rank-tab.active { background:var(--primary-color); color:white; }
 
         .legend-area { background: var(--legend-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 12px 10px; margin-bottom: 25px; display: flex; justify-content: space-around; align-items: center; font-size: 11px; font-weight: 800; color: var(--text-on-bg); }
         .stats-container { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 15px 40px rgba(0,0,0,0.04); width: 100%; box-sizing: border-box; }
@@ -190,9 +195,6 @@
         .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: white; border: 2px solid #e0e0e0; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 800; color: #444; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
         .google-btn:hover { border-color: #4285f4; box-shadow: 0 6px 20px rgba(66,133,244,0.22); transform: translateY(-1px); }
         .google-btn:active { transform: translateY(0); }
-        .twitter-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: #000; border: 2px solid #000; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 800; color: white; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.15); margin-top: 12px; }
-        .twitter-btn:hover { background: #1a1a1a; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transform: translateY(-1px); }
-        .twitter-btn:active { transform: translateY(0); }
 
         /* 設定画面のログインセクション */
         .login-section { margin-top: 30px; padding-top: 25px; border-top: 3px solid #f0f0f0; }
@@ -322,7 +324,7 @@
     <div class="login-card">
         <div class="login-icon">🏆</div>
         <div class="login-title">学習集計カレンダー</div>
-        <div class="login-sub">アカウントでログインして<br>あなたの学習記録を始めましょう</div>
+        <div class="login-sub">Googleアカウントでログインして<br>あなたの学習記録を始めましょう</div>
         <button class="google-btn" id="googleLoginBtn">
             <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -331,12 +333,6 @@
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             Googleでログイン
-        </button>
-        <button class="twitter-btn" id="twitterLoginBtn">
-            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="white">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-            X（Twitter）でログイン
         </button>
     </div>
 </div>
@@ -501,6 +497,15 @@
         </div>
         <div class="grid" id="calendarGrid"></div>
     </div>
+    <!-- 月目標バナー -->
+    <div class="goal-banner" id="goalBanner" onclick="openGoalModal()">
+        <span style="font-size:18px;">🌟</span>
+        <div style="flex:1; min-width:0;">
+            <div style="font-size:10px; font-weight:900; color:#b8860b; margin-bottom:2px;">今月の目標</div>
+            <div id="goalText" style="font-size:13px; font-weight:900; color:#5a4000; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">タップして目標を設定</div>
+        </div>
+        <div id="goalStarCount" style="font-size:11px; font-weight:900; color:#b8860b; white-space:nowrap;"></div>
+    </div>
     <div class="legend-area">
         <div style="display:flex;align-items:center;gap:4px;">⚪ 0h~</div>
         <div style="display:flex;align-items:center;gap:4px;">🥉 3h~</div>
@@ -534,11 +539,22 @@
             </div>
             <div class="lv-track"><div class="lv-fill" id="lvFill"></div></div>
         </div>
+        <div style="margin-top:14px; padding:12px 16px; background:#fffbe6; border-radius:14px; border:1.5px solid rgba(255,200,30,0.35); display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:6px;">
+                <span style="font-size:18px;">🌟</span>
+                <span style="font-size:13px; font-weight:900; color:#5a4000;">目標達成数（累計）</span>
+            </div>
+            <span id="totalStarDisplay" style="font-size:22px; font-weight:900; color:#b8860b;">0</span>
+        </div>
     </div>
 
     <!-- ランキング -->
     <div class="ranking-container">
-        <div class="stats-title">🏆 学習レベルランキング</div>
+        <div class="stats-title">🏆 ランキング</div>
+        <div class="rank-tab-wrap">
+            <button class="rank-tab active" id="rankTabLevel" onclick="switchRankTab('level')">レベル</button>
+            <button class="rank-tab" id="rankTabStar" onclick="switchRankTab('star')">🌟 目標達成数</button>
+        </div>
         <div id="rankingList"><div class="ranking-empty">読み込み中...</div></div>
         <div class="ranking-pager" id="rankingPager" style="display:none;">
             <button class="pager-btn" id="rankPrevBtn" onclick="rankChangePage(-1)" disabled>&#8249;</button>
@@ -585,16 +601,44 @@
             <div class="stamp-btn" onclick="selectStamp('🥇')" data-stamp="🥇">🥇</div>
             <div class="stamp-btn" onclick="selectStamp('👑')" data-stamp="👑">👑</div>
         </div>
+        <div id="starToggleWrap" style="display:none; background:#fffbe6; border:1.5px solid rgba(255,200,30,0.4); border-radius:14px; padding:12px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleStar()">
+            <div>
+                <div style="font-size:12px; font-weight:900; color:#b8860b;">今月の目標達成？</div>
+                <div id="starGoalPreview" style="font-size:11px; color:#999; margin-top:2px;"></div>
+            </div>
+            <span id="starToggleIcon" style="font-size:26px;">☆</span>
+        </div>
         <textarea id="dayMemo" class="memo-textarea" placeholder="学習内容をメモ"></textarea>
         <button class="save-btn" onclick="saveDayData()">保存する</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
     </div>
 </div>
 
+<!-- 月目標設定モーダル -->
+<div id="goalModal" class="modal" onclick="closeGoalModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 style="margin:0 0 6px; font-size:18px; font-weight:900;">🌟 今月の目標</h2>
+        <p id="goalModalSub" style="font-size:12px; color:#999; margin:0 0 18px; font-weight:700;"></p>
+        <div id="goalSetArea">
+            <input type="text" id="goalInput" class="setting-input" placeholder="例：毎日1時間以上勉強する" maxlength="40" style="margin:0 0 8px;">
+            <p style="font-size:11px; color:#f39c12; font-weight:800; margin:0 0 14px;">⚠️ 一度設定すると今月は変更できません</p>
+            <button class="save-btn" onclick="saveGoal()">目標を設定する</button>
+        </div>
+        <div id="goalViewArea" style="display:none;">
+            <div style="background:#fffbe6; border-radius:14px; padding:16px; margin-bottom:16px; text-align:center;">
+                <div style="font-size:24px; margin-bottom:6px;">🌟</div>
+                <div id="goalViewText" style="font-size:15px; font-weight:900; color:#5a4000;"></div>
+            </div>
+            <p style="font-size:12px; color:#aaa; text-align:center; font-weight:700;">今月の目標は変更できません</p>
+        </div>
+        <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:8px;" onclick="closeGoalModal()">閉じる</button>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
@@ -656,7 +700,8 @@
     };
 
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
-    let selectedDateKey = null, selectedStamp = '', currentLv = 0;
+    let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
+    let goalRef = null;
     const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':2, '🥈':5, '🥇':8, '👑':15 };
 
     function createPattern(type, color) {
@@ -686,7 +731,7 @@
         return ctx.createPattern(canvas, 'repeat');
     }
 
-    const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '' }; return (typeof d === 'string') ? { stamp: d, memo: '' } : { stamp: d.stamp || '', memo: d.memo || '' }; };
+    const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '', star: false }; return (typeof d === 'string') ? { stamp: d, memo: '', star: false } : { stamp: d.stamp || '', memo: d.memo || '', star: d.star || false }; };
     window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
     window.setTheme = (name) => {
         const theme = THEMES[name]; if(!theme) return;
@@ -707,14 +752,6 @@
     document.getElementById('googleLoginBtn').onclick = async () => {
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
-        } catch(e) {
-            alert('ログインに失敗しました: ' + e.message);
-        }
-    };
-
-    document.getElementById('twitterLoginBtn').onclick = async () => {
-        try {
-            await signInWithPopup(auth, new TwitterAuthProvider());
         } catch(e) {
             alert('ログインに失敗しました: ' + e.message);
         }
@@ -762,10 +799,11 @@
             if(eventsUnsubscribe) eventsUnsubscribe();
             // ユーザーごとのパスで購読開始
             logsRef = ref(db, `users/${user.uid}/my_logs`);
+            goalRef = ref(db, `users/${user.uid}/monthly_goals`);
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); pushRankingData(); if(typeof checkTutorial==='function') checkTutorial(); });
+            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); updateGoalBanner(); pushRankingData(); if(typeof checkTutorial==='function') checkTutorial(); });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
             // プロフィール読み込み
             get(profileRef).then(snap => {
@@ -797,7 +835,7 @@
             const data = getLogData(`log-${viewY}-${viewM}-${i}`);
             const isToday = viewY === today.getFullYear() && viewM === (today.getMonth()+1) && i === today.getDate();
             const day = Object.assign(document.createElement('div'), {className: `day ${isToday?'today':''}`});
-            day.innerHTML = `<div class="date-num">${i}</div><div class="stamp">${data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
+            day.innerHTML = `<div class="star-indicator">${data.star ? '🌟' : ''}</div><div class="date-num">${i}</div><div class="stamp">${data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
             day.onclick = () => openDayModal(viewY, viewM, i);
             grid.appendChild(day);
         }
@@ -812,6 +850,11 @@
             confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } }); lvDisplay.style.animation = "levelUpPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
         }
         currentLv = level; lvDisplay.innerText = `Lv. ${level}`; document.getElementById('expDisplay').innerText = `EXP: ${progress} / 100`; document.getElementById('lvFill').style.width = `${progress}%`;
+        // 🌟累計表示
+        let totalStarsAll = 0;
+        Object.keys(remoteData).forEach(k => { if(getLogData(k).star) totalStarsAll++; });
+        const sd = document.getElementById('totalStarDisplay');
+        if(sd) sd.innerText = totalStarsAll;
     }
 
     // ── ランキング関連 ────────────────────────
@@ -832,12 +875,15 @@
         const level = Math.floor(totalExp / 100) + 1;
         const displayName = profile.displayName || user.displayName || 'ゲスト';
         const titleObj = TITLES.find(t => crownsCount >= t.req) || TITLES[TITLES.length - 1];
+        let totalStars = 0;
+        Object.keys(remoteData).forEach(k => { if(getLogData(k).star) totalStars++; });
         await set(rankEntry, {
             displayName,
             photoURL: user.photoURL || '',
             level,
             exp: totalExp,
             title: titleObj.name,
+            totalStars,
             updatedAt: Date.now()
         });
     }
@@ -890,9 +936,13 @@
             return;
         }
 
+        // タブに応じてソート
+        const sorted = _rankTab === 'star'
+            ? [...rankAllEntries].sort((a,b) => (b.totalStars||0) - (a.totalStars||0))
+            : rankAllEntries;
         const start = rankPageStart(rankCurrentPage);
         const perPage = rankCurrentPage === 0 ? RANK_FIRST_PAGE : RANK_REST_PAGE;
-        const pageEntries = rankAllEntries.slice(start, start + perPage);
+        const pageEntries = sorted.slice(start, start + perPage);
         list.innerHTML = '';
 
         pageEntries.forEach((entry, pageIdx) => {
@@ -911,7 +961,7 @@
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-1">👑 Lv.${entry.level}</div>`;
+                    <div class="rank-badge-1">${_rankTab==="star" ? "🌟"+( entry.totalStars||0)+"回" : "👑 Lv."+entry.level}</div>`;
             } else if (rank === 2) {
                 row.className = 'rank-row-2' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -922,7 +972,7 @@
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-2">Lv.${entry.level}</div>`;
+                    <div class="rank-badge-2">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
             } else if (rank === 3) {
                 row.className = 'rank-row-3' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -933,7 +983,7 @@
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-3">Lv.${entry.level}</div>`;
+                    <div class="rank-badge-3">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
             } else {
                 row.className = 'rank-row-n' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -944,7 +994,7 @@
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-n">Lv.${entry.level}</div>`;
+                    <div class="rank-badge-n">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
             }
             list.appendChild(row);
         });
@@ -975,6 +1025,14 @@
         btn.textContent = '✅ 保存しました！'; btn.disabled = true;
         setTimeout(() => { btn.textContent = 'プロフィールを保存'; btn.disabled = false; }, 2000);
     };
+    let _rankTab = 'level';
+    window.switchRankTab = function(tab) {
+        _rankTab = tab;
+        document.getElementById('rankTabLevel').classList.toggle('active', tab === 'level');
+        document.getElementById('rankTabStar').classList.toggle('active', tab === 'star');
+        renderRankingPage();
+    };
+
     // ─────────────────────────────────────────
 
     function renderWeeklyChart() {
@@ -1060,10 +1118,20 @@
         document.getElementById('titleModal').style.display = 'flex';
     };
     window.closeTitleModal = () => document.getElementById('titleModal').style.display = 'none';
-    window.openDayModal = (y, m, d) => { selectedDateKey = `log-${y}-${m}-${d}`; const data = getLogData(selectedDateKey); document.getElementById('dayModalDate').innerText = `${y}年${m}月${d}日`; document.getElementById('dayMemo').value = data.memo; selectStamp(data.stamp); document.getElementById('dayModal').style.display = 'flex'; };
+    window.openDayModal = (y, m, d) => {
+        selectedDateKey = `log-${y}-${m}-${d}`;
+        const data = getLogData(selectedDateKey);
+        document.getElementById('dayModalDate').innerText = `${y}年${m}月${d}日`;
+        document.getElementById('dayMemo').value = data.memo;
+        selectStamp(data.stamp);
+        // 🌟初期化
+        _selectedStar = data.star || false;
+        _updateStarToggle();
+        document.getElementById('dayModal').style.display = 'flex';
+    };
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
     window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } }); document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
-    window.saveDayData = () => { if(!logsRef) return; const memo = document.getElementById('dayMemo').value.trim(); set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo }).then(() => { closeDayModal(); }); };
+    window.saveDayData = () => { if(!logsRef) return; const memo = document.getElementById('dayMemo').value.trim(); set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => { closeDayModal(); }); };
     window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); };
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
     window.deleteEvent = (id) => { if(eventsRef) remove(child(eventsRef, id)); };
@@ -1196,6 +1264,92 @@
         { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
         { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
     ];
+
+    // ── 月目標 & 🌟 ──────────────────────────────
+    let _currentGoal = null;
+    let _selectedStar = false;
+
+    function _goalKey() {
+        return `${viewY}-${viewM}`;
+    }
+
+    async function updateGoalBanner() {
+        if (!goalRef) return;
+        const snap = await get(child(goalRef, _goalKey()));
+        _currentGoal = snap.val() || null;
+        const banner = document.getElementById('goalBanner');
+        const text = document.getElementById('goalText');
+        const countEl = document.getElementById('goalStarCount');
+        if (_currentGoal) {
+            text.innerText = _currentGoal;
+            // 今月の🌟数をカウント
+            let cnt = 0;
+            Object.keys(remoteData).forEach(k => {
+                const parts = k.split('-');
+                if(parts[1] == viewY && parts[2] == viewM && getLogData(k).star) cnt++;
+            });
+            countEl.innerText = `🌟 ${cnt}日達成`;
+        } else {
+            text.innerText = 'タップして目標を設定';
+            countEl.innerText = '';
+        }
+    }
+
+    window.openGoalModal = async function() {
+        if (!goalRef) return;
+        const snap = await get(child(goalRef, _goalKey()));
+        const goal = snap.val();
+        const sub = document.getElementById('goalModalSub');
+        const setArea = document.getElementById('goalSetArea');
+        const viewArea = document.getElementById('goalViewArea');
+        const viewText = document.getElementById('goalViewText');
+        sub.innerText = `${viewY}年${viewM}月`;
+        if (goal) {
+            setArea.style.display = 'none';
+            viewArea.style.display = 'block';
+            viewText.innerText = goal;
+        } else {
+            setArea.style.display = 'block';
+            viewArea.style.display = 'none';
+            document.getElementById('goalInput').value = '';
+        }
+        document.getElementById('goalModal').style.display = 'flex';
+    };
+
+    window.closeGoalModal = function() {
+        document.getElementById('goalModal').style.display = 'none';
+    };
+
+    window.saveGoal = async function() {
+        if (!goalRef) return;
+        const val = document.getElementById('goalInput').value.trim();
+        if (!val) { alert('目標を入力してください'); return; }
+        await set(child(goalRef, _goalKey()), val);
+        _currentGoal = val;
+        closeGoalModal();
+        updateGoalBanner();
+    };
+
+    window.toggleStar = function() {
+        _selectedStar = !_selectedStar;
+        _updateStarToggle();
+    };
+
+    function _updateStarToggle() {
+        const wrap = document.getElementById('starToggleWrap');
+        const icon = document.getElementById('starToggleIcon');
+        const preview = document.getElementById('starGoalPreview');
+        if (!wrap) return;
+        if (_currentGoal) {
+            wrap.style.display = 'flex';
+            preview.innerText = _currentGoal;
+        } else {
+            wrap.style.display = 'none';
+        }
+        icon.innerText = _selectedStar ? '🌟' : '☆';
+        wrap.style.background = _selectedStar ? '#fffbe6' : '#f9f9f9';
+    }
+    // ────────────────────────────────────────────
 
     window.fetchQuote = async function() {
         const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
