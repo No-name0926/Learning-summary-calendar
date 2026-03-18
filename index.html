@@ -1081,7 +1081,7 @@
         document.getElementById('analysisComment').innerText = comment; document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%"; document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中")); document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
-    const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 200, type:'crown' }, { name: "🚀 学習の先駆者", req: 150, type:'crown' }, { name: "👑 努力の王様", req: 100, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
+    const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 180, type:'crown' }, { name: "🚀 学習の先駆者", req: 120, type:'crown' }, { name: "👑 努力の王様", req: 80, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
     const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 365, type:'star' }, { name: "🌌 銀河級達成者", req: 250, type:'star' }, { name: "🌠 流星の達人", req: 150, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
 
     function getUnlockedTopTitle(crowns, stars, type = 'crown') {
@@ -1092,15 +1092,13 @@
     function resolveCurrentTitle(crowns, stars) {
         if (!window._currentUser) return getUnlockedTopTitle(crowns, stars, 'crown').name;
         const key = `lsc-title-${window._currentUser.uid}`;
-        const rawSaved = localStorage.getItem(key) || '';
-        const saved = rawSaved === '☆ 目標設定中' ? '🔅 見習い挑戦者' : rawSaved;
-        if (rawSaved !== saved) localStorage.setItem(key, saved);
+        const saved = localStorage.getItem(key) || '';
         const savedStar = STAR_TITLES.find(t => t.name === saved);
         const savedCrown = TITLES.find(t => t.name === saved);
 
         let resolved = '';
-        if (savedStar && stars >= savedStar.req) resolved = savedStar.name;
-        else if (savedCrown && crowns >= savedCrown.req) resolved = savedCrown.name;
+        if (savedStar) resolved = getUnlockedTopTitle(crowns, stars, 'star').name;
+        else if (savedCrown) resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
         else resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
 
         if (saved !== resolved) localStorage.setItem(key, resolved);
