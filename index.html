@@ -195,6 +195,8 @@
         .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: white; border: 2px solid #e0e0e0; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 800; color: #444; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
         .google-btn:hover { border-color: #4285f4; box-shadow: 0 6px 20px rgba(66,133,244,0.22); transform: translateY(-1px); }
         .google-btn:active { transform: translateY(0); }
+        .twitter-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: #000; border: 2px solid #000; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 800; color: white; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.15); margin-top: 12px; }
+        .twitter-btn:hover { background: #1a1a1a; box-shadow: 0 6px 20px rgba(0,0,0,0.25); transform: translateY(-1px); }
 
         /* 設定画面のログインセクション */
         .login-section { margin-top: 30px; padding-top: 25px; border-top: 3px solid #f0f0f0; }
@@ -333,6 +335,15 @@
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             Googleでログイン
+        </button>
+        <div style="display:flex; align-items:center; gap:10px; margin:12px 0 0;">
+            <div style="flex:1; height:1px; background:#e0e0e0;"></div>
+            <span style="font-size:12px; color:#bbb; font-weight:700;">または</span>
+            <div style="flex:1; height:1px; background:#e0e0e0;"></div>
+        </div>
+        <button class="twitter-btn" id="twitterLoginBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            X（Twitter）でログイン
         </button>
     </div>
 </div>
@@ -565,10 +576,17 @@
 </div>
 
 <div id="titleModal" class="modal" onclick="closeTitleModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="margin-top:0; font-size:18px; font-weight:900;">👑 称号ロードマップ</h2>
-        <div id="titleRoadmapList" style="margin-top:15px;"></div>
-        <button class="save-btn" onclick="closeTitleModal()">閉じる</button>
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-height:85vh; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2 style="margin:0; font-size:18px; font-weight:900;" id="titleModalHeading">👑 称号ロードマップ</h2>
+            <div style="display:flex; gap:6px;">
+                <button id="titlePagePrev" onclick="titlePageChange(-1)" style="background:#f0f0f0; border:none; border-radius:8px; width:30px; height:30px; font-size:16px; cursor:pointer; font-weight:900; color:#aaa;" disabled>‹</button>
+                <button id="titlePageNext" onclick="titlePageChange(1)" style="background:#f0f0f0; border:none; border-radius:8px; width:30px; height:30px; font-size:16px; cursor:pointer; font-weight:900; color:#aaa;">›</button>
+            </div>
+        </div>
+        <div style="font-size:11px; color:#aaa; font-weight:700; margin-bottom:12px;" id="titlePageLabel">1 / 2</div>
+        <div id="titleRoadmapList" style="margin-top:0;"></div>
+        <button class="save-btn" onclick="closeTitleModal()" style="margin-top:12px;">閉じる</button>
     </div>
 </div>
 
@@ -638,7 +656,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
@@ -752,6 +770,13 @@
     document.getElementById('googleLoginBtn').onclick = async () => {
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
+        } catch(e) {
+            alert('ログインに失敗しました: ' + e.message);
+        }
+    };
+    document.getElementById('twitterLoginBtn').onclick = async () => {
+        try {
+            await signInWithPopup(auth, new TwitterAuthProvider());
         } catch(e) {
             alert('ログインに失敗しました: ' + e.message);
         }
@@ -1056,7 +1081,8 @@
         document.getElementById('analysisComment').innerText = comment; document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%"; document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中")); document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
-    const TITLES = [ { name: "🌌 学問の創造主", req: 365 }, { name: "♾️ 真理の探求者", req: 250 }, { name: "💎 不朽の努力家", req: 180 }, { name: "🚀 学習の先駆者", req: 120 }, { name: "👑 努力の王様", req: 80 }, { name: "🔥 努力の天才", req: 50 }, { name: "🎖️ 学習のエリート", req: 30 }, { name: "⚔️ 集中力の達人", req: 15 }, { name: "🌟 期待の星", req: 5 }, { name: "🐣 見習い学習者", req: 0 } ];
+    const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 180, type:'crown' }, { name: "🚀 学習の先駆者", req: 120, type:'crown' }, { name: "👑 努力の王様", req: 80, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
+    const STAR_TITLES = [ { name: "🌠 流星の達人", req: 200, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "☆ 目標設定中", req: 0, type:'star' } ];
 
     function updateStats() {
         let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
@@ -1065,7 +1091,10 @@
         const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; }); const monthlyStack = Array.from({length: 12}, () => ({'🥉':0, '🥈':0, '🥇':0, '👑':0}));
         Object.keys(remoteData).forEach(k => { const s = getLogData(k).stamp; if (VALID.includes(s)) { const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; const monthIdx = parseInt(p[2]) - 1; monthlyStack[monthIdx][s]++; } if (s === '👑') crowns++; } });
         const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
-        document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate()); document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365); document.getElementById('titleDisplay').innerText = (TITLES.find(t => crowns >= t.req)).name;
+        document.getElementById('monthStatsGrid').innerHTML = mk(mLog, new Date(viewY, viewM, 0).getDate()); document.getElementById('yearStatsGrid').innerHTML = mk(yLog, 365);
+        // 選択称号があればそれを表示、なければ自動
+        const _savedTitle = window._currentUser ? localStorage.getItem(`lsc-title-${window._currentUser.uid}`) : null;
+        document.getElementById('titleDisplay').innerText = _savedTitle || (TITLES.find(t => crowns >= t.req)).name;
         
         const barCtx = document.getElementById('yearStackChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if(yearStackChart) yearStackChart.destroy();
@@ -1101,7 +1130,10 @@
         for (let m = 1; m <= 12; m++) {
             const c = {}; VALID.forEach(v => c[v] = 0); Object.keys(remoteData).forEach(k => { const parts = k.split('-'); const s = getLogData(k).stamp; if (parts[1] == viewY && parts[2] == m && VALID.includes(s)) { c[s]++; yearTotal[s]++; } });
             const row = document.createElement('div'); row.style = "display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #f0f0f0; font-size:14px; font-weight:800; color:#555;";
-            row.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><span style="width:35px;">${m}月</span><button class="month-memo-btn" onclick="showMonthMemos(${m})">📝</button></div><div style="display:flex; gap:12px;">${VALID.map(v => `<div style="display:flex; align-items:center; gap:3px; min-width:32px;"><span>${v}</span><span style="color:#222;">${c[v]}</span></div>`).join('')}</div>`; list.appendChild(row);
+            // 🌟カウント
+            let starCount = 0;
+            Object.keys(remoteData).forEach(k => { const parts = k.split('-'); if(parts[1] == viewY && parts[2] == m && getLogData(k).star) starCount++; });
+            row.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><span style="width:35px;">${m}月</span><button class="month-memo-btn" onclick="showMonthMemos(${m})">📝</button></div><div style="display:flex; gap:10px; align-items:center;">${VALID.map(v => `<div style="display:flex; align-items:center; gap:3px; min-width:28px;"><span>${v}</span><span style="color:#222;">${c[v]}</span></div>`).join('')}<div style="display:flex; align-items:center; gap:3px; min-width:32px; margin-left:4px;"><span>🌟</span><span style="color:#b8860b; font-weight:900;">${starCount}</span></div></div>`; list.appendChild(row);
         }
         document.getElementById('modalYearTotal').innerHTML = VALID.map(v => `<div style="display:flex; align-items:center; gap:5px;"><span>${v}</span><span style="font-size:18px; color:var(--primary-color);">${yearTotal[v]}</span></div>`).join('');
     }
@@ -1112,9 +1144,53 @@
         if(!found) list.innerHTML = `<div style="padding:20px; text-align:center; color:#ccc; font-size:12px;">この月のメモはありません</div>`; area.style.display = 'block'; area.scrollIntoView({ behavior: 'smooth', block: 'end' });
     };
     window.closeMemoArea = () => { document.getElementById('monthMemoArea').style.display = 'none'; };
+    let _titlePage = 0;
+    const _titlePages = [
+        { key:'crown', label:'👑 称号ロードマップ' },
+        { key:'star',  label:'🌟 目標達成称号' }
+    ];
+
+    function _renderTitlePage() {
+        let crowns = 0, stars = 0;
+        Object.keys(remoteData).forEach(k => {
+            if(getLogData(k).stamp === '👑') crowns++;
+            if(getLogData(k).star) stars++;
+        });
+        const savedTitle = window._currentUser ? (localStorage.getItem(`lsc-title-${window._currentUser.uid}`) || '') : '';
+        const page = _titlePages[_titlePage];
+        document.getElementById('titleModalHeading').innerText = page.label;
+        document.getElementById('titlePageLabel').innerText = `${_titlePage+1} / ${_titlePages.length}`;
+        document.getElementById('titlePagePrev').disabled = _titlePage === 0;
+        document.getElementById('titlePageNext').disabled = _titlePage === _titlePages.length - 1;
+        const list = document.getElementById('titleRoadmapList'); list.innerHTML = '';
+        const arr = page.key === 'crown' ? TITLES : STAR_TITLES;
+        const count = page.key === 'crown' ? crowns : stars;
+        arr.forEach(t => {
+            const isGot = count >= t.req;
+            const isSelected = savedTitle === t.name;
+            const item = document.createElement('div');
+            item.style = `padding:12px 14px; margin-bottom:8px; border-radius:14px; background:${isGot?'#f0f7ff':'#f9f9f9'}; border:2px solid ${isSelected?'var(--primary-color)':isGot?'#c8dcf8':'#eee'}; display:flex; justify-content:space-between; align-items:center; opacity:${isGot?1:0.5};`;
+            const reqLabel = page.key==='crown' ? `👑累計 ${t.req}個で解放` : `🌟累計 ${t.req}個で解放`;
+            item.innerHTML = `<div><div style="font-weight:900; font-size:14px;">${t.name}${isSelected?' ✓':''}</div><div style="font-size:11px;color:#999;margin-top:2px;">${reqLabel}</div></div><div style="display:flex;align-items:center;gap:8px;">${isGot ? `<button onclick="selectTitle('${t.name}')" style="background:${isSelected?'var(--primary-color)':'#f0f0f0'};color:${isSelected?'white':'#666'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:900;cursor:pointer;">${isSelected?'使用中':'使う'}</button>` : '🔒'}</div>`;
+            list.appendChild(item);
+        });
+    }
+
+    window.titlePageChange = function(dir) {
+        _titlePage = Math.max(0, Math.min(_titlePages.length-1, _titlePage+dir));
+        _renderTitlePage();
+    };
+
+    window.selectTitle = function(name) {
+        if(!window._currentUser) return;
+        localStorage.setItem(`lsc-title-${window._currentUser.uid}`, name);
+        document.getElementById('titleDisplay').innerText = name;
+        _renderTitlePage();
+    };
+
     window.showTitleGuide = () => {
-        let crowns = 0; Object.keys(remoteData).forEach(k => { if(getLogData(k).stamp === '👑') crowns++; }); const list = document.getElementById('titleRoadmapList'); list.innerHTML = '';
-        TITLES.forEach(t => { const isGot = crowns >= t.req, item = document.createElement('div'); item.style = `padding:15px; margin-bottom:10px; border-radius:15px; background:${isGot?'#f0f7ff':'#f9f9f9'}; border:2px solid ${isGot?'var(--primary-color)':'#eee'}; display:flex; justify-content:space-between; align-items:center; opacity:${isGot?1:0.6};`; item.innerHTML = `<div><div style="font-weight:900;">${t.name}</div><div style="font-size:11px;color:#999;">👑累計 ${t.req}個で解放</div></div><div>${isGot?'✅':'🔒'}</div>`; list.appendChild(item); });
+        _titlePage = 0;
+        _renderTitlePage();
         document.getElementById('titleModal').style.display = 'flex';
     };
     window.closeTitleModal = () => document.getElementById('titleModal').style.display = 'none';
