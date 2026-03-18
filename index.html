@@ -1081,8 +1081,8 @@
         document.getElementById('analysisComment').innerText = comment; document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%"; document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中")); document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
-    const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 180, type:'crown' }, { name: "🚀 学習の先駆者", req: 120, type:'crown' }, { name: "👑 努力の王様", req: 80, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
-    const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 365, type:'star' }, { name: "🌌 銀河級達成者", req: 250, type:'star' }, { name: "🌠 流星の達人", req: 150, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
+    const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 200, type:'crown' }, { name: "🚀 学習の先駆者", req: 150, type:'crown' }, { name: "👑 努力の王様", req: 100, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
+    const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 400, type:'star' }, { name: "🌌 銀河級達成者", req: 300, type:'star' }, { name: "🌠 流星の達人", req: 200, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
 
     function getUnlockedTopTitle(crowns, stars, type = 'crown') {
         const arr = type === 'star' ? STAR_TITLES : TITLES;
@@ -1092,13 +1092,15 @@
     function resolveCurrentTitle(crowns, stars) {
         if (!window._currentUser) return getUnlockedTopTitle(crowns, stars, 'crown').name;
         const key = `lsc-title-${window._currentUser.uid}`;
-        const saved = localStorage.getItem(key) || '';
+        const rawSaved = localStorage.getItem(key) || '';
+        const saved = rawSaved === '☆ 目標設定中' ? '🔅 見習い挑戦者' : rawSaved;
+        if (rawSaved !== saved) localStorage.setItem(key, saved);
         const savedStar = STAR_TITLES.find(t => t.name === saved);
         const savedCrown = TITLES.find(t => t.name === saved);
 
         let resolved = '';
-        if (savedStar) resolved = getUnlockedTopTitle(crowns, stars, 'star').name;
-        else if (savedCrown) resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
+        if (savedStar && stars >= savedStar.req) resolved = savedStar.name;
+        else if (savedCrown && crowns >= savedCrown.req) resolved = savedCrown.name;
         else resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
 
         if (saved !== resolved) localStorage.setItem(key, resolved);
@@ -1360,56 +1362,6 @@
         { t: "自分の価値を他人に決めさせるな。", a: "映画『プラダを着た悪魔』" },
         { t: "過去は変えられないが、未来は今の自分次第だ。", a: "格言" },
         { t: "本気で生きる者の前にしか、道は現れない。", a: "格言" }
-        { t: "限界は、超えるためにある。", a: "孫悟空（ドラゴンボール）" },
-        { t: "何度でも立ち上がる、それが主人公だ。", a: "ナルト（NARUTO）" },
-        { t: "最後まで諦めない者が流れを変える。", a: "日向翔陽（ハイキュー!!）" },
-        { t: "逆境のときこそ、成長の角度は大きい。", a: "緑谷出久（ヒロアカ）" },
-        { t: "仲間を信じる勇気が、次の一歩になる。", a: "モンキー・D・ルフィ（ONE PIECE）" },
-        { t: "一歩ずつ積み重ねた者が、遠くへ行ける。", a: "煉獄杏寿郎（鬼滅の刃）" },
-        { t: "焦るな、準備した分だけ強くなれる。", a: "五条悟（呪術廻戦）" },
-        { t: "勝負は、折れない心が決める。", a: "黒崎一護（BLEACH）" },
-        { t: "地道な鍛錬が、最後に武器になる。", a: "炭治郎（鬼滅の刃）" },
-        { t: "努力は、見えないところで差を作る。", a: "エレン・イェーガー（進撃の巨人）" },
-        { t: "信じた道を、静かに進めばいい。", a: "ヨル・フォージャー（SPY×FAMILY）" },
-        { t: "明日の自分を助けるのは、今日の自分だ。", a: "アーニャ（SPY×FAMILY）" },
-        { t: "迷ってもいい、止まらなければ前進だ。", a: "ロイド・フォージャー（SPY×FAMILY）" },
-        { t: "本気の一回は、百回の迷いを超える。", a: "リヴァイ（進撃の巨人）" },
-        { t: "準備を笑う者は、本番で泣く。", a: "怪盗キッド（名探偵コナン）" },
-        { t: "失敗は、次の成功への設計図になる。", a: "江戸川コナン" },
-        { t: "目標は高く、足元は着実に。", a: "安室透（名探偵コナン）" },
-        { t: "遠回りでも、続ける人が一番強い。", a: "工藤新一" },
-        { t: "勝てる日まで、挑み続ければいい。", a: "桜木花道（SLAM DUNK）" },
-        { t: "努力の量は、いずれ自信の量になる。", a: "流川楓（SLAM DUNK）" },
-        { t: "昨日より上手くなる、それが最短距離だ。", a: "宮城リョータ（SLAM DUNK）" },
-        { t: "実力は、反復の先にしかない。", a: "赤木剛憲（SLAM DUNK）" },
-        { t: "小さな達成を、毎日ひとつ増やせ。", a: "アシタカ（もののけ姫）" },
-        { t: "準備した者だけが、風を味方にできる。", a: "キキ（魔女の宅急便）" },
-        { t: "挑戦は怖くて当たり前、でもやる。", a: "千尋（千と千尋の神隠し）" },
-        { t: "自分のペースでいい、止まらなければ。", a: "トトロ（となりのトトロ）" },
-        { t: "積み重ねは、静かに人生を変える。", a: "ハウル（ハウルの動く城）" },
-        { t: "希望は、行動した人の前に現れる。", a: "ルパン三世" },
-        { t: "一度の失敗で、物語は終わらない。", a: "次元大介" },
-        { t: "自分で決めた道なら、最後まで貫け。", a: "石川五ェ門" },
-        { t: "本気の継続は、才能を超えていく。", a: "峰不二子" },
-        { t: "続けた時間は、必ず君を裏切らない。", a: "ドラえもん" },
-        { t: "できることから始めれば、景色は変わる。", a: "のび太" },
-        { t: "勇気は、最初の一歩に宿る。", a: "しずかちゃん" },
-        { t: "努力のメモは、未来の自信になる。", a: "ジャイアン" },
-        { t: "今日の反省は、明日の武器になる。", a: "スネ夫" },
-        { t: "焦らず磨けば、必ず光る。", a: "ジェダイ（スター・ウォーズ）" },
-        { t: "訓練は裏切らない、感情は変えられる。", a: "ダース・ベイダー" },
-        { t: "逆境は、主人公を強くする装置だ。", a: "アイアンマン（MCU）" },
-        { t: "挑戦し続ける人に、チャンスは集まる。", a: "キャプテン・アメリカ" },
-        { t: "迷っても、仲間と進めば道は開く。", a: "スパイダーマン" },
-        { t: "準備と実行、その繰り返しが勝利を作る。", a: "ドクター・ストレンジ" },
-        { t: "物語の転機は、だいたい努力の直後に来る。", a: "ハリー・ポッター" },
-        { t: "学ぶことを止めない者が、未来を掴む。", a: "ハーマイオニー" },
-        { t: "小さな勇気が、大きな運命を変える。", a: "ロン・ウィーズリー" },
-        { t: "積み重ねた者だけが、静かな自信を持てる。", a: "アーサー・モーガン（RDR2）" },
-        { t: "結果は後からついてくる。先にやるのは自分だ。", a: "エレン・ポンペオ（俳優）" },
-        { t: "昨日より1%成長すれば、1年で別人になれる。", a: "トム・ホランド（俳優）" },
-        { t: "休む日があっても、諦める日は作らない。", a: "菅田将暉（俳優）" },
-        { t: "継続は派手じゃない。でも最強だ。", a: "長澤まさみ（俳優）" },
     ];
 
     // ── 月目標 & 🌟 ──────────────────────────────
