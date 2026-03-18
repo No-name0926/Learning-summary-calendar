@@ -163,7 +163,7 @@
         .chart-wrapper { width: 100%; height: 210px; margin-bottom: 20px; }
         .analysis-box { background: #f9fbff; border-radius: 20px; padding: 18px; border: 1px solid #eef2ff; margin-bottom: 10px; }
         .analysis-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; font-weight: 900; color: var(--primary-color); }
-        .analysis-text { font-size: 13px; line-height: 1.7; color: #555; font-weight: 600; min-height: 60px; white-space: pre-line; }
+        .analysis-text { font-size: 13px; line-height: 1.7; color: #555; font-weight: 600; min-height: 60px; }
         .analysis-score { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #d0d7e6; }
         .score-val { font-size: 14px; font-weight: 900; }
         .lv-bar-container { width: 100%; margin-top: 30px; padding: 0 5px; box-sizing: border-box; }
@@ -1069,49 +1069,20 @@
         }
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: values, borderColor: themeColor, backgroundColor: themeColor + '28', fill: true, tension: 0.45, borderWidth: 4, pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 10 } } } });
-        const avg = totalVal / 7, streak = parseInt(document.getElementById('streakDisplay').innerText);
-        const daysInMonth = new Date(viewY, viewM, 0).getDate();
-        const now = new Date();
-        const isCurrentViewedMonth = (viewY === now.getFullYear() && viewM === now.getMonth() + 1);
-        const targetDays = isCurrentViewedMonth ? now.getDate() : daysInMonth;
-        let monthTotal = 0, monthActive = 0, monthStars = 0;
-        let peak = { day: '-', val: -1 }, low = { day: '-', val: 999 };
-        for (let d = 1; d <= targetDays; d++) {
-            const data = getLogData(`log-${viewY}-${viewM}-${d}`);
-            const v = VALUE_MAP[data.stamp] || 0;
-            monthTotal += v;
-            if (v > 0) {
-                monthActive++;
-                if (v > peak.val) peak = { day: d, val: v };
-                if (v < low.val) low = { day: d, val: v };
-            }
-            if (data.star) monthStars++;
-        }
-        const monthAvg = targetDays > 0 ? (monthTotal / targetDays) : 0;
-        const activeRate = targetDays > 0 ? Math.round((monthActive / targetDays) * 100) : 0;
-        const goalRate = targetDays > 0 ? Math.round((monthStars / targetDays) * 100) : 0;
-
-        let trend = "安定";
-        if (avg >= 6) trend = "急上昇";
-        else if (avg < 2) trend = "準備中";
-
-        const periodLabel = monthActive === 0 ? '記録なし' : `${viewM}/${peak.day}（High ${peak.val}）〜 ${viewM}/${low.day}（Low ${low.val}）`;
-        const comment = [
-            `📌 今月の目標達成: ${monthStars}日（達成率 ${goalRate}%）`,
-            `⏱ 勉強量: 合計 ${monthTotal}pt / 平均 ${monthAvg.toFixed(1)}pt（${targetDays}日基準）`,
-            `📅 学習継続: 実施 ${monthActive}/${targetDays}日（稼働率 ${activeRate}%）`,
-            `📈 期間内ロー↔ハイ: ${periodLabel}`,
-            `🔥 直近7日: 合計 ${totalVal}pt・平均 ${avg.toFixed(1)}pt・連続 ${streak}日`
-        ].join('\n');
-
-        document.getElementById('analysisComment').innerText = comment;
-        document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%";
-        document.getElementById('scoreGrowth').innerText = trend;
-        document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
+        const avg = totalVal / 7, streak = parseInt(document.getElementById('streakDisplay').innerText); let comment = "";
+        if (totalVal === 0) comment = "まずは今日最初のスタンプを。小さな一歩がすべての結果を連れてきます。";
+        else if (streak >= 14) comment = `驚異的です！${streak}日間一度も足を止めていません。努力はあなたの「才能」です。`;
+        else if (highDays >= 5) comment = "圧倒的な熱量です。週のほとんどを「集中モード（7h〜）」で過ごせています。";
+        else if (zeroDays === 0 && avg >= 5) comment = "理想的な推移です。毎日コンスタントに5時間以上を確保できています。";
+        else if (zeroDays === 0) comment = "素晴らしい！今週は「穴」がありません。短時間でも毎日触れることが大切です。";
+        else if (lastDayVal >= 7 && zeroDays > 0) comment = "昨日の爆発力は素晴らしいものでした。この勢いを維持しましょう。";
+        else if (zeroDays >= 4) comment = "少し休息が長くなっているようです。「5分だけやる」から再開してみませんか？";
+        else comment = "波はありますが、着実に前進しています。自分のペースを掴みつつありますね。";
+        document.getElementById('analysisComment').innerText = comment; document.getElementById('scoreStability').innerText = Math.max(0, 100 - (zeroDays * 15)) + "%"; document.getElementById('scoreGrowth').innerText = (avg > 5 ? "急上昇" : (avg > 2 ? "安定" : "準備中")); document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
     }
 
     const TITLES = [ { name: "🌌 学問の創造主", req: 365, type:'crown' }, { name: "♾️ 真理の探求者", req: 250, type:'crown' }, { name: "💎 不朽の努力家", req: 200, type:'crown' }, { name: "🚀 学習の先駆者", req: 150, type:'crown' }, { name: "👑 努力の王様", req: 100, type:'crown' }, { name: "🔥 努力の天才", req: 50, type:'crown' }, { name: "🎖️ 学習のエリート", req: 30, type:'crown' }, { name: "⚔️ 集中力の達人", req: 15, type:'crown' }, { name: "🌟 期待の星", req: 5, type:'crown' }, { name: "🐣 見習い学習者", req: 0, type:'crown' } ];
-    const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 365, type:'star' }, { name: "🌌 銀河級達成者", req: 200, type:'star' }, { name: "🌠 流星の達人", req: 150, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 15, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
+    const STAR_TITLES = [ { name: "🪐 星願の覇者", req: 365, type:'star' }, { name: "🌌 銀河級達成者", req: 250, type:'star' }, { name: "🌠 流星の達人", req: 150, type:'star' }, { name: "✨ 煌めきの人", req: 100, type:'star' }, { name: "💫 目標の申し子", req: 50, type:'star' }, { name: "🎯 諦めない人", req: 20, type:'star' }, { name: "🌱 目標達成者", req: 5, type:'star' }, { name: "🔅 見習い挑戦者", req: 0, type:'star' } ];
 
     function getUnlockedTopTitle(crowns, stars, type = 'crown') {
         const arr = type === 'star' ? STAR_TITLES : TITLES;
@@ -1136,37 +1107,6 @@
         return resolved;
     }
 
-    function triggerTitleUnlockEffect(crowns, stars) {
-        if (!window._currentUser) return;
-        const key = `lsc-unlocked-titles-${window._currentUser.uid}`;
-        const unlocked = [
-            ...TITLES.filter(t => crowns >= t.req).map(t => t.name),
-            ...STAR_TITLES.filter(t => stars >= t.req).map(t => t.name)
-        ];
-        let saved = null;
-        try {
-            const parsed = JSON.parse(localStorage.getItem(key) || 'null');
-            saved = Array.isArray(parsed) ? parsed : null;
-        } catch {
-            saved = null;
-        }
-        if (!saved) {
-            localStorage.setItem(key, JSON.stringify(unlocked));
-            return;
-        }
-        const newOnes = unlocked.filter(t => !saved.includes(t));
-        if (newOnes.length === 0) return;
-        localStorage.setItem(key, JSON.stringify(unlocked));
-
-        const newest = newOnes[newOnes.length - 1];
-        confetti({ particleCount: 220, spread: 85, origin: { y: 0.62 } });
-        const pop = document.createElement('div');
-        pop.style = 'position:fixed;left:50%;top:20%;transform:translateX(-50%);z-index:12000;background:linear-gradient(135deg,#fff7d1,#ffe8a3);color:#7a5400;padding:14px 18px;border-radius:16px;font-weight:900;font-size:14px;box-shadow:0 12px 35px rgba(0,0,0,0.25);border:2px solid rgba(255,200,30,0.5);';
-        pop.innerText = `🏆 新称号を獲得！ ${newest}`;
-        document.body.appendChild(pop);
-        setTimeout(() => pop.remove(), 2200);
-    }
-
     function updateStats() {
         let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
         if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1); while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
@@ -1178,7 +1118,6 @@
         let stars = 0;
         Object.keys(remoteData).forEach(k => { if (getLogData(k).star) stars++; });
         document.getElementById('titleDisplay').innerText = resolveCurrentTitle(crowns, stars);
-        triggerTitleUnlockEffect(crowns, stars);
 
         const barCtx = document.getElementById('yearStackChart').getContext('2d'), themeColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
         if(yearStackChart) yearStackChart.destroy();
@@ -1290,16 +1229,8 @@
         document.getElementById('dayModal').style.display = 'flex';
     };
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
-    window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
-    window.saveDayData = () => {
-        if(!logsRef) return;
-        const memo = document.getElementById('dayMemo').value.trim();
-        const before = getLogData(selectedDateKey).stamp;
-        set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => {
-            if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
-            closeDayModal();
-        });
-    };
+    window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; if (s === '👑') confetti({ particleCount: 150, spread: 70, origin: { y: 0.7 } }); document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
+    window.saveDayData = () => { if(!logsRef) return; const memo = document.getElementById('dayMemo').value.trim(); set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => { closeDayModal(); }); };
     window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); updateGoalBanner(); };
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
     window.deleteEvent = (id) => { if(eventsRef) remove(child(eventsRef, id)); };
