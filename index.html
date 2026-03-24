@@ -191,9 +191,9 @@
         #loading div { font-size: 50px; margin-bottom: 25px; animation: pulse 1.5s infinite; }
 
         /* ログイン画面 */
-        #loginScreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); z-index: 7000; justify-content: flex-start; align-items: center; overflow-y: auto; padding: 40px 0 40px; box-sizing: border-box; }
-        .login-card { background: white; border-radius: 32px; padding: 52px 36px 44px; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.13); max-width: 340px; width: 88%; }
-        .login-icon { font-size: 64px; margin-bottom: 12px; }
+        #loginScreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); z-index: 7000; justify-content: center; align-items: center; overflow-y: auto; padding: 40px 0 40px; box-sizing: border-box; }
+        .login-card { background: white; border-radius: 32px; padding: 28px 36px 44px; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.13); max-width: 340px; width: 88%; margin: auto; }
+        .login-terms-top { font-size: 11px; color: #888; font-weight: 700; line-height: 1.7; margin-bottom: 22px; text-align: left; }
         .login-title { font-size: 22px; font-weight: 900; color: #222; margin-bottom: 8px; }
         .login-sub { font-size: 13px; color: #999; font-weight: 600; margin-bottom: 36px; line-height: 1.7; }
         .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: white; border: 2px solid #e0e0e0; border-radius: 16px; cursor: pointer; font-size: 15px; font-weight: 800; color: #444; transition: all 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
@@ -328,6 +328,13 @@
 
 <div id="loginScreen">
     <div class="login-card">
+        <div class="login-terms-top">
+            ログイン前に
+            <span onclick="document.getElementById('termsModal').style.display='flex'" style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">利用規約</span>
+            と
+            <span onclick="document.getElementById('privacyModal').style.display='flex'" style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">プライバシーポリシー</span>
+            をご確認ください。
+        </div>
         <div class="login-icon">🏆</div>
         <div class="login-title">学習集計カレンダー</div>
         <div class="login-sub">Googleアカウントでログインして<br>あなたの学習記録を始めましょう</div>
