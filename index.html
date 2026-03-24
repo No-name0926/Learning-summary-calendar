@@ -522,7 +522,7 @@
         <div class="quote-author" id="quoteAuthor"></div>
         <div style="font-size: 8px; color: #ccc; margin-top: 8px;">(タップして更新)</div>
     </div>
-    <div class="calendar-container" id="calWrap">
+    <div class="calendar-container" id="calWrap" style="touch-action:pan-y;">
         <div class="header-nav" id="mainHeader">
             <button class="nav-btn" onclick="moveMonth(-1)">‹</button>
             <div id="monthDisplay" style="font-weight:900; font-size:24px; letter-spacing: -1px;"></div>
@@ -586,7 +586,8 @@
         <div class="stats-title">🏆 ランキング</div>
         <div class="rank-tab-wrap">
             <button class="rank-tab active" id="rankTabLevel" onclick="switchRankTab('level')">レベル</button>
-            <button class="rank-tab" id="rankTabStar" onclick="switchRankTab('star')">🌟 目標達成数</button>
+            <button class="rank-tab" id="rankTabStar" onclick="switchRankTab('star')">🌟 達成数</button>
+            <button class="rank-tab" id="rankTabStreak" onclick="switchRankTab('streak')">🔥 連続</button>
         </div>
         <div id="rankingList"><div class="ranking-empty">読み込み中...</div></div>
         <div class="ranking-pager" id="rankingPager" style="display:none;">
@@ -679,7 +680,7 @@
 ユーザーがランキング機能を利用する場合、設定した「ニックネーム」および「学習記録」が他のユーザーに公開されます。メモ内容は公開されません。
 
 第5条（データの削除）
-ユーザーがデータの削除を希望する場合、本アプリ内のフィードバック機能または lsc.app.support@gmail.com を通じて申し出ることができるものとし、開発者は合理的な範囲で速やかにデータを削除します。
+ユーザーがデータの削除を希望する場合、本アプリ内のフィードバック機能または <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bcd0cfdf92ddcccc92cfc9ccccd3cec8fcdbd1ddd5d092dfd3d1">[email&#160;protected]</a> を通じて申し出ることができるものとし、開発者は合理的な範囲で速やかにデータを削除します。
 
 第6条（GitHubでの公開について）
 本アプリのソースコードは GitHub にて公開されていますが、ユーザーの個人情報や個別の学習データがソースコード内に含まれることはありません。
@@ -688,7 +689,7 @@
 本ポリシーの内容は、ユーザーに通知することなく変更することができるものとします。
 
 第8条（お問い合わせ窓口）
-lsc.app.support@gmail.com
+<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8c4dbcb86c9d8d886dbddd8d8c7dadce8cfc5c9c1c486cbc7c5">[email&#160;protected]</a>
 
 附則　2026年3月24日 制定</div>
         <button class="save-btn" onclick="document.getElementById('privacyModal').style.display='none'" style="margin-top:16px;">閉じる</button>
@@ -773,7 +774,7 @@ lsc.app.support@gmail.com
     </div>
 </div>
 
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1030,6 +1031,7 @@ lsc.app.support@gmail.com
         let totalStars = 0;
         Object.keys(remoteData).forEach(k => { if(getLogData(k).star) totalStars++; });
         const titleName = resolveCurrentTitle(crownsCount, totalStars);
+        const bestStreak = window._bestStreak || 0;
         await set(rankEntry, {
             displayName,
             photoURL: user.photoURL || '',
@@ -1037,6 +1039,7 @@ lsc.app.support@gmail.com
             exp: totalExp,
             title: titleName,
             totalStars,
+            bestStreak,
             updatedAt: Date.now()
         });
     }
@@ -1092,6 +1095,8 @@ lsc.app.support@gmail.com
         // タブに応じてソート
         const sorted = _rankTab === 'star'
             ? [...rankAllEntries].sort((a,b) => (b.totalStars||0) - (a.totalStars||0))
+            : _rankTab === 'streak'
+            ? [...rankAllEntries].sort((a,b) => (b.bestStreak||0) - (a.bestStreak||0))
             : rankAllEntries;
         const start = rankPageStart(rankCurrentPage);
         const perPage = rankCurrentPage === 0 ? RANK_FIRST_PAGE : RANK_REST_PAGE;
@@ -1114,7 +1119,7 @@ lsc.app.support@gmail.com
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-1">${_rankTab==="star" ? "🌟"+( entry.totalStars||0)+"回" : "👑 Lv."+entry.level}</div>`;
+                    <div class="rank-badge-1">${_rankTab==="star" ? "🌟"+( entry.totalStars||0)+"回" : _rankTab==="streak" ? "🔥"+(entry.bestStreak||0)+"日" : "👑 Lv."+entry.level}</div>`;
             } else if (rank === 2) {
                 row.className = 'rank-row-2' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -1125,7 +1130,7 @@ lsc.app.support@gmail.com
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-2">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
+                    <div class="rank-badge-2">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : _rankTab==="streak" ? "🔥"+(entry.bestStreak||0)+"日" : "Lv."+entry.level}</div>`;
             } else if (rank === 3) {
                 row.className = 'rank-row-3' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -1136,7 +1141,7 @@ lsc.app.support@gmail.com
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-3">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
+                    <div class="rank-badge-3">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : _rankTab==="streak" ? "🔥"+(entry.bestStreak||0)+"日" : "Lv."+entry.level}</div>`;
             } else {
                 row.className = 'rank-row-n' + (isMe ? ' me' : '');
                 row.innerHTML = `
@@ -1147,7 +1152,7 @@ lsc.app.support@gmail.com
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
                     </div>
-                    <div class="rank-badge-n">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : "Lv."+entry.level}</div>`;
+                    <div class="rank-badge-n">${_rankTab==="star" ? "🌟"+(entry.totalStars||0)+"回" : _rankTab==="streak" ? "🔥"+(entry.bestStreak||0)+"日" : "Lv."+entry.level}</div>`;
             }
             list.appendChild(row);
         });
@@ -1183,6 +1188,7 @@ lsc.app.support@gmail.com
         _rankTab = tab;
         document.getElementById('rankTabLevel').classList.toggle('active', tab === 'level');
         document.getElementById('rankTabStar').classList.toggle('active', tab === 'star');
+        document.getElementById('rankTabStreak').classList.toggle('active', tab === 'streak');
         renderRankingPage();
     };
 
@@ -1350,6 +1356,15 @@ lsc.app.support@gmail.com
         let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
         if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1); while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
         document.getElementById('streakDisplay').innerText = streak;
+        // 最高連続記録を計算
+        let bestStreak = 0, cur = 0;
+        const allKeys = Object.keys(remoteData).filter(k => VALID.includes(getLogData(k).stamp)).map(k => { const p = k.split('-'); return new Date(p[1], p[2]-1, p[3]); }).sort((a,b) => a-b);
+        for(let i=0;i<allKeys.length;i++){
+            if(i===0){ cur=1; } else { const diff=(allKeys[i]-allKeys[i-1])/86400000; cur = diff===1 ? cur+1 : 1; }
+            if(cur>bestStreak) bestStreak=cur;
+        }
+        if(bestStreak < streak) bestStreak = streak;
+        window._bestStreak = bestStreak;
         const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; }); const monthlyStack = Array.from({length: 12}, () => ({'🥉':0, '🥈':0, '🥇':0, '👑':0}));
         Object.keys(remoteData).forEach(k => { const s = getLogData(k).stamp; if (VALID.includes(s)) { const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; const monthIdx = parseInt(p[2]) - 1; monthlyStack[monthIdx][s]++; } if (s === '👑') crowns++; } });
         const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
@@ -1478,7 +1493,44 @@ lsc.app.support@gmail.com
             closeDayModal();
         });
     };
-    window.moveMonth = (n) => { viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; } render(); updateGoalBanner(); };
+    window.moveMonth = (n) => {
+        const cal = document.getElementById('calWrap');
+        const dir = n > 0 ? -1 : 1;
+        cal.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+        cal.style.transform = `translateX(${dir * 60}px)`;
+        cal.style.opacity = '0';
+        setTimeout(() => {
+            viewM += n; if(viewM > 12) { viewM = 1; viewY++; } else if(viewM < 1) { viewM = 12; viewY--; }
+            render(); updateGoalBanner();
+            cal.style.transition = 'none';
+            cal.style.transform = `translateX(${-dir * 60}px)`;
+            cal.style.opacity = '0';
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    cal.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+                    cal.style.transform = 'translateX(0)';
+                    cal.style.opacity = '1';
+                });
+            });
+        }, 220);
+        setTimeout(() => updateGoalBanner(), 300);
+    };
+
+    // スワイプ検出
+    (function() {
+        let startX = 0, startY = 0, moved = false;
+        const cal = document.getElementById('calWrap');
+        cal.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; moved = false; }, { passive: true });
+        cal.addEventListener('touchmove', e => { moved = true; }, { passive: true });
+        cal.addEventListener('touchend', e => {
+            if (!moved) return;
+            const dx = e.changedTouches[0].clientX - startX;
+            const dy = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+                window.moveMonth(dx < 0 ? 1 : -1);
+            }
+        }, { passive: true });
+    })();
     window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
     window.deleteEvent = (id) => { if(eventsRef) remove(child(eventsRef, id)); };
     function updateCountdown() {
@@ -2090,12 +2142,4 @@ window.checkTutorial = function() {
         <!-- フッター -->
         <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
             <!-- ドット -->
-            <div id="tutDots" style="display:flex; gap:6px;"></div>
-            <!-- ボタン -->
-            <button id="tutBtn" onclick="tutNext()" style="background:var(--primary-color); color:white; border:none; padding:11px 22px; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer; transition:0.2s; white-space:nowrap;">次へ →</button>
-        </div>
-    </div>
-</div>
-
-</body>
-</html>
+            <div id="tutDots" style="display:flex
