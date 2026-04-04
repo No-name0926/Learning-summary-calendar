@@ -849,7 +849,7 @@ lsc.app.support@gmail.com
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
     let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
     let goalRef = null;
-    const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':2, '🥈':5, '🥇':8, '👑':15 };
+    const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':5, '🥈':10, '🥇':15, '👑':30 };
 
     function createPattern(type, color) {
         const canvas = document.createElement('canvas');
