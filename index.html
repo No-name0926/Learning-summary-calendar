@@ -1074,27 +1074,47 @@ lsc.app.support@gmail.com
         r.readAsDataURL(file);
     });
     window.downloadMyData = async function() {
-        if (!window._currentUser) return;
-        const uid = window._currentUser.uid;
-        const [logsSnap, eventsSnap, goalsSnap, profileSnap] = await Promise.all([
-            get(ref(db, `users/${uid}/my_logs`)),
-            get(ref(db, `users/${uid}/my_events`)),
-            get(ref(db, `users/${uid}/monthly_goals`)),
-            get(ref(db, `users/${uid}/profile`))
-        ]);
-        const payload = {
-            exportedAt: new Date().toISOString(),
-            logs: logsSnap.val() || {},
-            events: eventsSnap.val() || {},
-            goals: goalsSnap.val() || {},
-            profile: profileSnap.val() || {}
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `learning-summary-${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-        URL.revokeObjectURL(a.href);
+        if (!window._currentUser) {
+            alert('ログイン後にダウンロードできます');
+            return;
+        }
+        try {
+            const uid = window._currentUser.uid;
+            const [logsSnap, eventsSnap, goalsSnap, profileSnap] = await Promise.all([
+                get(ref(db, `users/${uid}/my_logs`)),
+                get(ref(db, `users/${uid}/my_events`)),
+                get(ref(db, `users/${uid}/monthly_goals`)),
+                get(ref(db, `users/${uid}/profile`))
+            ]);
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                logs: logsSnap.val() || {},
+                events: eventsSnap.val() || {},
+                goals: goalsSnap.val() || {},
+                profile: profileSnap.val() || {}
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const fileName = `learning-summary-${new Date().toISOString().slice(0,10)}.json`;
+            if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
+                window.navigator.msSaveOrOpenBlob(blob, fileName);
+                return;
+            }
+            const objectUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = objectUrl;
+            a.download = fileName;
+            a.rel = 'noopener';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                URL.revokeObjectURL(objectUrl);
+                a.remove();
+            }, 1000);
+        } catch (err) {
+            console.error('downloadMyData error:', err);
+            alert('ダウンロードに失敗しました。時間をおいて再度お試しください。');
+        }
     };
 
     // フォールバック: PC環境などでAuth初期化が遅延しても未ログイン画面を出す
