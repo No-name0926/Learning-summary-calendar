@@ -492,13 +492,8 @@
                     <div class="user-email" id="menuUserEmail">-</div>
                 </div>
             </div>
-            <button class="icon-entry-btn" onclick="openIconSettings()">
-                <div class="preview" id="menuIconPreviewMini">👤</div>
-                <div style="text-align:left;">
-                    <div style="font-size:12px; font-weight:900; color:#555;">🖼️ アイコン設定</div>
-                    <div style="font-size:10px; color:#999;">プリセット + カスタム画像</div>
-                </div>
-            </button>
+            <div class="preview" id="menuIconPreviewMini" style="display:none;">👤</div>
+            <div style="font-size:10px; color:#999; font-weight:700; margin:-4px 0 10px 6px;">※アイコンをタップして設定できます</div>
             <button class="icon-entry-btn" onclick="downloadMyData()">
                 <div class="preview">📥</div>
                 <div style="text-align:left;">
@@ -515,7 +510,6 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <button class="save-btn" id="saveProfileBtn" style="margin-top:8px;">プロフィールを保存</button>
             <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
         </div>
     </div>
@@ -775,15 +769,14 @@ lsc.app.support@gmail.com
 
 <div id="iconModal" class="modal" onclick="closeIconSettings()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="margin:0 0 8px; font-size:18px; font-weight:900;">🖼️ アイコン設定</h2>
+        <h2 style="margin:0 0 8px; font-size:18px; font-weight:900;">アイコン設定</h2>
         <p style="font-size:12px; color:#999; margin:0 0 12px; font-weight:700;">好きなアイコンを選ぶか、画像をアップロードできます。</p>
         <div class="icon-preset-grid" id="iconPresetGrid"></div>
-        <label class="save-btn" style="display:block; text-align:center; margin-top:0; background:#f7f9ff; color:#4d6bb3; box-shadow:none; border:2px dashed #d4def7;">
+        <label class="save-btn" style="display:block; width:100%; max-width:100%; box-sizing:border-box; overflow:hidden; text-align:center; margin-top:0; background:#f7f9ff; color:#4d6bb3; box-shadow:none; border:2px dashed #d4def7;">
             画像をアップロード
             <input type="file" id="customIconFile" accept="image/*" style="display:none;">
         </label>
-        <input type="url" id="customIconUrl" class="setting-input" placeholder="画像URLを貼り付けてもOK (https://...)" style="margin-top:10px;">
-        <button class="save-btn" onclick="applyCustomIconUrl()" style="margin-top:6px;">URL画像を適用</button>
+        <button class="save-btn" id="saveCustomIconBtn" onclick="saveCustomIcon()" style="margin-top:8px;">保存</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:8px;" onclick="closeIconSettings()">閉じる</button>
     </div>
 </div>
@@ -847,7 +840,7 @@ lsc.app.support@gmail.com
     }
     function getEffectivePhotoURL(profile, user) {
         const mode = profile?.iconMode || "provider";
-        if (mode === "custom" && profile?.customImageURL) return profile.customImageURL;
+        if (mode === "custom" && profile?.customIconData) return profile.customIconData;
         if (mode && mode.startsWith("preset:")) {
             const key = mode.split(":")[1];
             const p = ICON_PRESETS.find(x => x.key === key);
@@ -860,7 +853,7 @@ lsc.app.support@gmail.com
         const sep = url.includes("?") ? "&" : "?";
         return `${url}${sep}v=${Date.now()}`;
     }
-
+    
     const THEMES = {
         blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
         red: { primary: '#eb4d4b', accent: '#ff4b2b', bg: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', pattern: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%)', pOpacity: 0.4, pSize: '15px 15px' },
@@ -1031,11 +1024,12 @@ lsc.app.support@gmail.com
             grid.appendChild(b);
         });
     }
-    async function setIconMode(mode, customImageURL='') {
+    let pendingCustomIconData = '';
+    async function setIconMode(mode, customIconData='') {
         if (!window._currentUser || !profileRef) return;
         const updates = { iconMode: mode };
-        if (mode === 'custom') updates.customImageURL = customImageURL || profileCache.customImageURL || '';
-        else updates.customImageURL = '';
+        if (mode === 'custom') updates.customIconData = customIconData || profileCache.customIconData || '';
+        else updates.customIconData = '';
         await update(profileRef, updates);
         profileCache = { ...profileCache, ...updates };
         updateMenuUser(window._currentUser);
@@ -1045,21 +1039,25 @@ lsc.app.support@gmail.com
     window.openIconSettings = function() {
         if (!window._currentUser) return;
         renderIconPresets(profileCache.iconMode || 'provider');
-        document.getElementById('customIconUrl').value = '';
+        pendingCustomIconData = '';
+        document.getElementById('saveCustomIconBtn').disabled = true;
         document.getElementById('iconModal').style.display = 'flex';
     };
     window.closeIconSettings = function() { document.getElementById('iconModal').style.display = 'none'; };
-    window.applyCustomIconUrl = async function() {
-        const url = document.getElementById('customIconUrl').value.trim();
-        if (!url) return;
-        await setIconMode('custom', url);
-        alert('カスタム画像を設定しました');
+    window.saveCustomIcon = async function() {
+        if (!pendingCustomIconData) { alert('先に画像を選択してください'); return; }
+        await setIconMode('custom', pendingCustomIconData);
+        alert('画像を設定しました');
+        closeIconSettings();
     };
     document.getElementById('customIconFile').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const r = new FileReader();
-        r.onload = async () => { await setIconMode('custom', r.result); alert('画像を設定しました'); };
+        r.onload = () => {
+            pendingCustomIconData = r.result;
+            document.getElementById('saveCustomIconBtn').disabled = false;
+        };
         r.readAsDataURL(file);
     });
     window.downloadMyData = async function() {
@@ -1086,7 +1084,19 @@ lsc.app.support@gmail.com
         URL.revokeObjectURL(a.href);
     };
 
+    // フォールバック: PC環境などでAuth初期化が遅延しても未ログイン画面を出す
+    let authResolved = false;
+    setTimeout(() => {
+        if (!authResolved && !auth.currentUser) {
+            const loadingEl = document.getElementById('loading');
+            const loginEl = document.getElementById('loginScreen');
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (loginEl) loginEl.style.display = 'flex';
+        }
+    }, 1500);
+
     onAuthStateChanged(auth, (user) => {
+        authResolved = true;
         window._currentUser = user;
         updateMenuUser(user);
         if(user) {
@@ -1336,31 +1346,36 @@ lsc.app.support@gmail.com
         renderRankingPage();
     };
 
-    async function saveProfileSettings({ silent = false, requireName = true } = {}) {
+    async function saveProfileSettings() {
         if (!window._currentUser || !profileRef) return;
         const displayName = document.getElementById('rankDisplayName').value.trim() || (window._currentUser.displayName || 'ゲスト');
         const showInRanking = document.getElementById('showInRankingToggle').checked;
-        if (requireName && !displayName) { alert('表示名を入力してください'); return; }
         const payload = {
             ...profileCache,
             displayName,
             showInRanking,
             photoURL: window._currentUser.photoURL || profileCache.photoURL || '',
             iconMode: profileCache.iconMode || 'provider',
-            customImageURL: profileCache.customImageURL || ''
+            customIconData: profileCache.customIconData || ''
         };
         await set(profileRef, payload);
         profileCache = payload;
         updateMenuUser(window._currentUser);
         await pushRankingData();
-        if (!silent) {
-            const btn = document.getElementById('saveProfileBtn');
-            btn.textContent = '✅ 保存しました！'; btn.disabled = true;
-            setTimeout(() => { btn.textContent = 'プロフィールを保存'; btn.disabled = false; }, 2000);
-        }
     }
-    document.getElementById('saveProfileBtn').onclick = async () => { await saveProfileSettings(); };
-    document.getElementById('showInRankingToggle').addEventListener('change', async () => { await saveProfileSettings({ silent: true, requireName: false }); });
+
+    let profileNameSaveTimer = null;
+    document.getElementById('showInRankingToggle').addEventListener('change', async () => { await saveProfileSettings(); });
+    document.getElementById('rankDisplayName').addEventListener('input', () => {
+        clearTimeout(profileNameSaveTimer);
+        profileNameSaveTimer = setTimeout(() => {
+            saveProfileSettings();
+        }, 600);
+    });
+    document.getElementById('rankDisplayName').addEventListener('blur', async () => {
+        clearTimeout(profileNameSaveTimer);
+        await saveProfileSettings();
+    });
     let _rankTab = 'level';
     window.switchRankTab = function(tab) {
         _rankTab = tab;
