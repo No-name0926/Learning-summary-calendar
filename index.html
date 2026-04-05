@@ -1118,7 +1118,15 @@ lsc.app.support@gmail.com
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
-            logsUnsubscribe = onValue(logsRef, (snap) => { remoteData = snap.val() || {}; document.getElementById('loading').style.display = 'none'; render(); updateGoalBanner(); pushRankingData(); if(typeof checkTutorial==='function') checkTutorial(); });
+            logsUnsubscribe = onValue(logsRef, (snap) => {
+                remoteData = snap.val() || {};
+                document.getElementById('loading').style.display = 'none';
+                render();
+                updateGoalBanner();
+                pushRankingData();
+                if (typeof checkTutorial === 'function') checkTutorial();
+                else window.__pendingTutorialCheck = true;
+            });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
             // プロフィール読み込み
             get(profileRef).then(snap => {
@@ -2234,14 +2242,21 @@ function showTutorial() {
 };
 
 function checkTutorial() {
-    if (!localStorage.getItem('lsc-tutorial-done')) {
-        setTimeout(showTutorial, 800);
+    if (localStorage.getItem('lsc-tutorial-done')) return;
+    if (!document.getElementById('tutorialOverlay')) {
+        setTimeout(checkTutorial, 200);
+        return;
     }
+    setTimeout(showTutorial, 800);
 }
 
 window.tutNext = tutNext;
 window.showTutorial = showTutorial;
 window.checkTutorial = checkTutorial;
+if (window.__pendingTutorialCheck) {
+    window.__pendingTutorialCheck = false;
+    checkTutorial();
+}
 // ────────────────────────────────────────────────
 </script>
 
@@ -2346,4 +2361,13 @@ window.checkTutorial = checkTutorial;
         <!-- フッター -->
         <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
             <!-- ドット -->
-            <div id="tutDots" style="display:flex
+            <div id="tutDots" style="display:flex; gap:6px; align-items:center;"></div>
+            <button id="tutBtn" onclick="tutNext()" style="border:none; background:var(--primary-color); color:white; font-weight:900; font-size:13px; border-radius:999px; padding:10px 16px; cursor:pointer;">
+                次へ →
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
