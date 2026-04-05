@@ -6,6 +6,7 @@
     <title>学習集計カレンダー</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -822,6 +823,16 @@ lsc.app.support@gmail.com
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, onValue, remove, child, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+            try {
+                await navigator.serviceWorker.register('./sw.js');
+            } catch (err) {
+                console.error('Service Worker registration failed:', err);
+            }
+        });
+    }
 
     const firebaseConfig = {
         apiKey: "AIzaSyBM79X3oyaFWaNs3cCzbSlJFZaWt58VH-U",
@@ -2574,13 +2585,14 @@ if (window.__pendingTutorialCheck) {
             <button onclick="closeInstallGuide()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
         </div>
         <div style="font-size:13px; color:#555; line-height:1.8; font-weight:700;">
-            <p style="margin:0 0 8px;">この端末では直接インストールダイアログが出せないため、以下の手順で追加してください。</p>
+            <p style="margin:0 0 8px;">以下の手順で追加してください。</p>
             <p style="margin:0 0 6px;"><b>📱 iPhone (Safari)</b><br>共有ボタン（□↑）→「ホーム画面に追加」</p>
             <p style="margin:0;"><b>🤖 Android (Chrome)</b><br>メニュー（⋮）→「ホーム画面に追加」または「アプリをインストール」</p>
         </div>
         <button class="save-btn" style="margin-top:14px;" onclick="closeInstallGuide()">閉じる</button>
     </div>
 </div>
+
                 
 </body>
 </html>
