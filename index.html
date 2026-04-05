@@ -214,12 +214,6 @@
         .logout-btn:hover { background: #ffe0e0; }
         .save-btn { background: var(--primary-color); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 900; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
         .setting-input { width: 100%; padding: 16px; margin: 12px 0; border: 2.5px solid #f0f0f0; border-radius: 16px; box-sizing: border-box; background: #fafafa; }
-        .icon-entry-btn { width:100%; border:2px dashed #d9e3ff; background:#f8fbff; border-radius:14px; padding:10px 12px; display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:10px; }
-        .icon-entry-btn .preview { width:40px; height:40px; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#eef4ff; font-size:18px; }
-        .icon-preset-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0; }
-        .icon-preset-btn { border:2px solid #e9eef8; border-radius:14px; background:white; cursor:pointer; padding:8px 4px; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:11px; font-weight:800; color:#666; }
-        .icon-preset-btn.active { border-color:var(--primary-color); box-shadow:0 4px 12px rgba(0,0,0,0.08); }
-        .icon-preset-face { width:42px; height:42px; border-radius:50%; color:white; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; }
         
         .setting-switch { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 0 10px; }
         .switch-label { font-size: 13px; font-weight: 800; color: #666; }
@@ -486,23 +480,14 @@
         <div class="login-section">
             <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
             <div class="user-info-card" id="menuUserInfo">
-                <div class="user-avatar-placeholder" id="menuUserIcon" onclick="openIconSettings()" style="cursor:pointer;">👤</div>
+                <div class="user-avatar-placeholder" id="menuUserIcon">👤</div>
                 <div>
                     <div class="user-name" id="menuUserName">未ログイン</div>
                     <div class="user-email" id="menuUserEmail">-</div>
                 </div>
             </div>
-            <div class="preview" id="menuIconPreviewMini" style="display:none;">👤</div>
-            <div style="font-size:10px; color:#999; font-weight:700; margin:-4px 0 10px 6px;">※アイコンをタップして設定できます</div>
-            <button class="icon-entry-btn" onclick="downloadMyData()">
-                <div class="preview">📥</div>
-                <div style="text-align:left;">
-                    <div style="font-size:12px; font-weight:900; color:#555;">データをダウンロード</div>
-                    <div style="font-size:10px; color:#999;">ログ・目標・プロフィール(JSON)</div>
-                </div>
-            </button>
             <label class="setting-input-label">🏷️ ランキング表示名（本名✕）</label>
-            <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：マナビ太郎" maxlength="20" style="margin:0 0 10px;">
+            <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：マナビ太郎 maxlength="20" style="margin:0 0 10px;">
             <div class="setting-switch">
                 <span class="switch-label">🏆 ランキングに表示する</span>
                 <label class="switch">
@@ -510,6 +495,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            <button class="save-btn" id="saveProfileBtn" style="margin-top:8px;">プロフィールを保存</button>
             <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
         </div>
     </div>
@@ -767,20 +753,6 @@ lsc.app.support@gmail.com
     </div>
 </div>
 
-<div id="iconModal" class="modal" onclick="closeIconSettings()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="margin:0 0 8px; font-size:18px; font-weight:900;">アイコン設定</h2>
-        <p style="font-size:12px; color:#999; margin:0 0 12px; font-weight:700;">好きなアイコンを選ぶか、画像をアップロードできます。</p>
-        <div class="icon-preset-grid" id="iconPresetGrid"></div>
-        <label class="save-btn" style="display:block; width:100%; max-width:100%; box-sizing:border-box; overflow:hidden; text-align:center; margin-top:0; background:#f7f9ff; color:#4d6bb3; box-shadow:none; border:2px dashed #d4def7;">
-            画像をアップロード
-            <input type="file" id="customIconFile" accept="image/*" style="display:none;">
-        </label>
-        <button class="save-btn" id="saveCustomIconBtn" onclick="saveCustomIcon()" style="margin-top:8px;">保存</button>
-        <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:8px;" onclick="closeIconSettings()">閉じる</button>
-    </div>
-</div>
-
 <!-- 月目標設定モーダル -->
 <div id="goalModal" class="modal" onclick="closeGoalModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
@@ -804,7 +776,7 @@ lsc.app.support@gmail.com
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, remove, child, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, remove, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -822,38 +794,7 @@ lsc.app.support@gmail.com
     let eventsRef = null;
     let rankingRef = null;
     let profileRef = null;
-    let profileCache = {};
-    let avatarRefreshTimer = null;
-    const ICON_PRESETS = [
-        { key: "red", color: "#e74c3c", label: "赤" },
-        { key: "blue", color: "#3498db", label: "青" },
-        { key: "yellow", color: "#f1c40f", label: "黄" },
-        { key: "green", color: "#2ecc71", label: "緑" },
-        { key: "pink", color: "#ff6fae", label: "桃" },
-        { key: "white", color: "#ecf0f1", label: "白", text: "#333" },
-        { key: "black", color: "#2d3436", label: "黒" }
-    ];
 
-    function createFaceIconDataUrl(color, textColor = "#fff") {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><circle cx="60" cy="60" r="58" fill="${color}"/><text x="60" y="72" text-anchor="middle" font-size="34" fill="${textColor}" font-family="Arial, sans-serif">˙ᴗ˙</text></svg>`;
-        return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-    }
-    function getEffectivePhotoURL(profile, user) {
-        const mode = profile?.iconMode || "provider";
-        if (mode === "custom" && profile?.customIconData) return profile.customIconData;
-        if (mode && mode.startsWith("preset:")) {
-            const key = mode.split(":")[1];
-            const p = ICON_PRESETS.find(x => x.key === key);
-            if (p) return createFaceIconDataUrl(p.color, p.text || "#fff");
-        }
-        return (user && user.photoURL) ? user.photoURL : (profile?.photoURL || "");
-    }
-    function cacheBust(url) {
-        if (!url || url.startsWith("data:")) return url;
-        const sep = url.includes("?") ? "&" : "?";
-        return `${url}${sep}v=${Date.now()}`;
-    }
-    
     const THEMES = {
         blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
         red: { primary: '#eb4d4b', accent: '#ff4b2b', bg: 'linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%)', text: '#fff', box: 'rgba(255,255,255,0.28)', author: '#eee', pattern: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%)', pOpacity: 0.4, pSize: '15px 15px' },
@@ -908,7 +849,7 @@ lsc.app.support@gmail.com
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
     let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
     let goalRef = null;
-    const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':5, '🥈':10, '🥇':15, '👑':30 };
+    const VALID = ['🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🥉':2, '🥈':5, '🥇':8, '👑':15 };
 
     function createPattern(type, color) {
         const canvas = document.createElement('canvas');
@@ -982,121 +923,25 @@ lsc.app.support@gmail.com
     };
 
     function updateMenuUser(user) {
-        const mini = document.getElementById('menuIconPreviewMini');
         if(user) {
             document.getElementById('menuUserName').innerText = user.displayName || 'ユーザー';
             document.getElementById('menuUserEmail').innerText = user.email || '';
-            const photo = getEffectivePhotoURL(profileCache, user);
-            const iconHost = document.getElementById('menuUserInfo');
-            if(photo) {
-                iconHost.firstElementChild.outerHTML = `<img class="user-avatar" id="menuUserIcon" src="${cacheBust(photo)}" referrerpolicy="no-referrer" onclick="openIconSettings()" style="cursor:pointer;" onerror="this.onerror=null;this.src='';this.className='user-avatar-placeholder';this.style.background='var(--primary-color)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.style.color='white';this.textContent='👤';">`;
-                if (mini) mini.innerHTML = `<img src="${cacheBust(photo)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" referrerpolicy="no-referrer">`;
+            const icon = document.getElementById('menuUserIcon');
+            if(user.photoURL) {
+                icon.outerHTML = `<img class="user-avatar" id="menuUserIcon" src="${user.photoURL}" referrerpolicy="no-referrer">`;
             } else {
-                iconHost.firstElementChild.outerHTML = `<div class="user-avatar-placeholder" id="menuUserIcon" onclick="openIconSettings()" style="cursor:pointer;">${user.displayName ? user.displayName[0] : '👤'}</div>`;
-                if (mini) mini.textContent = '👤';
+                document.getElementById('menuUserIcon').innerText = user.displayName ? user.displayName[0] : '👤';
             }
         } else {
             document.getElementById('menuUserName').innerText = '未ログイン';
             document.getElementById('menuUserEmail').innerText = '-';
-            const iconHost = document.getElementById('menuUserInfo');
-            iconHost.firstElementChild.outerHTML = '<div class="user-avatar-placeholder" id="menuUserIcon" onclick="openIconSettings()" style="cursor:pointer;">👤</div>';
-            if (mini) mini.textContent = '👤';
+            document.getElementById('menuUserIcon').innerText = '👤';
         }
     }
 
     let logsUnsubscribe = null, eventsUnsubscribe = null;
 
-    function renderIconPresets(selectedMode) {
-        const grid = document.getElementById('iconPresetGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        const provider = document.createElement('button');
-        provider.className = 'icon-preset-btn' + ((selectedMode || 'provider') === 'provider' ? ' active' : '');
-        provider.innerHTML = '<div class="icon-preset-face" style="background:#8fa1c2;">SNS</div><div>連携</div>';
-        provider.onclick = () => setIconMode('provider');
-        grid.appendChild(provider);
-        ICON_PRESETS.forEach(p => {
-            const mode = `preset:${p.key}`;
-            const b = document.createElement('button');
-            b.className = 'icon-preset-btn' + (selectedMode === mode ? ' active' : '');
-            b.innerHTML = `<div class="icon-preset-face" style="background:${p.color};color:${p.text||'#fff'};">˙ᴗ˙</div><div>${p.label}</div>`;
-            b.onclick = () => setIconMode(mode);
-            grid.appendChild(b);
-        });
-    }
-    let pendingCustomIconData = '';
-    async function setIconMode(mode, customIconData='') {
-        if (!window._currentUser || !profileRef) return;
-        const updates = { iconMode: mode };
-        if (mode === 'custom') updates.customIconData = customIconData || profileCache.customIconData || '';
-        else updates.customIconData = '';
-        await update(profileRef, updates);
-        profileCache = { ...profileCache, ...updates };
-        updateMenuUser(window._currentUser);
-        await pushRankingData();
-        renderIconPresets(profileCache.iconMode || 'provider');
-    }
-    window.openIconSettings = function() {
-        if (!window._currentUser) return;
-        renderIconPresets(profileCache.iconMode || 'provider');
-        pendingCustomIconData = '';
-        document.getElementById('saveCustomIconBtn').disabled = true;
-        document.getElementById('iconModal').style.display = 'flex';
-    };
-    window.closeIconSettings = function() { document.getElementById('iconModal').style.display = 'none'; };
-    window.saveCustomIcon = async function() {
-        if (!pendingCustomIconData) { alert('先に画像を選択してください'); return; }
-        await setIconMode('custom', pendingCustomIconData);
-        alert('画像を設定しました');
-        closeIconSettings();
-    };
-    document.getElementById('customIconFile').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const r = new FileReader();
-        r.onload = () => {
-            pendingCustomIconData = r.result;
-            document.getElementById('saveCustomIconBtn').disabled = false;
-        };
-        r.readAsDataURL(file);
-    });
-    window.downloadMyData = async function() {
-        if (!window._currentUser) return;
-        const uid = window._currentUser.uid;
-        const [logsSnap, eventsSnap, goalsSnap, profileSnap] = await Promise.all([
-            get(ref(db, `users/${uid}/my_logs`)),
-            get(ref(db, `users/${uid}/my_events`)),
-            get(ref(db, `users/${uid}/monthly_goals`)),
-            get(ref(db, `users/${uid}/profile`))
-        ]);
-        const payload = {
-            exportedAt: new Date().toISOString(),
-            logs: logsSnap.val() || {},
-            events: eventsSnap.val() || {},
-            goals: goalsSnap.val() || {},
-            profile: profileSnap.val() || {}
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `learning-summary-${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-    };
-
-    // フォールバック: PC環境などでAuth初期化が遅延しても未ログイン画面を出す
-    let authResolved = false;
-    setTimeout(() => {
-        if (!authResolved && !auth.currentUser) {
-            const loadingEl = document.getElementById('loading');
-            const loginEl = document.getElementById('loginScreen');
-            if (loadingEl) loadingEl.style.display = 'none';
-            if (loginEl) loginEl.style.display = 'flex';
-        }
-    }, 1500);
-
     onAuthStateChanged(auth, (user) => {
-        authResolved = true;
         window._currentUser = user;
         updateMenuUser(user);
         if(user) {
@@ -1117,28 +962,11 @@ lsc.app.support@gmail.com
             // プロフィール読み込み
             get(profileRef).then(snap => {
                 const p = snap.val() || {};
-                profileCache = p;
                 document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
                 document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
-                updateMenuUser(user);
-                renderIconPresets(p.iconMode || 'provider');
             });
             // ランキング購読
             onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
-            if (avatarRefreshTimer) clearInterval(avatarRefreshTimer);
-            avatarRefreshTimer = setInterval(async () => {
-                if (!window._currentUser) return;
-                const before = window._currentUser.photoURL || '';
-                await window._currentUser.reload();
-                const latest = auth.currentUser;
-                if (!latest) return;
-                window._currentUser = latest;
-                const after = latest.photoURL || '';
-                if (before !== after && (profileCache.iconMode || 'provider') === 'provider') {
-                    updateMenuUser(latest);
-                    await pushRankingData();
-                }
-            }, 120000);
         } else {
             // 未ログイン：Loadingを隠してログイン画面表示
             document.getElementById('loading').style.display = 'none';
@@ -1146,7 +974,6 @@ lsc.app.support@gmail.com
             if(logsUnsubscribe) { logsUnsubscribe(); logsUnsubscribe = null; }
             if(eventsUnsubscribe) { eventsUnsubscribe(); eventsUnsubscribe = null; }
             logsRef = null; eventsRef = null;
-            if (avatarRefreshTimer) { clearInterval(avatarRefreshTimer); avatarRefreshTimer = null; }
         }
     });
 
@@ -1201,14 +1028,13 @@ lsc.app.support@gmail.com
         });
         const level = Math.floor(totalExp / 100) + 1;
         const displayName = profile.displayName || user.displayName || 'ゲスト';
-        const effectivePhotoURL = getEffectivePhotoURL(profile, user);
         let totalStars = 0;
         Object.keys(remoteData).forEach(k => { if(getLogData(k).star) totalStars++; });
         const titleName = resolveCurrentTitle(crownsCount, totalStars);
         const bestStreak = window._bestStreak || 0;
         await set(rankEntry, {
             displayName,
-            photoURL: effectivePhotoURL,
+            photoURL: user.photoURL || '',
             level,
             exp: totalExp,
             title: titleName,
@@ -1251,7 +1077,7 @@ lsc.app.support@gmail.com
     }
 
     function avatar(cls, photoURL, fallback) {
-        if (photoURL) return `<div class="${cls}"><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';"></div>`;
+        if (photoURL) return `<div class="${cls}"><img src="${photoURL}" referrerpolicy="no-referrer"></div>`;
         return `<div class="${cls}">${fallback}</div>`;
     }
 
@@ -1346,36 +1172,17 @@ lsc.app.support@gmail.com
         renderRankingPage();
     };
 
-    async function saveProfileSettings() {
+    document.getElementById('saveProfileBtn').onclick = async () => {
         if (!window._currentUser || !profileRef) return;
-        const displayName = document.getElementById('rankDisplayName').value.trim() || (window._currentUser.displayName || 'ゲスト');
+        const displayName = document.getElementById('rankDisplayName').value.trim();
         const showInRanking = document.getElementById('showInRankingToggle').checked;
-        const payload = {
-            ...profileCache,
-            displayName,
-            showInRanking,
-            photoURL: window._currentUser.photoURL || profileCache.photoURL || '',
-            iconMode: profileCache.iconMode || 'provider',
-            customIconData: profileCache.customIconData || ''
-        };
-        await set(profileRef, payload);
-        profileCache = payload;
-        updateMenuUser(window._currentUser);
+        if (!displayName) { alert('表示名を入力してください'); return; }
+        await set(profileRef, { displayName, photoURL: window._currentUser.photoURL || '', showInRanking });
         await pushRankingData();
-    }
-
-    let profileNameSaveTimer = null;
-    document.getElementById('showInRankingToggle').addEventListener('change', async () => { await saveProfileSettings(); });
-    document.getElementById('rankDisplayName').addEventListener('input', () => {
-        clearTimeout(profileNameSaveTimer);
-        profileNameSaveTimer = setTimeout(() => {
-            saveProfileSettings();
-        }, 600);
-    });
-    document.getElementById('rankDisplayName').addEventListener('blur', async () => {
-        clearTimeout(profileNameSaveTimer);
-        await saveProfileSettings();
-    });
+        const btn = document.getElementById('saveProfileBtn');
+        btn.textContent = '✅ 保存しました！'; btn.disabled = true;
+        setTimeout(() => { btn.textContent = 'プロフィールを保存'; btn.disabled = false; }, 2000);
+    };
     let _rankTab = 'level';
     window.switchRankTab = function(tab) {
         _rankTab = tab;
