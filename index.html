@@ -818,11 +818,6 @@ lsc.app.support@gmail.com
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-    // リロード後もログイン状態を維持（PCブラウザ対策）
-    setPersistence(auth, browserLocalPersistence).catch((e) => {
-        console.warn("Auth persistence setup failed:", e);
-    });
-    
     let logsRef = null;
     let eventsRef = null;
     let rankingRef = null;
