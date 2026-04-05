@@ -511,6 +511,13 @@
                     <div style="font-size:10px; color:#999;">ログ・目標・プロフィール(JSON)</div>
                 </div>
             </button>
+            <button class="icon-entry-btn" id="installAppBtn" onclick="openInstallApp()" style="margin-top:8px;">
+                <div class="preview">📲</div>
+                <div style="text-align:left;">
+                    <div style="font-size:12px; font-weight:900; color:#555;">アプリをダウンロード</div>
+                    <div id="installAppSub" style="font-size:10px; color:#999;">端末にインストールします</div>
+                </div>
+            </button>
             <button class="icon-entry-btn" onclick="openWhatsNew({ markSeen: false })" style="margin-top:8px;">
                 <div class="preview">🆕</div>
                 <div style="text-align:left;">
@@ -1117,6 +1124,56 @@ lsc.app.support@gmail.com
         }
     };
 
+    let deferredInstallPrompt = null;
+    function updateInstallAppUI() {
+        const sub = document.getElementById('installAppSub');
+        if (!sub) return;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isStandalone) {
+            sub.textContent = 'インストール済みです';
+            return;
+        }
+        sub.textContent = deferredInstallPrompt ? 'インストール可能です' : 'ホーム画面追加の案内を表示します';
+    }
+
+    window.openInstallApp = async function() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isStandalone) {
+            alert('この端末にはすでにインストール済みです。');
+            return;
+        }
+        if (deferredInstallPrompt) {
+            try {
+                deferredInstallPrompt.prompt();
+                await deferredInstallPrompt.userChoice;
+            } catch (err) {
+                console.error('install prompt error:', err);
+            } finally {
+                deferredInstallPrompt = null;
+                updateInstallAppUI();
+            }
+            return;
+        }
+        const guide = document.getElementById('installGuideModal');
+        if (guide) guide.style.display = 'flex';
+    };
+
+    window.closeInstallGuide = function() {
+        const guide = document.getElementById('installGuideModal');
+        if (guide) guide.style.display = 'none';
+    };
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        updateInstallAppUI();
+    });
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        updateInstallAppUI();
+    });
+    window.addEventListener('DOMContentLoaded', updateInstallAppUI);
+    
     // フォールバック: PC環境などでAuth初期化が遅延しても未ログイン画面を出す
     let authResolved = false;
     setTimeout(() => {
@@ -2516,6 +2573,22 @@ if (window.__pendingTutorialCheck) {
         </div>
     </div>
 </div>
-
+                
+<!-- アプリインストール案内 -->
+<div id="installGuideModal" class="modal" style="z-index:8900;" onclick="closeInstallGuide()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width:420px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">📲 アプリをダウンロード</h2>
+            <button onclick="closeInstallGuide()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
+        </div>
+        <div style="font-size:13px; color:#555; line-height:1.8; font-weight:700;">
+            <p style="margin:0 0 8px;">この端末では直接インストールダイアログが出せないため、以下の手順で追加してください。</p>
+            <p style="margin:0 0 6px;"><b>📱 iPhone (Safari)</b><br>共有ボタン（□↑）→「ホーム画面に追加」</p>
+            <p style="margin:0;"><b>🤖 Android (Chrome)</b><br>メニュー（⋮）→「ホーム画面に追加」または「アプリをインストール」</p>
+        </div>
+        <button class="save-btn" style="margin-top:14px;" onclick="closeInstallGuide()">閉じる</button>
+    </div>
+</div>
+                
 </body>
 </html>
