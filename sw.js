@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learning-summary-calendar-v1';
+const CACHE_NAME = 'learning-summary-calendar-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -30,6 +30,23 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  // HTML（特に index.html）は常に最新版を優先して取得する。
+  // これにより、JS不具合修正後に古いキャッシュが残って
+  // チュートリアル／リリースノートが復旧しない問題を防ぐ。
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const cloned = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', cloned));
+          return response;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
