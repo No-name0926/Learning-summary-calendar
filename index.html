@@ -827,7 +827,27 @@ lsc.app.support@gmail.com
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', async () => {
             try {
-                await navigator.serviceWorker.register('./sw.js');
+                const reg = await navigator.serviceWorker.register('./sw.js?v=3');
+                reg.update().catch(() => {});
+
+                // 既存利用者に修正版を素早く届けるため、待機中SWがあれば即時有効化
+                if (reg.waiting) {
+                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+                reg.addEventListener('updatefound', () => {
+                    const installing = reg.installing;
+                    if (!installing) return;
+                    installing.addEventListener('statechange', () => {
+                        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                            installing.postMessage({ type: 'SKIP_WAITING' });
+                        }
+                    });
+                });
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (window.__swRefreshing) return;
+                    window.__swRefreshing = true;
+                    window.location.reload();
+                });
             } catch (err) {
                 console.error('Service Worker registration failed:', err);
             }
