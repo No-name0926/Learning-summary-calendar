@@ -392,6 +392,17 @@
             </button>
         </div>
     </div>
+    <!-- フリーズストック表示 -->
+    <div id="sideMenuFreezeBar" style="display:flex; align-items:center; justify-content:space-between; background:linear-gradient(135deg,#e8f4ff,#d6ecff); border-radius:14px; padding:10px 16px; margin-top:14px; margin-bottom:4px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:20px;">❄️</span>
+            <div>
+                <div style="font-size:12px; font-weight:900; color:#0070bc;">フリーズストック</div>
+                <div style="font-size:11px; color:#5590bb; font-weight:700;">連続記録を守る盾</div>
+            </div>
+        </div>
+        <div style="font-size:22px; font-weight:900; color:#0070bc;"><span id="freezeCount">0</span><span style="font-size:13px; color:#7ab0d4; margin-left:2px;">/ 5</span></div>
+    </div>
     <div style="flex-grow: 1;">
         <p style="font-size: 14px; font-weight: 900; color:#666; margin-top:25px;">📅 目標カウントダウン追加</p>
         <input type="text" id="eventTitle" class="setting-input" placeholder="例：国家試験、英検">
@@ -547,7 +558,6 @@
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
         <span class="pink-sparkle">✦</span>
     </div>
-    <div id="freezeStockDisplay" style="text-align:center; font-size:12px; font-weight:800; color:var(--text-on-bg); opacity:0.5; margin-top:-22px; margin-bottom:14px; transition:color 0.5s; letter-spacing:0.3px;">🧊 ×<span id="freezeCount">0</span></div>
     <div class="quote-box" id="quoteContainer" onclick="fetchQuote()">
         <div class="quote-text" id="quoteText">Loading message...</div>
         <div class="quote-author" id="quoteAuthor"></div>
@@ -1306,7 +1316,7 @@ lsc.app.support@gmail.com
             const freezeKey = `${viewY}-${viewM}-${i}`;
             const isFrozen = !VALID.includes(data.stamp) && freezeUsedData[freezeKey];
             const day = Object.assign(document.createElement('div'), {className: `day ${isToday?'today':''}`});
-            day.innerHTML = `<div class="star-indicator">${data.star ? '🌟' : ''}</div><div class="date-num">${i}</div><div class="stamp">${isFrozen ? '<span class="freeze-indicator">🧊</span>' : data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
+            day.innerHTML = `<div class="star-indicator">${data.star ? '🌟' : ''}</div><div class="date-num">${i}</div><div class="stamp">${isFrozen ? '<span class="freeze-indicator">❄️</span>' : data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
             day.onclick = () => openDayModal(viewY, viewM, i);
             grid.appendChild(day);
         }
@@ -1332,10 +1342,16 @@ lsc.app.support@gmail.com
     const FREEZE_MAX = 5;
 
     // フリーズストック計算（上限FREEZE_MAX）
+    // スタンプがついた日のフリーズは「返却済み」とみなし使用カウントから除外
     function calcFreezeStock(level, bestStreak) {
         const earned = 1 + (level - 1) + Math.floor(bestStreak / 10);
-        const used = Object.keys(freezeUsedData).length;
-        return Math.min(FREEZE_MAX, Math.max(0, earned - used));
+        let activelyUsed = 0;
+        Object.keys(freezeUsedData).forEach(k => {
+            const p = k.split('-');
+            const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
+            if (!VALID.includes(getLogData(logKey).stamp)) activelyUsed++;
+        });
+        return Math.min(FREEZE_MAX, Math.max(0, earned - activelyUsed));
     }
 
     // フリーズストック表示更新
@@ -1739,9 +1755,11 @@ lsc.app.support@gmail.com
             if (cur > bestStreak) bestStreak = cur;
         }
 
-        // 現在の連続ストリークを計算（フリーズ自動適用付き）
+        // 現在の連続ストリークを計算（フリーズ自動適用は今日・昨日のみ）
         let streak = 0;
-        let chk = new Date(); chk.setHours(0,0,0,0);
+        const todayMs = new Date(); todayMs.setHours(0,0,0,0);
+        const yesterdayMs = new Date(todayMs); yesterdayMs.setDate(todayMs.getDate() - 1);
+        let chk = new Date(todayMs);
         // 今日にスタンプもフリーズもなければ昨日から
         if (!VALID.includes(getS(chk)) && !freezeUsedData[dk(chk)]) {
             chk.setDate(chk.getDate() - 1);
@@ -1751,17 +1769,27 @@ lsc.app.support@gmail.com
             const s = getS(chk);
             const key = dk(chk);
             if (VALID.includes(s)) {
+                // スタンプあり：連続カウント（freeze_usedがあってもスタンプ優先）
                 streak++;
             } else if (freezeUsedData[key]) {
+                // フリーズ使用済み（スタンプなし）：連続カウント
                 streak++;
             } else {
-                // フリーズ自動適用を試みる（上限FREEZE_MAX）
-                const tempBest = Math.max(bestStreak, streak);
-                const earned = Math.min(FREEZE_MAX, 1 + (calcLevel - 1) + Math.floor(tempBest / 10));
-                const used = Object.keys(freezeUsedData).length + pendingFreezes.length;
-                if (earned - used > 0) {
-                    pendingFreezes.push(key);
-                    streak++;
+                // 未記録：今日か昨日のみ新規フリーズ自動適用
+                const isRecentDay = chk.getTime() === todayMs.getTime() || chk.getTime() === yesterdayMs.getTime();
+                if (isRecentDay) {
+                    const tempBest = Math.max(bestStreak, streak);
+                    const earned = Math.min(FREEZE_MAX, 1 + (calcLevel - 1) + Math.floor(tempBest / 10));
+                    let activelyUsed = pendingFreezes.length;
+                    Object.keys(freezeUsedData).forEach(k => {
+                        const p = k.split('-');
+                        const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
+                        if (!VALID.includes(getLogData(logKey).stamp)) activelyUsed++;
+                    });
+                    if (earned - activelyUsed > 0) {
+                        pendingFreezes.push(key);
+                        streak++;
+                    } else { break; }
                 } else {
                     break;
                 }
@@ -1907,17 +1935,8 @@ lsc.app.support@gmail.com
         if(!logsRef) return;
         const memo = document.getElementById('dayMemo').value.trim();
         const before = getLogData(selectedDateKey).stamp;
-        // フリーズ返却ロジック：フリーズ使用日にスタンプを記録したらフリーズ返却
-        const parts = selectedDateKey.split('-');
-        const freezeDateKey = `${parts[1]}-${parts[2]}-${parts[3]}`;
-        const wasFreeze = freezeUsedData[freezeDateKey];
         set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => {
             if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
-            // フリーズ返却：有効スタンプを付けたらフリーズを削除
-            if (wasFreeze && VALID.includes(selectedStamp) && freezeRef) {
-                remove(child(freezeRef, freezeDateKey));
-                delete freezeUsedData[freezeDateKey];
-            }
             closeDayModal();
         });
     };
