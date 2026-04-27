@@ -399,9 +399,10 @@
     <div class="level-up-text">LEVEL UP!</div>
 </div>
 
-<div id="globalLoading">
+<div id="globalLoading" onclick="this.style.display='none'">
     <div class="loading-icon">📸</div>
     <div style="font-weight:900; color:#333;" id="globalLoadingText">処理中...</div>
+    <div style="font-size:11px; color:#aaa; margin-top:12px;">タップして閉じる</div>
 </div>
 
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
@@ -2497,7 +2498,9 @@ lsc.app.support@gmail.com
         const loading = document.getElementById('globalLoading');
         const loadingText = document.getElementById('globalLoadingText');
         loading.style.display = 'flex';
-        loadingText.innerText = '画像を生成中...';
+        loadingText.innerText = 'シェア画像を作成中...';
+        // 安全タイムアウト：15秒後に自動で閉じる
+        const safetyTimer = setTimeout(() => { loading.style.display = 'none'; }, 15000);
 
         try {
             // シェア用の要素を一時的に構築
@@ -2542,6 +2545,7 @@ lsc.app.support@gmail.com
             console.error(e);
             alert('画像の生成に失敗しました。');
         } finally {
+            clearTimeout(safetyTimer);
             loading.style.display = 'none';
         }
     };
@@ -2587,35 +2591,7 @@ lsc.app.support@gmail.com
         if (document.getElementById('sideMenu').classList.contains('open')) toggleMenu();
     };
 
-    window.generateAiImage = async () => {
-        const memo = document.getElementById('dayMemo').value.trim();
-        if (!memo) { alert('AI画像を作成するにはメモを入力してください'); return; }
-        const container = document.getElementById('aiImageContainer');
-        const img = document.getElementById('dayAiImage');
-        const loading = document.getElementById('aiImageLoading');
-        const btn = document.getElementById('generateAiImageBtn');
-        container.style.display = 'block';
-        loading.style.display = 'flex';
-        img.style.opacity = '0.3';
-        btn.disabled = true;
-        try {
-            const prompt = encodeURIComponent(`${memo}, anime style, beautiful illustration, digital art, high quality`);
-            const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=512&height=512&nologo=true&seed=${Date.now()}`;
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = imageUrl;
-            });
-            img.style.opacity = '1';
-            loading.style.display = 'none';
-        } catch (e) {
-            console.error(e);
-            alert('画像の生成に失敗しました');
-            container.style.display = 'none';
-        } finally {
-            btn.disabled = false;
-        }
-    };
+
 
     // ── 検索・振り返り・シェア ──────────────────
     window.searchMemos = (query) => {
