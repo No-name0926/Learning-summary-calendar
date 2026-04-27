@@ -152,6 +152,7 @@
         .stamp { font-size: 38px; height: 42px; line-height: 42px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.15)); }
         .memo-indicator { font-size: 10px; color: var(--primary-color); height: 12px; margin-top: 2px; }
         .star-indicator { font-size: 13px; height: 14px; line-height: 14px; margin-bottom: 1px; }
+        .freeze-indicator { font-size: 34px; height: 42px; line-height: 42px; opacity: 0.3; pointer-events: none; }
         .goal-banner { background:rgba(255,220,50,0.18); border:1.5px solid rgba(255,200,30,0.4); border-radius:16px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px; cursor:pointer; transition:0.2s; }
         .goal-banner:active { opacity:0.8; }
         .rank-tab-wrap { display:flex; gap:0; margin-bottom:16px; border-radius:14px; overflow:hidden; border:1.5px solid #f0f0f0; }
@@ -546,6 +547,7 @@
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
         <span class="pink-sparkle">✦</span>
     </div>
+    <div id="freezeStockDisplay" style="text-align:center; font-size:12px; font-weight:800; color:var(--text-on-bg); opacity:0.5; margin-top:-22px; margin-bottom:14px; transition:color 0.5s; letter-spacing:0.3px;">🧊 ×<span id="freezeCount">0</span></div>
     <div class="quote-box" id="quoteContainer" onclick="fetchQuote()">
         <div class="quote-text" id="quoteText">Loading message...</div>
         <div class="quote-author" id="quoteAuthor"></div>
@@ -955,6 +957,8 @@ lsc.app.support@gmail.com
     let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
     let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
     let goalRef = null;
+    let freezeRef = null;
+    let freezeUsedData = {};
     const VALID = ['🍎', '🥉', '🥈', '🥇', '👑'], VALUE_MAP = { '':0, '⚪':0, '🍎':1, '🥉':3, '🥈':5, '🥇':7, '👑':10 }, EXP_MAP = { '⚪':0, '🍎':1, '🥉':5, '🥈':10, '🥇':15, '👑':30 };
 
     function createPattern(type, color) {
@@ -1230,6 +1234,7 @@ lsc.app.support@gmail.com
             // ユーザーごとのパスで購読開始
             logsRef = ref(db, `users/${user.uid}/my_logs`);
             goalRef = ref(db, `users/${user.uid}/monthly_goals`);
+            freezeRef = ref(db, `users/${user.uid}/freeze_used`);
             eventsRef = ref(db, `users/${user.uid}/my_events`);
             profileRef = ref(db, `users/${user.uid}/profile`);
             rankingRef = ref(db, `ranking`);
@@ -1245,6 +1250,12 @@ lsc.app.support@gmail.com
                 else window.__pendingWhatsNewCheck = true;
             });
             eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
+            // フリーズデータ購読：変更時にカレンダー再描画
+            onValue(freezeRef, (snap) => {
+                const prev = JSON.stringify(freezeUsedData);
+                freezeUsedData = snap.val() || {};
+                if (JSON.stringify(freezeUsedData) !== prev) render();
+            });
             // プロフィール読み込み
             get(profileRef).then(snap => {
                 const p = snap.val() || {};
@@ -1292,8 +1303,10 @@ lsc.app.support@gmail.com
         for (let i = 1; i <= days; i++) {
             const data = getLogData(`log-${viewY}-${viewM}-${i}`);
             const isToday = viewY === today.getFullYear() && viewM === (today.getMonth()+1) && i === today.getDate();
+            const freezeKey = `${viewY}-${viewM}-${i}`;
+            const isFrozen = !VALID.includes(data.stamp) && freezeUsedData[freezeKey];
             const day = Object.assign(document.createElement('div'), {className: `day ${isToday?'today':''}`});
-            day.innerHTML = `<div class="star-indicator">${data.star ? '🌟' : ''}</div><div class="date-num">${i}</div><div class="stamp">${data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
+            day.innerHTML = `<div class="star-indicator">${data.star ? '🌟' : ''}</div><div class="date-num">${i}</div><div class="stamp">${isFrozen ? '<span class="freeze-indicator">🧊</span>' : data.stamp}</div><div class="memo-indicator">${data.memo ? '📝' : ''}</div>`;
             day.onclick = () => openDayModal(viewY, viewM, i);
             grid.appendChild(day);
         }
@@ -1313,6 +1326,23 @@ lsc.app.support@gmail.com
         Object.keys(remoteData).forEach(k => { if(getLogData(k).star) totalStarsAll++; });
         const sd = document.getElementById('totalStarDisplay');
         if(sd) sd.innerText = totalStarsAll;
+    }
+
+    // フリーズ上限
+    const FREEZE_MAX = 5;
+
+    // フリーズストック計算（上限FREEZE_MAX）
+    function calcFreezeStock(level, bestStreak) {
+        const earned = 1 + (level - 1) + Math.floor(bestStreak / 10);
+        const used = Object.keys(freezeUsedData).length;
+        return Math.min(FREEZE_MAX, Math.max(0, earned - used));
+    }
+
+    // フリーズストック表示更新
+    function updateFreezeDisplay(level, bestStreak) {
+        const stock = calcFreezeStock(level, bestStreak);
+        const el = document.getElementById('freezeCount');
+        if (el) el.innerText = stock;
     }
 
     // ── ランキング関連 ────────────────────────
@@ -1677,18 +1707,82 @@ lsc.app.support@gmail.com
 
 
     function updateStats() {
-        let streak = 0, chk = new Date(); chk.setHours(0,0,0,0); const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
-        if (!VALID.includes(getS(chk))) chk.setDate(chk.getDate() - 1); while (VALID.includes(getS(chk))) { streak++; chk.setDate(chk.getDate() - 1); }
-        document.getElementById('streakDisplay').innerText = streak;
-        // 最高連続記録を計算
+        const getS = (dt) => getLogData(`log-${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`).stamp;
+        const dk = (dt) => `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
+
+        // まずレベル計算（フリーズストックに必要）
+        let totalExp = 0;
+        Object.keys(remoteData).forEach(k => totalExp += (EXP_MAP[getLogData(k).stamp] || 0));
+        const calcLevel = Math.floor(totalExp / 100) + 1;
+
+        // 最高連続記録を計算（フリーズ使用日も含む）
+        const allActiveDates = [];
+        Object.keys(remoteData).forEach(k => {
+            if (VALID.includes(getLogData(k).stamp)) {
+                const p = k.split('-');
+                allActiveDates.push(new Date(p[1], p[2]-1, p[3]));
+            }
+        });
+        Object.keys(freezeUsedData).forEach(k => {
+            const p = k.split('-');
+            if (p.length === 3) allActiveDates.push(new Date(p[0], p[1]-1, p[2]));
+        });
+        // 重複排除・ソート
+        const uniqueMap = new Map();
+        allActiveDates.forEach(d => uniqueMap.set(d.getTime(), d));
+        const sortedDates = [...uniqueMap.values()].sort((a,b) => a-b);
+
         let bestStreak = 0, cur = 0;
-        const allKeys = Object.keys(remoteData).filter(k => VALID.includes(getLogData(k).stamp)).map(k => { const p = k.split('-'); return new Date(p[1], p[2]-1, p[3]); }).sort((a,b) => a-b);
-        for(let i=0;i<allKeys.length;i++){
-            if(i===0){ cur=1; } else { const diff=(allKeys[i]-allKeys[i-1])/86400000; cur = diff===1 ? cur+1 : 1; }
-            if(cur>bestStreak) bestStreak=cur;
+        for (let i = 0; i < sortedDates.length; i++) {
+            if (i === 0) { cur = 1; }
+            else { const diff = (sortedDates[i] - sortedDates[i-1]) / 86400000; cur = diff === 1 ? cur + 1 : 1; }
+            if (cur > bestStreak) bestStreak = cur;
         }
-        if(bestStreak < streak) bestStreak = streak;
+
+        // 現在の連続ストリークを計算（フリーズ自動適用付き）
+        let streak = 0;
+        let chk = new Date(); chk.setHours(0,0,0,0);
+        // 今日にスタンプもフリーズもなければ昨日から
+        if (!VALID.includes(getS(chk)) && !freezeUsedData[dk(chk)]) {
+            chk.setDate(chk.getDate() - 1);
+        }
+        let pendingFreezes = [];
+        while (true) {
+            const s = getS(chk);
+            const key = dk(chk);
+            if (VALID.includes(s)) {
+                streak++;
+            } else if (freezeUsedData[key]) {
+                streak++;
+            } else {
+                // フリーズ自動適用を試みる（上限FREEZE_MAX）
+                const tempBest = Math.max(bestStreak, streak);
+                const earned = Math.min(FREEZE_MAX, 1 + (calcLevel - 1) + Math.floor(tempBest / 10));
+                const used = Object.keys(freezeUsedData).length + pendingFreezes.length;
+                if (earned - used > 0) {
+                    pendingFreezes.push(key);
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            chk.setDate(chk.getDate() - 1);
+        }
+
+        // ペンディングフリーズをFirebaseに保存
+        if (pendingFreezes.length > 0 && freezeRef) {
+            const updates = {};
+            pendingFreezes.forEach(key => {
+                freezeUsedData[key] = true;
+                updates[key] = true;
+            });
+            update(freezeRef, updates);
+        }
+
+        if (bestStreak < streak) bestStreak = streak;
         window._bestStreak = bestStreak;
+        document.getElementById('streakDisplay').innerText = streak;
+        updateFreezeDisplay(calcLevel, bestStreak);
         const mLog = {}, yLog = {}; let crowns = 0; VALID.forEach(v => { mLog[v] = 0; yLog[v] = 0; }); const monthlyStack = Array.from({length: 12}, () => ({'🍎':0, '🥉':0, '🥈':0, '🥇':0, '👑':0}));
         Object.keys(remoteData).forEach(k => { const s = getLogData(k).stamp; if (VALID.includes(s)) { const p = k.split('-'); if (p[1] == viewY) { yLog[s]++; if (p[2] == viewM) mLog[s]++; const monthIdx = parseInt(p[2]) - 1; monthlyStack[monthIdx][s]++; } if (s === '👑') crowns++; } });
         const mk = (data, total) => VALID.map(v => `<div class="stat-item">${v}<span class="stat-val">${data[v]}<span class="stat-total">/${total}</span></span></div>`).join('');
@@ -1813,8 +1907,17 @@ lsc.app.support@gmail.com
         if(!logsRef) return;
         const memo = document.getElementById('dayMemo').value.trim();
         const before = getLogData(selectedDateKey).stamp;
+        // フリーズ返却ロジック：フリーズ使用日にスタンプを記録したらフリーズ返却
+        const parts = selectedDateKey.split('-');
+        const freezeDateKey = `${parts[1]}-${parts[2]}-${parts[3]}`;
+        const wasFreeze = freezeUsedData[freezeDateKey];
         set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => {
             if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
+            // フリーズ返却：有効スタンプを付けたらフリーズを削除
+            if (wasFreeze && VALID.includes(selectedStamp) && freezeRef) {
+                remove(child(freezeRef, freezeDateKey));
+                delete freezeUsedData[freezeDateKey];
+            }
             closeDayModal();
         });
     };
@@ -2241,6 +2344,18 @@ lsc.app.support@gmail.com
 // ── 更新内容（リリースノート） ─────────────────────
 const RELEASE_NOTES = [
     {
+        id: '2026-04-27-freeze-feature',
+        date: '2026-04-27',
+        title: '🧊 フリーズ（連続記録維持）機能を追加',
+        body: [
+            '🧊 フリーズ機能が追加されました！',
+            '勉強できなかった日にフリーズが自動的に使用され、連続記録を守ります',
+            '初期ストック1個＋レベルアップごとに1個＋連続10日ごとに1個獲得',
+            'つけ忘れの場合、後からスタンプを付ければフリーズが返却されます',
+            'カレンダーでフリーズ使用日は🧊アイコンで表示されます'
+        ]
+    },
+    {
         id: '2026-04-05-whatsnew-tutorial-fix',
         date: '2026-04-05',
         title: 'チュートリアルと更新内容表示を改善',
@@ -2355,6 +2470,14 @@ const TUT_STEPS = [
         title: 'レベルアップ・称号を集めよう',
         body: 'スタンプを貯めるとEXPが溜まりレベルアップ🎉　👑スタンプを積み重ねると特別な称号が解放されます！',
         tip: '画面上部の称号バッジをタップ → ロードマップで全称号を確認できます'
+    },
+    {
+        color: '#f0f8ff',
+        accent: '#06b6d4',
+        icon: '🧊',
+        title: 'フリーズで連続記録を守ろう',
+        body: '勉強できなかった日はフリーズが自動で使われ、連続記録が途切れません！初期1個＋レベルアップごとに1個＋連続10日達成ごとに1個獲得できます。',
+        tip: '💡 記録をつけ忘れただけなら、後からスタンプを付ければフリーズが戻ります'
     },
     {
         color: '#f0fff8',
