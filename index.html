@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="icon.png">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style id="theme-variables">
         :root {
             --primary-color: #0070bc;
@@ -330,7 +331,10 @@
         .pager-info { font-size:13px; font-weight:900; color:#bbb; min-width:40px; text-align:center; }
 
         .ranking-empty { text-align:center; color:#ccc; font-size:13px; padding:30px; font-weight:700; line-height:1.8; }
-        .setting-input-label { font-size:12px; font-weight:900; color:#666; display:block; margin-bottom:5px; margin-top:14px; }
+        .ai-img-container { position:relative; width:100%; aspect-ratio:1; border-radius:18px; overflow:hidden; margin-bottom:15px; background:#f8f9ff; border:1px solid #e4eaff; }
+        .ai-img-loading { position:absolute; inset:0; background:rgba(255,255,255,0.7); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:12px; font-weight:900; color:var(--primary-color); }
+        .ai-img-tag { position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.5); color:white; padding:2px 8px; border-radius:10px; font-size:9px; font-weight:900; backdrop-filter:blur(4px); }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     </style>
 </head>
 <body>
@@ -540,6 +544,15 @@
             </button>
         </div>
     </div>
+    <!-- キーワード検索・ランダム振り返り -->
+    <div style="margin-top:18px; padding:16px; background:#f8f9ff; border-radius:16px; border:1.5px solid #e4eaff;">
+        <p style="font-size:13px; font-weight:900; color:#444; margin:0 0 10px;">🔍 メモ検索・振り返り</p>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力" style="margin:0; flex:1; font-size:13px; padding:8px 12px;" oninput="searchMemos(this.value)">
+        </div>
+        <div id="memoSearchResults" style="max-height:180px; overflow-y:auto; display:none; background:white; border-radius:12px; border:1px solid #e8eaff; margin-bottom:10px;"></div>
+        <button onclick="showRandomReflection()" style="width:100%; padding:10px; background:linear-gradient(135deg,#ffecd2,#fcb69f); color:#8b3a00; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 2px 8px rgba(252,182,159,0.3);">✨ ランダム振り返り</button>
+    </div>
     <button style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;" onclick="toggleMenu()">閉じる</button>
 </div>
 
@@ -557,6 +570,10 @@
         <span class="pink-sparkle">✦</span>
         <span>連続 <span class="days-count" id="streakDisplay">0</span> <span class="unit">Days</span></span>
         <span class="pink-sparkle">✦</span>
+    </div>
+    <!-- シェアボタン -->
+    <div style="text-align:center; margin-top:-8px; margin-bottom:8px;">
+        <button id="shareCardBtn" onclick="generateShareCard()" style="background:linear-gradient(135deg,var(--primary-color),var(--accent-color)); color:white; border:none; border-radius:20px; padding:6px 18px; font-size:12px; font-weight:900; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.15); transition:transform 0.2s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform=''" ontouchstart="this.style.transform='scale(0.96)'" ontouchend="this.style.transform=''">📸 シェア</button>
     </div>
     <div class="quote-box" id="quoteContainer" onclick="fetchQuote()">
         <div class="quote-text" id="quoteText">Loading message...</div>
@@ -791,6 +808,17 @@ lsc.app.support@gmail.com
             </div>
             <span id="starToggleIcon" style="font-size:26px;">☆</span>
         </div>
+        <div id="aiImageContainer" class="ai-img-container" style="display:none;">
+            <img id="dayAiImage" style="width:100%; height:100%; object-fit:cover;">
+            <div id="aiImageLoading" class="ai-img-loading" style="display:none;">
+                <div style="font-size:24px; animation:pulse 1s infinite; margin-bottom:4px;">✨</div>
+                AI画像生成中...
+            </div>
+            <div class="ai-img-tag">AI Generated</div>
+        </div>
+        <button id="generateAiImageBtn" class="save-btn" style="background:#f0f7ff; color:#0070bc; border:1.5px solid #c8dcf8; box-shadow:none; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="generateAiImage()">
+            <span style="font-size:16px;">✨</span> AI画像生成 (メモから)
+        </button>
         <button class="save-btn" onclick="saveDayData()">保存する</button>
         <button class="save-btn" style="background:none; color:#999; box-shadow:none;" onclick="closeDayModal()">キャンセル</button>
     </div>
@@ -1250,6 +1278,8 @@ lsc.app.support@gmail.com
             rankingRef = ref(db, `ranking`);
             logsUnsubscribe = onValue(logsRef, (snap) => {
                 remoteData = snap.val() || {};
+                // オフライン用バックアップ
+                if (user) localStorage.setItem(`lsc-data-${user.uid}`, JSON.stringify(remoteData));
                 document.getElementById('loading').style.display = 'none';
                 render();
                 updateGoalBanner();
@@ -1928,6 +1958,20 @@ lsc.app.support@gmail.com
         _selectedStar = data.star || false;
         _updateStarToggle();
         document.getElementById('dayModal').style.display = 'flex';
+        // AI画像表示更新
+        const container = document.getElementById('aiImageContainer');
+        const img = document.getElementById('dayAiImage');
+        const btn = document.getElementById('generateAiImageBtn');
+        if (data.aiImage) {
+            container.style.display = 'block';
+            img.src = data.aiImage;
+            img.style.opacity = '1';
+            btn.innerHTML = '<span style="font-size:16px;">✨</span> AI画像を再生成';
+        } else {
+            container.style.display = 'none';
+            img.src = '';
+            btn.innerHTML = '<span style="font-size:16px;">✨</span> AI画像生成 (メモから)';
+        }
     };
     window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
     window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
@@ -1935,7 +1979,15 @@ lsc.app.support@gmail.com
         if(!logsRef) return;
         const memo = document.getElementById('dayMemo').value.trim();
         const before = getLogData(selectedDateKey).stamp;
-        set(child(logsRef, selectedDateKey), { stamp: selectedStamp, memo: memo, star: _selectedStar }).then(() => {
+        const currentAiImage = document.getElementById('dayAiImage').src;
+        const aiImageData = currentAiImage.startsWith('http') ? currentAiImage : null;
+        
+        set(child(logsRef, selectedDateKey), { 
+            stamp: selectedStamp, 
+            memo: memo, 
+            star: _selectedStar,
+            aiImage: aiImageData 
+        }).then(() => {
             if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
             closeDayModal();
         });
@@ -2333,6 +2385,115 @@ lsc.app.support@gmail.com
             const btn = document.getElementById(id);
             btn.style.color = btn.disabled ? '#ccc' : '#555';
         });
+    };
+
+    // ── AI画像生成 ──────────────────
+    window.generateAiImage = async () => {
+        const memo = document.getElementById('dayMemo').value.trim();
+        if (!memo) { alert('AI画像を作成するにはメモを入力してください'); return; }
+        const container = document.getElementById('aiImageContainer');
+        const img = document.getElementById('dayAiImage');
+        const loading = document.getElementById('aiImageLoading');
+        const btn = document.getElementById('generateAiImageBtn');
+        container.style.display = 'block';
+        loading.style.display = 'flex';
+        img.style.opacity = '0.3';
+        btn.disabled = true;
+        try {
+            const prompt = encodeURIComponent(`${memo}, anime style, beautiful illustration, digital art, high quality`);
+            const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=512&height=512&nologo=true&seed=${Date.now()}`;
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = imageUrl;
+            });
+            img.style.opacity = '1';
+            loading.style.display = 'none';
+        } catch (e) {
+            console.error(e);
+            alert('画像の生成に失敗しました');
+            container.style.display = 'none';
+        } finally {
+            btn.disabled = false;
+        }
+    };
+
+    // ── 検索・振り返り・シェア ──────────────────
+    window.searchMemos = (query) => {
+        const resultsDiv = document.getElementById('memoSearchResults');
+        if (!query.trim()) { resultsDiv.style.display = 'none'; return; }
+        const results = Object.entries(remoteData)
+            .filter(([key, data]) => {
+                const memo = (typeof data === 'string') ? '' : (data.memo || '');
+                return memo.toLowerCase().includes(query.toLowerCase());
+            })
+            .map(([key, data]) => {
+                const p = key.split('-');
+                return { key, y: p[1], m: p[2], d: p[3], memo: (typeof data === 'string' ? '' : data.memo) };
+            });
+        if (results.length === 0) {
+            resultsDiv.innerHTML = '<div style="padding:15px; font-size:12px; color:#999; text-align:center;">見つかりませんでした</div>';
+        } else {
+            resultsDiv.innerHTML = results.map(r => `
+                <div class="memo-list-item" onclick="jumpToDate(${r.y}, ${r.m}, ${r.d})" style="cursor:pointer; border-bottom:1px solid #f0f4ff; padding:10px;">
+                    <div style="font-weight:900; font-size:10px; color:var(--primary-color);">${r.y}/${r.m}/${r.d}</div>
+                    <div style="font-size:12px; color:#444; margin-top:2px;">${r.memo}</div>
+                </div>
+            `).join('');
+        }
+        resultsDiv.style.display = 'block';
+    };
+
+    window.jumpToDate = (y, m, d) => {
+        viewY = parseInt(y);
+        viewM = parseInt(m);
+        render();
+        openDayModal(y, m, d);
+        if (document.getElementById('sideMenu').classList.contains('open')) toggleMenu();
+    };
+
+    window.showRandomReflection = () => {
+        const memos = Object.entries(remoteData).filter(([k, d]) => d && d.memo && d.memo.trim());
+        if (memos.length === 0) {
+            alert('まだ振り返るメモがありません。学習記録を残しましょう！');
+            return;
+        }
+        const [key, data] = memos[Math.floor(Math.random() * memos.length)];
+        const p = key.split('-');
+        jumpToDate(p[1], p[2], p[3]);
+        setTimeout(() => {
+            const badge = document.createElement('div');
+            badge.innerText = '✨ 過去の自分からのメッセージ';
+            badge.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:10px 20px; border-radius:30px; font-size:12px; font-weight:900; z-index:10000; animation:fadeIn 0.5s forwards;';
+            document.body.appendChild(badge);
+            setTimeout(() => { badge.style.animation = 'fadeIn 0.5s reverse forwards'; setTimeout(() => badge.remove(), 500); }, 3000);
+        }, 100);
+    };
+
+    window.generateShareCard = async () => {
+        const btn = document.getElementById('shareCardBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⌛ 生成中...';
+        btn.disabled = true;
+        try {
+            const cal = document.getElementById('calWrap');
+            const canvas = await html2canvas(cal, { backgroundColor: null, scale: 2, logging: false, useCORS: true });
+            const link = document.createElement('a');
+            link.download = `Anulis-Record-${viewY}-${viewM}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            const status = document.createElement('div');
+            status.innerText = '📸 画像を保存しました！';
+            status.style = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:var(--primary-color); color:white; padding:12px 24px; border-radius:30px; font-weight:900; z-index:10000; box-shadow:0 10px 30px rgba(0,0,0,0.2);';
+            document.body.appendChild(status);
+            setTimeout(() => status.remove(), 2500);
+        } catch (e) {
+            console.error(e);
+            alert('画像の生成に失敗しました。');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     };
 </script>
 <!-- フィードバックパネル -->
