@@ -305,6 +305,41 @@
             }
         }
 
+        @keyframes rainbowMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        [data-theme="stained_glass"] #monthDisplay {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00c6ff, #0072ff, #7c3aed, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        [data-theme="stained_glass"] .year-summary-btn {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00c6ff, #0072ff, #7c3aed, #ff00ff) !important;
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3) !important;
+        }
+
+        [data-theme="stained_glass"] .title-badge {
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000) !important;
+            background-size: 200% 200% !important;
+            animation: rainbowMove 5s linear infinite !important;
+        }
+
         @keyframes bubblePop {
 
             0%,
@@ -2672,11 +2707,11 @@
                 washi_paper: { primary: '#8b7355', accent: '#a0896a', bg: 'linear-gradient(160deg,#f0ede4 0%,#e8e0d0 100%)', text: '#3a2e20', box: 'rgba(255,255,255,0.6)', author: '#6b5a40', pattern: 'repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),radial-gradient(circle 3px at 15px 15px,rgba(160,140,100,.4) 0%,transparent 100%)', pOpacity: 1, pSize: '30px 30px,30px 30px,30px 30px' },
                 edo_komon: { primary: '#c8860a', accent: '#e8a020', bg: 'linear-gradient(135deg,#2c1810 0%,#1a0e08 100%)', text: '#f5e0c0', box: 'rgba(200,134,10,0.12)', author: '#e0b870', pattern: 'repeating-conic-gradient(from 0deg at 50% 50%,rgba(220,160,60,.22) 0deg 22.5deg,transparent 22.5deg 45deg),repeating-conic-gradient(from 22.5deg at 50% 50%,rgba(180,100,30,.15) 0deg 22.5deg,transparent 22.5deg 45deg),radial-gradient(circle at 50% 50%,rgba(240,180,80,.08) 0%,transparent 70%)', pOpacity: 1, pSize: '40px 40px,40px 40px,cover' },
                 vogue_blue: { primary: '#3b9ae0', accent: '#7dd3fc', bg: 'linear-gradient(160deg,#1a6fa8 0%,#0e5a8a 100%)', text: '#e8f4ff', box: 'rgba(255,255,255,0.16)', author: '#bde0ff', pattern: 'url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2240%22%20r%3D%2214%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.55%29%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2226%22%20cy%3D%2236%22%20r%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.35%29%22%2F%3E%3Ccircle%20cx%3D%22110%22%20cy%3D%2220%22%20r%3D%2220%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.12%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.45%29%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%22105%22%20cy%3D%2215%22%20r%3D%225%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.3%29%22%2F%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%22100%22%20r%3D%2210%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.14%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.5%29%22%20stroke-width%3D%221.2%22%2F%3E%3Ccircle%20cx%3D%2267%22%20cy%3D%2297%22%20r%3D%222.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.32%29%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%22110%22%20r%3D%2216%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.1%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.4%29%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%22136%22%20cy%3D%22106%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%22130%22%20r%3D%2212%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.13%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.45%29%22%20stroke-width%3D%221.2%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%22127%22%20r%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.3%29%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22140%22%20r%3D%228%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.12%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.4%29%22%20stroke-width%3D%221%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2265%22%20r%3D%225%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.2%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.5%29%22%20stroke-width%3D%221%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%2260%22%20r%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.1%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.38%29%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E")', pOpacity: 1, pSize: '160px 160px', pAnim: 'floatUp 9s linear infinite' },
-                fashion_mag: { primary: '#ff85a2', accent: '#fde047', bg: 'linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)', text: '#5a2a3a', box: 'rgba(255,255,255,0.75)', author: '#c0506a', pattern: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\' viewBox=\'0 0 120 120\'%3E%3Cpath d=\'M60 10 Q70 30 90 40 Q70 50 60 90 Q50 50 30 40 Q50 30 60 10\' fill=\'%23ff85a2\' opacity=\'0.15\'/%3E%3Cpath d=\'M30 70 Q40 80 35 100 Q25 85 10 90 Q20 75 15 60 Q25 70 30 70\' fill=\'%23ff85a2\' opacity=\'0.2\'/%3E%3Ctext x=\'80\' y=\'90\' font-size=\'24\' opacity=\'0.3\'%3E🌺%3C/text%3E%3Ctext x=\'20\' y=\'30\' font-size=\'18\' opacity=\'0.2\'%3E🌿%3C/text%3E%3C/svg%3E")', pOpacity: 0.8, pSize: '120px 120px', pAnim: 'sway 8s ease-in-out infinite' },
+                fashion_mag: { primary: '#0ea5e9', accent: '#f59e0b', bg: 'linear-gradient(180deg, #38bdf8 0%, #7dd3fc 40%, #bae6fd 60%, #fef3c7 100%)', text: '#075985', box: 'rgba(255,255,255,0.72)', author: '#0369a1', pattern: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\' viewBox=\'0 0 400 300\'%3E%3Cdefs%3E%3ClinearGradient id=\'sky\' x1=\'0\' y1=\'0\' x2=\'0\' y2=\'1\'%3E%3Cstop offset=\'0%25\' stop-color=\'%2338bdf8\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%237dd3fc\'/%3E%3C/linearGradient%3E%3ClinearGradient id=\'sea\' x1=\'0\' y1=\'0\' x2=\'0\' y2=\'1\'%3E%3Cstop offset=\'0%25\' stop-color=\'%230ea5e9\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%230369a1\'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=\'400\' height=\'300\' fill=\'none\'/%3E%3Cpath d=\'M0 160 Q100 150 200 160 T400 160 V220 H0 Z\' fill=\'url(%23sea)\'/%3E%3Cpath d=\'M0 200 Q100 210 200 200 T400 200 V300 H0 Z\' fill=\'%23fde047\'/%3E%3Ccircle cx=\'330\' cy=\'60\' r=\'25\' fill=\'%23fbbf24\'/%3E%3Ccircle cx=\'330\' cy=\'60\' r=\'35\' fill=\'%23fbbf24\' opacity=\'0.2\'/%3E%3Cpath d=\'M50 280 Q60 200 80 140\' stroke=\'%2378350f\' stroke-width=\'6\' fill=\'none\'/%3E%3Cpath d=\'M80 140 Q40 120 10 150 M80 140 Q120 120 150 150 M80 140 Q80 90 60 70 M80 140 Q100 100 130 80\' stroke=\'%23166534\' stroke-width=\'4\' fill=\'none\'/%3E%3Cpath d=\'M280 230 L320 230 L310 210 L270 210 Z\' fill=\'%23ea580c\'/%3E%3Cline x1=\'295\' y1=\'210\' x2=\'295\' y2=\'180\' stroke=\'%234b5563\' stroke-width=\'2\'/%3E%3Ccircle cx=\'295\' cy=\'170\' r=\'20\' fill=\'%23ef4444\' opacity=\'0.8\'/%3E%3Cpath d=\'M150 80 Q155 75 160 80\' stroke=\'white\' fill=\'none\'/%3E%3Cpath d=\'M180 60 Q185 55 190 60\' stroke=\'white\' fill=\'none\'/%3E%3C/svg%3E")', pOpacity: 1, pSize: '400px 300px', pAnim: 'sway 10s ease-in-out infinite' },
                 ink_calligraphy: { primary: '#111111', accent: '#6b4f2a', bg: 'linear-gradient(160deg,#f7f1e6 0%,#ece2cf 100%)', text: '#2b2116', box: 'rgba(255,255,255,0.55)', author: '#5c4630', pattern: 'repeating-linear-gradient(12deg, rgba(35,25,12,0.16) 0 2px, transparent 2px 18px),repeating-linear-gradient(-18deg, rgba(107,79,42,0.14) 0 1.5px, transparent 1.5px 20px)', pOpacity: 1, pSize: '120px 120px,120px 120px' },
-                stained_glass: { primary: '#f43f8e', accent: '#38bdf8', bg: 'linear-gradient(135deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00c6ff, #0072ff, #7c3aed, #ff00ff)', text: '#ffffff', box: 'rgba(255,255,255,0.22)', author: '#ffffff', pattern: 'linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.2) 100%)', pOpacity: 0.5, pSize: '100% 100%', pAnim: 'rainbowFlash 5s linear infinite' },
+                stained_glass: { primary: '#f43f8e', accent: '#38bdf8', bg: 'linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000)', text: '#ffffff', box: 'rgba(255,255,255,0.22)', author: '#ffffff', pattern: 'linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.2) 100%)', pOpacity: 0.5, pSize: '400% 400%', pAnim: 'rainbowMove 10s linear infinite' },
                 cyber_grid: { primary: '#00f5ff', accent: '#a78bfa', bg: 'radial-gradient(circle at 50% 30%, #151c42 0%, #0b1020 50%, #05070f 100%)', text: '#dffbff', box: 'rgba(0,245,255,0.1)', author: '#8be9ff', pattern: 'radial-gradient(circle at 50% 50%, rgba(0,245,255,0.38) 0 6%, transparent 7% 100%),repeating-radial-gradient(circle at 50% 50%, rgba(167,139,250,0.24) 0 2px, transparent 2px 18px),repeating-conic-gradient(from 0deg at 50% 50%, rgba(0,245,255,0.22) 0deg 6deg, transparent 6deg 18deg)', pOpacity: 1, pSize: '120px 120px,120px 120px,120px 120px' },
-                pop_geometry: { primary: '#ff3e9d', accent: '#7c3aed', bg: 'linear-gradient(145deg,#fff1f7 0%,#ffe8f3 40%,#fde2ff 100%)', text: '#3f1455', box: 'rgba(255,255,255,0.68)', author: '#6a1b6f', pattern: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Ccircle cx=\'15\' cy=\'15\' r=\'8\' fill=\'rgba(255,62,157,0.2)\'/%3E%3Ccircle cx=\'45\' cy=\'45\' r=\'12\' fill=\'rgba(124,58,237,0.15)\'/%3E%3Ccircle cx=\'50\' cy=\'10\' r=\'5\' fill=\'rgba(251,191,36,0.2)\'/%3E%3C/svg%3E")', pOpacity: 1, pSize: '60px 60px', pAnim: 'floatingBubbles 4s ease-in-out infinite' },
+                pop_geometry: { primary: '#ff3e9d', accent: '#7c3aed', bg: 'linear-gradient(145deg,#fff1f7 0%,#ffe8f3 40%,#fde2ff 100%)', text: '#3f1455', box: 'rgba(255,255,255,0.68)', author: '#6a1b6f', pattern: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'30\' fill=\'rgba(255,62,157,0.2)\'%3E%3Canimate attributeName=\'r\' values=\'30;45;30\' dur=\'5s\' repeatCount=\'indefinite\'/%3E%3Canimate attributeName=\'opacity\' values=\'0.2;0.4;0.2\' dur=\'5s\' repeatCount=\'indefinite\'/%3E%3C/circle%3E%3Ccircle cx=\'150\' cy=\'150\' r=\'40\' fill=\'rgba(124,58,237,0.15)\'%3E%3Canimate attributeName=\'r\' values=\'40;25;40\' dur=\'7s\' repeatCount=\'indefinite\'/%3E%3Canimate attributeName=\'opacity\' values=\'0.15;0.3;0.15\' dur=\'7s\' repeatCount=\'indefinite\'/%3E%3C/circle%3E%3Ccircle cx=\'160\' cy=\'40\' r=\'20\' fill=\'rgba(251,191,36,0.2)\'%3E%3Canimate attributeName=\'r\' values=\'20;30;20\' dur=\'4s\' repeatCount=\'indefinite\'/%3E%3C/circle%3E%3Ccircle cx=\'40\' cy=\'160\' r=\'15\' fill=\'rgba(0,245,255,0.18)\'%3E%3Canimate attributeName=\'r\' values=\'15;25;15\' dur=\'6s\' repeatCount=\'indefinite\'/%3E%3C/circle%3E%3C/svg%3E")', pOpacity: 1, pSize: '200px 200px', pAnim: 'floatingBubbles 10s ease-in-out infinite' },
                 botanical_art: { primary: '#2f855a', accent: '#86efac', bg: 'linear-gradient(160deg,#f4fbf5 0%,#d7eedf 100%)', text: '#18472f', box: 'rgba(255,255,255,0.62)', author: '#256b4a', pattern: 'radial-gradient(ellipse 18px 10px at 20% 30%, rgba(34,120,70,0.25), transparent 70%),radial-gradient(ellipse 16px 9px at 65% 60%, rgba(72,187,120,0.25), transparent 70%),repeating-linear-gradient(65deg, rgba(34,120,70,0.12) 0 2px, transparent 2px 18px)', pOpacity: 1, pSize: '120px 120px,120px 120px,120px 120px' },
                 marble_gold: { primary: '#d4af37', accent: '#f5e7a1', bg: 'linear-gradient(160deg,#f2f2f2 0%,#d9d9d9 100%)', text: '#3f3f46', box: 'rgba(255,255,255,0.62)', author: '#7c6a2a', pattern: 'radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.55), transparent 60%),radial-gradient(ellipse at 80% 70%, rgba(212,175,55,0.25), transparent 60%),repeating-linear-gradient(135deg, rgba(120,120,120,0.12) 0 2px, transparent 2px 14px)', pOpacity: 1, pSize: 'cover,cover,70px 70px' },
                 doodle_sketch: { primary: '#374151', accent: '#9ca3af', bg: 'linear-gradient(160deg,#fffaf0 0%,#efe8dc 100%)', text: '#2b2b2b', box: 'rgba(255,255,255,0.58)', author: '#505050', pattern: 'repeating-linear-gradient(17deg, rgba(30,30,30,0.16) 0 1.4px, transparent 1.4px 16px),repeating-linear-gradient(-31deg, rgba(80,80,80,0.12) 0 1px, transparent 1px 14px),radial-gradient(circle at 75% 65%, rgba(30,30,30,0.12) 0 18px, transparent 19px)', pOpacity: 1, pSize: '110px 110px,110px 110px,110px 110px' },
@@ -2734,10 +2769,11 @@
             window.setTheme = (name) => {
                 const theme = THEMES[name]; if (!theme) return;
                 const root = document.documentElement;
+                root.setAttribute('data-theme', name);
                 root.style.setProperty('--primary-color', theme.primary); root.style.setProperty('--accent-color', theme.accent);
                 root.style.setProperty('--bg-gradient', theme.bg); root.style.setProperty('--text-on-bg', theme.text);
                 root.style.setProperty('--box-bg', theme.box); root.style.setProperty('--quote-author-color', theme.author);
-                root.style.setProperty('--header-gradient', `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`);
+                root.style.setProperty('--header-gradient', name === 'stained_glass' ? 'linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff)' : `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`);
                 root.style.setProperty('--pattern-image', theme.pattern); root.style.setProperty('--pattern-opacity', theme.pOpacity || 0.3);
                 root.style.setProperty('--pattern-size', theme.pSize || '20px 20px');
                 root.style.setProperty('--pattern-animation', theme.pAnim || 'none');
@@ -3473,38 +3509,38 @@
             }
 
             const TITLES = [
-                { name: "🌌 学問の創造主", req: 365, type: 'crown' },
-                { name: "💎 不朽の努力家", req: 250, type: 'crown' },
-                { name: "👑 努力の王様", req: 180, type: 'crown' },
-                { name: "🔥 努力の天才", req: 120, type: 'crown' },
-                { name: "🎖️ 学習のエリート", req: 80, type: 'crown' },
-                { name: "⚔️ 集中力の達人", req: 40, type: 'crown' },
-                { name: "🌟 期待の星", req: 10, type: 'crown' },
+                { name: "🪬 悟りの境地", req: 365, type: 'crown' },
+                { name: "💎 賢者の一席", req: 250, type: 'crown' },
+                { name: "👑 努力の王様", req: 150, type: 'crown' },
+                { name: "🔥 努力の天才", req: 100, type: 'crown' },
+                { name: "🎖️ 学習のエリート", req: 50, type: 'crown' },
+                { name: "⚔️ 集中力の達人", req: 15, type: 'crown' },
+                { name: "🌟 期待の星", req: 5, type: 'crown' },
                 { name: "🐣 見習い学習者", req: 0, type: 'crown' }
             ];
             const STAR_TITLES = [
                 { name: "🪐 星願の覇者", req: 365, type: 'star' },
                 { name: "🌌 銀河級達成者", req: 250, type: 'star' },
-                { name: "🌠 流星の達人", req: 180, type: 'star' },
-                { name: "✨ 煌めきの人", req: 120, type: 'star' },
-                { name: "💫 目標の申し子", req: 80, type: 'star' },
-                { name: "🎯 諦めない人", req: 40, type: 'star' },
-                { name: "🌱 目標達成者", req: 10, type: 'star' },
+                { name: "🌠 流星の達人", req: 100, type: 'star' },
+                { name: "✨ 煌めきの人", req: 50, type: 'star' },
+                { name: "💫 目標の申し子", req: 30, type: 'star' },
+                { name: "🎯 諦めない人", req: 15, type: 'star' },
+                { name: "🌱 目標達成者", req: 5, type: 'star' },
                 { name: "🔅 見習い挑戦者", req: 0, type: 'star' }
             ];
             const COLLECTION_TITLES = [
                 { name: "🏆 マスターコレクター", req: 200, check: 'totalMedals' },
                 { name: "🎖️ メダルハンター", req: 150, check: 'totalMedals' },
                 { name: "🏅 レジェンドコレクター", req: 100, check: 'totalMedals' },
-                { name: "💎 メダルの達人", req: 50, check: 'totalMedals' },
+                { name: "🪙 メダルの達人", req: 50, check: 'totalMedals' },
                 { name: "🥇 ゴールドマスター", req: 10, check: '🥇' },
                 { name: "🥈 シルバーコレクター", req: 10, check: '🥈' },
                 { name: "🥉 ブロンズコレクター", req: 10, check: '🥉' },
                 { name: "🍎 りんご大好き", req: 10, check: '🍎' }
             ];
             const STREAK_TITLES = [
-                { name: "🌌 銀河の守護者", req: 365 },
-                { name: "🌠 100日の伝説", req: 100 },
+                { name: "🕋 終点の巡礼者", req: 365 },
+                { name: "🔱 100日の伝説", req: 100 },
                 { name: "🦁 60日の鉄人", req: 60 },
                 { name: "🌈 マンスリーヒーロー", req: 30 },
                 { name: "🏃 ハーフマラソン", req: 20 },
