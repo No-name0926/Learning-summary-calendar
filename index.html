@@ -2011,7 +2011,7 @@
                 <div class="preview" id="menuIconPreviewMini" style="display:none;">👤</div>
                 <div style="font-size:10px; color:#999; font-weight:700; margin:-4px 0 10px 6px;">※アイコンをタップして設定できます
                 </div>
-                <label class="setting-input-label" style="font-weight:900;">🏷️ ランキング表示名（本名✕）</label>
+                <label class="setting-input-label" style="font-weight:700;">🏷️ ランキング表示名（本名✕）</label>
                 <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：マナビ太郎" maxlength="20"
                     style="margin:0 0 10px; font-weight:900; color:var(--primary-color); font-family:'Hiragino Sans', 'Arial', sans-serif;">
                 <div class="setting-switch">
@@ -2039,6 +2039,11 @@
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:22px;">🆕</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新内容</span>
+                    </button>
+                    <button onclick="window.open('https://no-name0926.github.io/Anulis/', '_blank')"
+                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:22px;">🐦‍⬛</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">Anulis</span>
                     </button>
                 </div>
             </div>
@@ -2304,20 +2309,20 @@
                 <div id="memoAreaList"
                     style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
             </div>
-            <!-- メモ検索・振り返り -->
-            <div
-                style="margin-top:18px; padding:14px; background:#f8f9ff; border-radius:16px; border:1.5px solid #e4eaff;">
-                <p style="font-size:13px; font-weight:900; color:#444; margin:0 0 8px;">🔍 メモ検索・振り返り</p>
-                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                    <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力"
-                        style="margin:0; flex:1; font-size:13px; padding:8px 12px;" oninput="searchMemos(this.value)">
+            <!-- メモ検索・振り返り（アコーディオン） -->
+            <details style="margin-top:18px; border-radius:16px; border:1.5px solid rgba(0,0,0,0.1); overflow:hidden; background:var(--header-gradient); color:white;">
+                <summary style="padding:14px; font-size:13px; font-weight:900; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🔍 メモ検索・振り返り</span>
+                    <span style="font-size:10px; opacity:0.8;">タップで開く ▼</span>
+                </summary>
+                <div style="padding:14px; background:rgba(255,255,255,0.92); color:#444;">
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力" style="margin:0; flex:1; font-size:13px; padding:8px 12px;" oninput="searchMemos(this.value)">
+                    </div>
+                    <div id="memoSearchResults" style="max-height:180px; overflow-y:auto; display:none; background:white; border-radius:12px; border:1px solid #e8eaff; margin-bottom:8px;"></div>
+                    <button onclick="showRandomReflection()" style="width:100%; padding:10px; background:var(--header-gradient); color:white; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.15);">🎲 ランダム振り返り</button>
                 </div>
-                <div id="memoSearchResults"
-                    style="max-height:180px; overflow-y:auto; display:none; background:white; border-radius:12px; border:1px solid #e8eaff; margin-bottom:8px;">
-                </div>
-                <button onclick="showRandomReflection()"
-                    style="width:100%; padding:10px; background:linear-gradient(135deg,#ffecd2,#fcb69f); color:#8b3a00; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 2px 8px rgba(252,182,159,0.3);">✨
-                    ランダム振り返り</button>
+            </details>
             </div>
             <button class="save-btn" style="margin-top:20px;" onclick="toggleYearModal()">閉じる</button>
         </div>
@@ -2498,7 +2503,7 @@
 
         const THEMES = {
             blue: { primary: '#0070bc', accent: '#00c6ff', bg: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'radial-gradient(var(--primary-color) 1px, transparent 1px)', pOpacity: 0.1, pSize: '20px 20px' },
-            red: { primary: '#ef4444', accent: '#f97316', bg: 'linear-gradient(135deg, #450a0a 0%, #991b1b 100%)', text: '#fecaca', box: 'rgba(255,255,255,0.12)', author: '#fca5a5', pattern: 'repeating-linear-gradient(45deg, rgba(239,68,68,0.15) 0 2px, transparent 2px 10px), radial-gradient(circle at 50% 50%, rgba(249,115,22,0.22) 0%, transparent 60%)', pOpacity: 0.8, pSize: '120px 120px, cover' },
+            red: { primary: '#ff4b2b', accent: '#ff416c', bg: 'linear-gradient(135deg, #ff4b2b 0%, #ff416c 100%)', text: '#ffffff', box: 'rgba(255,255,255,0.18)', author: '#ffccd5', pattern: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Cpath d=\'M50 0 L100 100 L0 100 Z\' fill=\'rgba(255,255,255,0.12)\'/%3E%3Cpath d=\'M50 20 L80 90 L20 90 Z\' fill=\'rgba(255,255,255,0.08)\'/%3E%3C/svg%3E")', pOpacity: 1, pSize: '60px 60px', pAnim: 'shineRoyal 10s ease-in-out infinite' },
             yellow: { primary: '#f39c12', accent: '#f1c40f', bg: 'linear-gradient(135deg, #fffbcb 0%, #fbc2eb 100%)', text: '#444', box: 'rgba(255,255,255,0.78)', author: '#777', pattern: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', pOpacity: 0.3, pSize: '30px 30px' },
             black: { primary: '#2d3436', accent: '#000000', bg: 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)', text: '#fff', box: 'rgba(255,255,255,0.22)', author: '#ccc', pattern: 'radial-gradient(#ffffff22 1px, transparent 1px)', pOpacity: 0.5, pSize: '40px 40px' },
             white: { primary: '#636e72', accent: '#b2bec3', bg: '#ffffff', text: '#444', box: 'rgba(0,0,0,0.06)', author: '#888', pattern: 'radial-gradient(#00000008 2px, transparent 0)', pOpacity: 0.4, pSize: '25px 25px' },
@@ -2857,6 +2862,7 @@
                     profileCache = p;
                     document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
                     document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
+                    if (p.lastTheme) setTheme(p.lastTheme);
                     updateMenuUser(user);
                     renderIconPresets(p.iconMode || 'provider');
                 });
@@ -3277,9 +3283,29 @@
             document.getElementById('scoreIntensity').innerText = Math.floor(Math.min(100, (highDays / 7) * 100 + avg * 5)) + "%";
         }
 
-        const TITLES = [{ name: "🌌 学問の創造主", req: 365, type: 'crown' }, { name: "♾️ 真理の探求者", req: 250, type: 'crown' }, { name: "💎 不朽の努力家", req: 180, type: 'crown' }, { name: "🚀 学習の先駆者", req: 120, type: 'crown' }, { name: "👑 努力の王様", req: 80, type: 'crown' }, { name: "🔥 努力の天才", req: 50, type: 'crown' }, { name: "🎖️ 学習のエリート", req: 30, type: 'crown' }, { name: "⚔️ 集中力の達人", req: 15, type: 'crown' }, { name: "🌟 期待の星", req: 5, type: 'crown' }, { name: "🐣 見習い学習者", req: 0, type: 'crown' }];
-        const STAR_TITLES = [{ name: "🪐 星願の覇者", req: 365, type: 'star' }, { name: "🌌 銀河級達成者", req: 250, type: 'star' }, { name: "🌠 流星の達人", req: 150, type: 'star' }, { name: "✨ 煌めきの人", req: 100, type: 'star' }, { name: "💫 目標の申し子", req: 50, type: 'star' }, { name: "🎯 諦めない人", req: 20, type: 'star' }, { name: "🌱 目標達成者", req: 5, type: 'star' }, { name: "🔅 見習い挑戦者", req: 0, type: 'star' }];
+        const TITLES = [
+            { name: "🌌 学問の創造主", req: 365, type: 'crown' },
+            { name: "💎 不朽の努力家", req: 200, type: 'crown' },
+            { name: "👑 努力の王様", req: 120, type: 'crown' },
+            { name: "🔥 努力の天才", req: 70, type: 'crown' },
+            { name: "🎖️ 学習のエリート", req: 40, type: 'crown' },
+            { name: "⚔️ 集中力の達人", req: 20, type: 'crown' },
+            { name: "🌟 期待の星", req: 5, type: 'crown' },
+            { name: "🐣 見習い学習者", req: 0, type: 'crown' }
+        ];
+        const STAR_TITLES = [
+            { name: "🪐 星願の覇者", req: 365, type: 'star' },
+            { name: "🌌 銀河級達成者", req: 250, type: 'star' },
+            { name: "🌠 流星の達人", req: 150, type: 'star' },
+            { name: "✨ 煌めきの人", req: 100, type: 'star' },
+            { name: "💫 目標の申し子", req: 50, type: 'star' },
+            { name: "🎯 諦めない人", req: 20, type: 'star' },
+            { name: "🌱 目標達成者", req: 5, type: 'star' },
+            { name: "🔅 見習い挑戦者", req: 0, type: 'star' }
+        ];
         const COLLECTION_TITLES = [
+            { name: "🏆 マスターコレクター", req: 200, check: 'totalMedals' },
+            { name: "🎖️ メダルハンター", req: 150, check: 'totalMedals' },
             { name: "🏅 レジェンドコレクター", req: 100, check: 'totalMedals' },
             { name: "💎 メダルの達人", req: 50, check: 'totalMedals' },
             { name: "🥇 ゴールドマスター", req: 10, check: '🥇' },
@@ -3288,12 +3314,13 @@
             { name: "🍎 りんご大好き", req: 10, check: '🍎' }
         ];
         const STREAK_TITLES = [
-            { name: "🌟 100日の伝説", req: 100 },
+            { name: "🌌 銀河の守護者", req: 365 },
+            { name: "🌠 100日の伝説", req: 100 },
             { name: "🦁 60日の鉄人", req: 60 },
             { name: "🌈 マンスリーヒーロー", req: 30 },
             { name: "🏃 ハーフマラソン", req: 20 },
             { name: "🌊 10日チャレンジャー", req: 10 },
-            { name: "⚡ ウィークリーランナー", req: 5 },
+            { name: "⚡ ウィークリーランナー", req: 7 },
             { name: "🔥 3日坊主卒業", req: 3 }
         ];
         function _getCollectionCounts() {
