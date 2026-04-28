@@ -499,8 +499,9 @@
             left: -300px;
             width: 280px;
             height: 100%;
-            background: rgba(255, 255, 255, 0.99);
+            background: #ffffff; /* 完全な不透明にして背後を隠す */
             z-index: 11000;
+            pointer-events: auto !important; /* クリックを背後に通さない */
             transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             box-shadow: 10px 0 50px rgba(0, 0, 0, 0.3);
             padding: 20px;
@@ -1030,7 +1031,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.55);
-            z-index: 4500;
+            z-index: 15000; /* サイドメニュー(11000)より高くする */
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(8px);
@@ -1936,13 +1937,13 @@
             style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
             <h3 style="margin:0; color:#222; font-weight:900; font-size:20px; white-space:nowrap; flex:1; min-width:0;">設定</h3>
             <div style="display:flex; gap:5px; flex-shrink:0; align-items:center;">
-                <button onclick="window.showTutorial();" ontouchstart="window.showTutorial();" title="使い方を見る"
-                    style="background:#f0f7ff; border:none; border-radius:10px; padding:6px 8px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s; position:relative; z-index:12000; -webkit-tap-highlight-color:transparent;">
+                <button onclick="window.showTutorial(event);" ontouchstart="window.showTutorial(event);" title="使い方を見る"
+                    style="background:#f0f7ff; border:none; border-radius:10px; padding:6px 8px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s; position:relative; z-index:12000; -webkit-tap-highlight-color:transparent; pointer-events:auto !important;">
                     <span style="font-size:15px; pointer-events:none;">📖</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap; pointer-events:none;">使い方</span>
                 </button>
-                <button onclick="window.openFeedback();" ontouchstart="window.openFeedback();" title="ご意見・フィードバック"
-                    style="background:#f0f7ff; border:none; border-radius:10px; padding:6px 8px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s; position:relative; z-index:12000; -webkit-tap-highlight-color:transparent;">
+                <button onclick="window.openFeedback(event);" ontouchstart="window.openFeedback(event);" title="ご意見・フィードバック"
+                    style="background:#f0f7ff; border:none; border-radius:10px; padding:6px 8px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s; position:relative; z-index:12000; -webkit-tap-highlight-color:transparent; pointer-events:auto !important;">
                     <span style="font-size:15px; pointer-events:none;">📮</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap; pointer-events:none;">意見</span>
                 </button>
@@ -2763,8 +2764,71 @@
                 return ctx.createPattern(canvas, 'repeat');
             }
 
-            const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '', star: false }; return (typeof d === 'string') ? { stamp: d, memo: '', star: false } : { stamp: d.stamp || '', memo: d.memo || '', star: d.star || false }; };
-            window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
+            // ── リリースノート・チュートリアル定数 ──────────────────
+            const RELEASE_NOTES = [
+                {
+                    id: '2026-04-29-whatsnew-fix',
+                    date: '2026-04-29',
+                    title: '設定ボタンの不具合修正・虹テーマ調整',
+                    body: [
+                        '設定内のボタンが反応しにくい問題を徹底修正しました',
+                        '虹テーマで連続記録の数字が見えにくい問題に黒影を追加',
+                        'サイドメニューが背後の要素を貫通してクリックしてしまう問題を修正'
+                    ]
+                },
+                {
+                    id: '2026-04-28-whatsnew-share-称号',
+                    date: '2026-04-28',
+                    title: '新機能：シェアカード・新称号追加',
+                    body: [
+                        '学習記録を画像として保存・シェアできる機能を追加',
+                        'コレクション称号・連続記録称号を大幅に追加（全55種）',
+                        'カレンダーのメモ検索・振り返り機能を追加',
+                        'テーマに「夜景（星空）」「ハイビスカス」などを追加'
+                    ]
+                }
+            ];
+            const RELEASE_SEEN_KEY = 'lsc-whatsnew-seen-id';
+            const TUT_STEPS = [
+                { icon: '📅', title: '記録しよう', body: '日付をタップしてスタンプ！メモも残せます。', color: '#f0f7ff', accent: '#0070bc' },
+                { icon: '📊', title: '振り返る', body: 'グラフや「記録 📊」から分析を確認できます。', color: '#fff8f0', accent: '#e85d04' },
+                { icon: '🎨', title: '着せ替え', body: '設定から40種類以上のテーマを選べます。', color: '#fffbf0', accent: '#ca8a04' }
+            ];
+            let _whatsNewIndex = 0;
+            let _tutStep = 0;
+
+            // ── モーダル管理（最速化のため上部へ） ────────────────
+            window.showTutorial = function(e) {
+                if(e) { e.preventDefault(); e.stopPropagation(); }
+                if (document.getElementById('sideMenu').classList.contains('open')) window.toggleMenu();
+                _tutStep = 0;
+                _tutBuild();
+                document.getElementById('tutorialOverlay').style.display = 'flex';
+            };
+            window.openWhatsNew = function(options = {}) {
+                if (document.getElementById('sideMenu').classList.contains('open')) window.toggleMenu();
+                if (!RELEASE_NOTES.length) return;
+                _whatsNewIndex = 0;
+                _renderWhatsNew();
+                document.getElementById('whatsNewModal').style.display = 'flex';
+                localStorage.setItem(RELEASE_SEEN_KEY, RELEASE_NOTES[0].id);
+            };
+            window.openFeedback = function (e) {
+                if(e) { e.preventDefault(); e.stopPropagation(); }
+                if (document.getElementById('sideMenu').classList.contains('open')) window.toggleMenu();
+                setTimeout(() => {
+                    document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
+                    document.getElementById('feedbackMessage').value = '';
+                    document.getElementById('feedbackStatus').textContent = '';
+                }, 360);
+            };
+
+            window.toggleMenu = () => {
+                const menu = document.getElementById('sideMenu');
+                const overlay = document.getElementById('menuOverlay');
+                const isOpen = menu.classList.toggle('open');
+                overlay.style.display = isOpen ? 'block' : 'none';
+            };
             window.setTheme = (name) => {
                 const theme = THEMES[name]; if (!theme) return;
                 const root = document.documentElement;
@@ -4349,7 +4413,7 @@
         </script>
         <!-- フィードバックパネル -->
         <div id="feedbackPanel"
-            style="position:fixed; top:0; left:-300px; width:300px; height:100%; background:white; z-index:8500; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
+            style="position:fixed; top:0; left:-300px; width:300px; height:100%; background:white; z-index:16000; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
             <!-- ヘッダー帯：テーマ色に追従 -->
             <div id="feedbackHeader" style="background:var(--header-gradient); padding:16px 20px; flex-shrink:0;">
                 <div style="display:flex; align-items:center; gap:10px;">
@@ -4757,7 +4821,7 @@
 
         <!-- チュートリアルモーダル -->
         <div id="tutorialOverlay"
-            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9000; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:16000; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
             <div
                 style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
 
