@@ -2005,10 +2005,10 @@
                     onclick="setTheme('botanical_art')">🌿</div>
                 <div class="color-dot" style="background:linear-gradient(160deg,#f2f2f2 0%,#d9d9d9 100%);"
                     onclick="setTheme('marble_gold')">✨</div>
-                <div class="color-dot" style="background:linear-gradient(160deg,#fffaf0 0%,#efe8dc 100%);"
-                    onclick="setTheme('doodle_sketch')">✏️</div>
-                <div class="color-dot" style="background:linear-gradient(160deg,#f2f6ff 0%,#d7dff0 100%);"
-                    onclick="setTheme('nordic_knit')">🧵</div>
+                <div class="color-dot" style="background:linear-gradient(135deg, #fd79a8, #fab1a0); background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0 10%, transparent 11%); background-size: 30px 30px;"
+                    onclick="setTheme('pop_bubble')">🫧</div>
+                <div class="color-dot" style="background:linear-gradient(135deg, #6b0f1a, #b91372); background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\'%3E%3Cpath d=\'M10 0 L20 10 L10 20 L0 10 Z\' fill=\'rgba(212,175,55,0.2)\'/%3E%3C/svg%3E'); background-size: 20px 20px;"
+                    onclick="setTheme('royal_rainbow')">👑</div>
                 <div class="color-dot"
                     style="background:linear-gradient(135deg, #1e1b4b, #312e81); background-image: conic-gradient(from 0deg at 50% 50%, rgba(217,70,239,0.2) 0deg 90deg, transparent 90deg); background-size: 20px 20px;"
                     onclick="setTheme('stained_glass')">🌈</div>
@@ -2453,7 +2453,7 @@ onclick="closeIconSettings()">閉じる</button>
                 <button onclick="shiftThemePage(-1)"
                     style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">◀
                     前へ</button>
-                <div id="themePageLabel" style="font-size:12px; color:#999; font-weight:800;">1 / 5</div>
+                <div id="themeModalPageLabel" style="font-size:12px; color:#999; font-weight:800;">1 / 6</div>
                 <button onclick="shiftThemePage(1)"
                     style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">次へ
                     ▶</button>
@@ -2666,7 +2666,7 @@ onclick="closeIconSettings()">閉じる</button>
             }
         };
 
-        let _themePage = 0;
+        let _themeModalPage = 0;
         const _FAV_KEY = 'study-calendar-fav-themes';
         let _favThemes = JSON.parse(localStorage.getItem(_FAV_KEY) || '[]');
         function _isFav(k) { return _favThemes.includes(k); }
@@ -2679,23 +2679,23 @@ onclick="closeIconSettings()">閉じる</button>
         };
 
         window.openThemeSettings = () => {
-            _themePage = 0; _renderThemePage();
+            _themeModalPage = 0; _renderThemePage();
             document.getElementById('themeModal').style.display = 'flex';
         };
         window.closeThemeModal = () => document.getElementById('themeModal').style.display = 'none';
         window.shiftThemePage = (dir) => {
             const keys = Object.keys(THEMES);
             const total = Math.ceil(keys.length / 8);
-            _themePage = (_themePage + dir + total) % total;
+            _themeModalPage = (_themeModalPage + dir + total) % total;
             _renderThemePage();
         };
 
         function _renderThemePage() {
             const keys = Object.keys(THEMES);
             const totalPages = Math.ceil(keys.length / 8);
-            document.getElementById('themePageLabel').innerText = `${_themePage + 1} / ${totalPages}`;
+            document.getElementById('themeModalPageLabel').innerText = `${_themeModalPage + 1} / ${totalPages}`;
             const grid = document.getElementById('themeGrid'); grid.innerHTML = '';
-            const start = _themePage * 8;
+            const start = _themeModalPage * 8;
             const pageKeys = keys.slice(start, start + 8);
             pageKeys.forEach(k => {
                 const t = THEMES[k];
