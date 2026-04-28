@@ -1709,42 +1709,7 @@
             line-height: 1.8;
         }
 
-        .ai-img-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 18px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            background: #f8f9ff;
-            border: 1px solid #e4eaff;
-        }
 
-        .ai-img-loading {
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 900;
-            color: var(--primary-color);
-        }
-
-        .ai-img-tag {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 9px;
-            font-weight: 900;
-            backdrop-filter: blur(4px);
-        }
 
         @keyframes pulse {
             0% {
@@ -2054,42 +2019,22 @@
                     </label>
                 </div>
                 <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
-                <button class="icon-entry-btn" onclick="downloadMyData()" style="margin-top:10px;">
-                    <div class="preview">📥</div>
-                    <div style="text-align:left;">
-                        <div style="font-size:12px; font-weight:900; color:#555;">データをダウンロード</div>
-                        <div style="font-size:10px; color:#999;">ログ・目標・プロフィール(JSON)</div>
-                    </div>
-                </button>
-                <button class="icon-entry-btn" id="installAppBtn" onclick="openInstallApp()" style="margin-top:8px;">
-                    <div class="preview">📲</div>
-                    <div style="text-align:left;">
-                        <div style="font-size:12px; font-weight:900; color:#555;">アプリをダウンロード</div>
-                        <div id="installAppSub" style="font-size:10px; color:#999;">端末にインストールします</div>
-                    </div>
-                </button>
-                <button class="icon-entry-btn" onclick="openWhatsNew({ markSeen: false })" style="margin-top:8px;">
-                    <div class="preview">🆕</div>
-                    <div style="text-align:left;">
-                        <div style="font-size:12px; font-weight:900; color:#555;">更新内容を見る</div>
-                        <div style="font-size:10px; color:#999;">過去のアップデートも確認できます</div>
-                    </div>
-                </button>
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;">
+                    <button onclick="downloadMyData()" style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:22px;">📥</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">データ保存</span>
+                    </button>
+                    <button id="installAppBtn" onclick="openInstallApp()" style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:22px;">📲</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">アプリ追加</span>
+                        <span id="installAppSub" style="font-size:8px; color:#aaa; display:none;"></span>
+                    </button>
+                    <button onclick="openWhatsNew({ markSeen: false })" style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:22px;">🆕</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新内容</span>
+                    </button>
+                </div>
             </div>
-        </div>
-        <!-- キーワード検索・ランダム振り返り -->
-        <div style="margin-top:18px; padding:16px; background:#f8f9ff; border-radius:16px; border:1.5px solid #e4eaff;">
-            <p style="font-size:13px; font-weight:900; color:#444; margin:0 0 10px;">🔍 メモ検索・振り返り</p>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力"
-                    style="margin:0; flex:1; font-size:13px; padding:8px 12px;" oninput="searchMemos(this.value)">
-            </div>
-            <div id="memoSearchResults"
-                style="max-height:180px; overflow-y:auto; display:none; background:white; border-radius:12px; border:1px solid #e8eaff; margin-bottom:10px;">
-            </div>
-            <button onclick="showRandomReflection()"
-                style="width:100%; padding:10px; background:linear-gradient(135deg,#ffecd2,#fcb69f); color:#8b3a00; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 2px 8px rgba(252,182,159,0.3);">✨
-                ランダム振り返り</button>
         </div>
         <button
             style="width:100%; margin-top:30px; padding:18px; background:#f8f8f8; border:none; border-radius:18px; font-weight:900; color:#999; cursor:pointer;"
@@ -2359,6 +2304,15 @@
                 <div id="memoAreaList"
                     style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
             </div>
+            <!-- メモ検索・振り返り -->
+            <div style="margin-top:18px; padding:14px; background:#f8f9ff; border-radius:16px; border:1.5px solid #e4eaff;">
+                <p style="font-size:13px; font-weight:900; color:#444; margin:0 0 8px;">🔍 メモ検索・振り返り</p>
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力" style="margin:0; flex:1; font-size:13px; padding:8px 12px;" oninput="searchMemos(this.value)">
+                </div>
+                <div id="memoSearchResults" style="max-height:180px; overflow-y:auto; display:none; background:white; border-radius:12px; border:1px solid #e8eaff; margin-bottom:8px;"></div>
+                <button onclick="showRandomReflection()" style="width:100%; padding:10px; background:linear-gradient(135deg,#ffecd2,#fcb69f); color:#8b3a00; border:none; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 2px 8px rgba(252,182,159,0.3);">✨ ランダム振り返り</button>
+            </div>
             <button class="save-btn" style="margin-top:20px;" onclick="toggleYearModal()">閉じる</button>
         </div>
     </div>
@@ -2384,22 +2338,23 @@
                 </div>
                 <span id="starToggleIcon" style="font-size:26px;">☆</span>
             </div>
-            <div id="aiImageContainer" class="ai-img-container" style="display:none;">
-                <img id="dayAiImage" style="width:100%; height:100%; object-fit:cover;">
-                <div id="aiImageLoading" class="ai-img-loading" style="display:none;">
-                    <div style="font-size:24px; animation:pulse 1s infinite; margin-bottom:4px;">✨</div>
-                    AI画像生成中...
-                </div>
-                <div class="ai-img-tag">AI Generated</div>
-            </div>
-            <button id="generateAiImageBtn" class="save-btn"
-                style="background:#f0f7ff; color:#0070bc; border:1.5px solid #c8dcf8; box-shadow:none; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:8px;"
-                onclick="generateAiImage()">
-                <span style="font-size:16px;">✨</span> AI画像生成 (メモから)
-            </button>
+
             <button class="save-btn" onclick="saveDayData()">保存する</button>
             <button class="save-btn" style="background:none; color:#999; box-shadow:none;"
                 onclick="closeDayModal()">キャンセル</button>
+        </div>
+    </div>
+
+    <!-- シェアプレビューモーダル -->
+    <div id="sharePreviewModal" class="modal" style="z-index:5000;" onclick="closeSharePreview()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center; padding:20px; max-width:420px;">
+            <h3 style="margin:0 0 12px; font-size:16px; font-weight:900;">📸 シェアプレビュー</h3>
+            <div id="sharePreviewImg" style="width:100%; border-radius:16px; overflow:hidden; margin-bottom:16px; box-shadow:0 8px 24px rgba(0,0,0,0.12);"></div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="saveShareImage()" style="flex:1; padding:14px; background:var(--primary-color); color:white; border:none; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer;">💾 保存</button>
+                <button id="nativeShareBtn" onclick="nativeShareImage()" style="flex:1; padding:14px; background:linear-gradient(135deg,#667eea,#764ba2); color:white; border:none; border-radius:14px; font-weight:900; font-size:14px; cursor:pointer;">📤 シェア</button>
+            </div>
+            <button onclick="closeSharePreview()" style="width:100%; margin-top:10px; padding:12px; background:none; border:none; color:#999; font-weight:900; cursor:pointer; font-size:14px;">閉じる</button>
         </div>
     </div>
 
@@ -3310,6 +3265,37 @@
 
         const TITLES = [{ name: "🌌 学問の創造主", req: 365, type: 'crown' }, { name: "♾️ 真理の探求者", req: 250, type: 'crown' }, { name: "💎 不朽の努力家", req: 180, type: 'crown' }, { name: "🚀 学習の先駆者", req: 120, type: 'crown' }, { name: "👑 努力の王様", req: 80, type: 'crown' }, { name: "🔥 努力の天才", req: 50, type: 'crown' }, { name: "🎖️ 学習のエリート", req: 30, type: 'crown' }, { name: "⚔️ 集中力の達人", req: 15, type: 'crown' }, { name: "🌟 期待の星", req: 5, type: 'crown' }, { name: "🐣 見習い学習者", req: 0, type: 'crown' }];
         const STAR_TITLES = [{ name: "🪐 星願の覇者", req: 365, type: 'star' }, { name: "🌌 銀河級達成者", req: 250, type: 'star' }, { name: "🌠 流星の達人", req: 150, type: 'star' }, { name: "✨ 煌めきの人", req: 100, type: 'star' }, { name: "💫 目標の申し子", req: 50, type: 'star' }, { name: "🎯 諦めない人", req: 20, type: 'star' }, { name: "🌱 目標達成者", req: 5, type: 'star' }, { name: "🔅 見習い挑戦者", req: 0, type: 'star' }];
+        const COLLECTION_TITLES = [
+            { name: "🏅 レジェンドコレクター", req: 100, check: 'totalMedals' },
+            { name: "💎 メダルの達人", req: 50, check: 'totalMedals' },
+            { name: "🥇 ゴールドマスター", req: 10, check: '🥇' },
+            { name: "🥈 シルバーコレクター", req: 10, check: '🥈' },
+            { name: "🥉 ブロンズコレクター", req: 10, check: '🥉' },
+            { name: "🍎 りんご大好き", req: 10, check: '🍎' }
+        ];
+        const STREAK_TITLES = [
+            { name: "🌟 100日の伝説", req: 100 },
+            { name: "🦁 60日の鉄人", req: 60 },
+            { name: "🌈 マンスリーヒーロー", req: 30 },
+            { name: "🏃 ハーフマラソン", req: 20 },
+            { name: "🌊 10日チャレンジャー", req: 10 },
+            { name: "⚡ ウィークリーランナー", req: 5 },
+            { name: "🔥 3日坊主卒業", req: 3 }
+        ];
+        function _getCollectionCounts() {
+            let apples=0,bronze=0,silver=0,gold=0,crowns=0;
+            Object.keys(remoteData).forEach(k=>{ const s=getLogData(k).stamp; if(s==='🍎')apples++; if(s==='🥉')bronze++; if(s==='🥈')silver++; if(s==='🥇')gold++; if(s==='👑')crowns++; });
+            return {apples,bronze,silver,gold,crowns,totalMedals:apples+bronze+silver+gold+crowns};
+        }
+        function _isCollectionUnlocked(t) {
+            const c=_getCollectionCounts();
+            if(t.check==='totalMedals') return c.totalMedals>=t.req;
+            if(t.check==='🍎') return c.apples>=t.req;
+            if(t.check==='🥉') return c.bronze>=t.req;
+            if(t.check==='🥈') return c.silver>=t.req;
+            if(t.check==='🥇') return c.gold>=t.req;
+            return false;
+        }
 
         function getUnlockedTopTitle(crowns, stars, type = 'crown') {
             const arr = type === 'star' ? STAR_TITLES : TITLES;
@@ -3323,18 +3309,18 @@
             const saved = rawSaved === '☆ 目標設定中' ? '☆ 見習い挑戦者' : rawSaved;
             if (rawSaved !== saved) localStorage.setItem(key, saved);
 
-            const savedStar = STAR_TITLES.find(t => t.name === saved);
+            // 保存された称号がアンロック済みならそのまま返す（下位称号も使用可能）
             const savedCrown = TITLES.find(t => t.name === saved);
+            if (savedCrown && crowns >= savedCrown.req) return saved;
+            const savedStar = STAR_TITLES.find(t => t.name === saved);
+            if (savedStar && stars >= savedStar.req) return saved;
+            const savedCol = COLLECTION_TITLES.find(t => t.name === saved);
+            if (savedCol && _isCollectionUnlocked(savedCol)) return saved;
+            const savedStrk = STREAK_TITLES.find(t => t.name === saved);
+            if (savedStrk && (window._bestStreak || 0) >= savedStrk.req) return saved;
 
-            // 取得したら自動で最新称号へ切り替え
-            // いま使っている系統（🌟 or 👑）を維持して、その系統の最高到達称号を返す
-            let resolved = '';
-            if (savedStar) resolved = getUnlockedTopTitle(crowns, stars, 'star').name;
-            else if (savedCrown) resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
-            else resolved = getUnlockedTopTitle(crowns, stars, 'crown').name;
-
-            if (saved !== resolved) localStorage.setItem(key, resolved);
-            return resolved;
+            // デフォルト: 王冠系の最高称号
+            return getUnlockedTopTitle(crowns, stars, 'crown').name;
         }
 
 
@@ -3487,7 +3473,9 @@
         let _titlePage = 0;
         const _titlePages = [
             { key: 'crown', label: '👑 称号ロードマップ' },
-            { key: 'star', label: '🌟 目標達成称号' }
+            { key: 'star', label: '🌟 目標達成称号' },
+            { key: 'collection', label: '🎖️ コレクション称号' },
+            { key: 'streak', label: '🔥 連続記録称号' }
         ];
 
         function _renderTitlePage() {
@@ -3496,6 +3484,8 @@
                 if (getLogData(k).stamp === '👑') crowns++;
                 if (getLogData(k).star) stars++;
             });
+            const colCounts = _getCollectionCounts();
+            const bestStreak = window._bestStreak || 0;
             const savedTitle = window._currentUser ? (localStorage.getItem(`lsc-title-${window._currentUser.uid}`) || '') : '';
             const page = _titlePages[_titlePage];
             document.getElementById('titleModalHeading').innerText = page.label;
@@ -3503,15 +3493,23 @@
             document.getElementById('titlePagePrev').disabled = _titlePage === 0;
             document.getElementById('titlePageNext').disabled = _titlePage === _titlePages.length - 1;
             const list = document.getElementById('titleRoadmapList'); list.innerHTML = '';
-            const arr = page.key === 'crown' ? TITLES : STAR_TITLES;
-            const count = page.key === 'crown' ? crowns : stars;
+            let arr, checkFn, reqLabelFn;
+            if (page.key === 'crown') {
+                arr = TITLES; checkFn = t => crowns >= t.req; reqLabelFn = t => `👑累計 ${t.req}個で解放`;
+            } else if (page.key === 'star') {
+                arr = STAR_TITLES; checkFn = t => stars >= t.req; reqLabelFn = t => `🌟累計 ${t.req}個で解放`;
+            } else if (page.key === 'collection') {
+                arr = COLLECTION_TITLES; checkFn = t => _isCollectionUnlocked(t);
+                reqLabelFn = t => { const m={'totalMedals':'全スタンプ','🍎':'🍎','🥉':'🥉','🥈':'🥈','🥇':'🥇'}; return `${m[t.check]||t.check} 累計${t.req}個で解放`; };
+            } else {
+                arr = STREAK_TITLES; checkFn = t => bestStreak >= t.req; reqLabelFn = t => `🔥連続 ${t.req}日で解放`;
+            }
             arr.forEach(t => {
-                const isGot = count >= t.req;
+                const isGot = checkFn(t);
                 const isSelected = savedTitle === t.name;
                 const item = document.createElement('div');
                 item.style = `padding:12px 14px; margin-bottom:8px; border-radius:14px; background:${isGot ? '#f0f7ff' : '#f9f9f9'}; border:2px solid ${isSelected ? 'var(--primary-color)' : isGot ? '#c8dcf8' : '#eee'}; display:flex; justify-content:space-between; align-items:center; opacity:${isGot ? 1 : 0.5};`;
-                const reqLabel = page.key === 'crown' ? `👑累計 ${t.req}個で解放` : `🌟累計 ${t.req}個で解放`;
-                item.innerHTML = `<div><div style="font-weight:900; font-size:14px;">${t.name}${isSelected ? ' ✓' : ''}</div><div style="font-size:11px;color:#999;margin-top:2px;">${reqLabel}</div></div><div style="display:flex;align-items:center;gap:8px;">${isGot ? `<button onclick="selectTitle('${t.name}')" style="background:${isSelected ? 'var(--primary-color)' : '#f0f0f0'};color:${isSelected ? 'white' : '#666'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:900;cursor:pointer;">${isSelected ? '使用中' : '使う'}</button>` : '🔒'}</div>`;
+                item.innerHTML = `<div><div style="font-weight:900; font-size:14px;">${t.name}${isSelected ? ' ✓' : ''}</div><div style="font-size:11px;color:#999;margin-top:2px;">${reqLabelFn(t)}</div></div><div style="display:flex;align-items:center;gap:8px;">${isGot ? `<button onclick="selectTitle('${t.name}')" style="background:${isSelected ? 'var(--primary-color)' : '#f0f0f0'};color:${isSelected ? 'white' : '#666'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:900;cursor:pointer;">${isSelected ? '使用中' : '使う'}</button>` : '🔒'}</div>`;
                 list.appendChild(item);
             });
         }
@@ -3544,20 +3542,6 @@
             _selectedStar = data.star || false;
             _updateStarToggle();
             document.getElementById('dayModal').style.display = 'flex';
-            // AI画像表示更新
-            const container = document.getElementById('aiImageContainer');
-            const img = document.getElementById('dayAiImage');
-            const btn = document.getElementById('generateAiImageBtn');
-            if (data.aiImage) {
-                container.style.display = 'block';
-                img.src = data.aiImage;
-                img.style.opacity = '1';
-                btn.innerHTML = '<span style="font-size:16px;">✨</span> AI画像を再生成';
-            } else {
-                container.style.display = 'none';
-                img.src = '';
-                btn.innerHTML = '<span style="font-size:16px;">✨</span> AI画像生成 (メモから)';
-            }
         };
         window.closeDayModal = () => document.getElementById('dayModal').style.display = 'none';
         window.selectStamp = (s) => { selectedStamp = (selectedStamp === s) ? '' : s; document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.toggle('selected', btn.dataset.stamp === selectedStamp)); };
@@ -3565,14 +3549,11 @@
             if (!logsRef) return;
             const memo = document.getElementById('dayMemo').value.trim();
             const before = getLogData(selectedDateKey).stamp;
-            const currentAiImage = document.getElementById('dayAiImage').src;
-            const aiImageData = currentAiImage.startsWith('http') ? currentAiImage : null;
 
             set(child(logsRef, selectedDateKey), {
                 stamp: selectedStamp,
                 memo: memo,
-                star: _selectedStar,
-                aiImage: aiImageData
+                star: _selectedStar
             }).then(() => {
                 if (selectedStamp === '👑' && before !== '👑') confetti({ particleCount: 180, spread: 75, origin: { y: 0.68 } });
                 closeDayModal();
@@ -3973,36 +3954,7 @@
             });
         };
 
-        // ── AI画像生成 ──────────────────
-        window.generateAiImage = async () => {
-            const memo = document.getElementById('dayMemo').value.trim();
-            if (!memo) { alert('AI画像を作成するにはメモを入力してください'); return; }
-            const container = document.getElementById('aiImageContainer');
-            const img = document.getElementById('dayAiImage');
-            const loading = document.getElementById('aiImageLoading');
-            const btn = document.getElementById('generateAiImageBtn');
-            container.style.display = 'block';
-            loading.style.display = 'flex';
-            img.style.opacity = '0.3';
-            btn.disabled = true;
-            try {
-                const prompt = encodeURIComponent(`${memo}, anime style, beautiful illustration, digital art, high quality`);
-                const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=512&height=512&nologo=true&seed=${Date.now()}`;
-                await new Promise((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                    img.src = imageUrl;
-                });
-                img.style.opacity = '1';
-                loading.style.display = 'none';
-            } catch (e) {
-                console.error(e);
-                alert('画像の生成に失敗しました');
-                container.style.display = 'none';
-            } finally {
-                btn.disabled = false;
-            }
-        };
+
 
         // ── 検索・振り返り・シェア ──────────────────
         window.searchMemos = (query) => {
@@ -4056,23 +4008,43 @@
             }, 100);
         };
 
+        let _shareCanvas = null;
         window.generateShareCard = async () => {
             const btn = document.getElementById('shareCardBtn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '⌛ 生成中...';
             btn.disabled = true;
             try {
-                const cal = document.getElementById('calWrap');
-                const canvas = await html2canvas(cal, { backgroundColor: null, scale: 2, logging: false, useCORS: true });
-                const link = document.createElement('a');
-                link.download = `Anulis-Record-${viewY}-${viewM}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                const status = document.createElement('div');
-                status.innerText = '📸 画像を保存しました！';
-                status.style = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:var(--primary-color); color:white; padding:12px 24px; border-radius:30px; font-weight:900; z-index:10000; box-shadow:0 10px 30px rgba(0,0,0,0.2);';
-                document.body.appendChild(status);
-                setTimeout(() => status.remove(), 2500);
+                // 統計情報を計算
+                const streak = window._bestStreak || 0;
+                const cc = _getCollectionCounts();
+                // シェア用コンテナを作成
+                const wrap = document.createElement('div');
+                wrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:420px;background:white;border-radius:0;padding:0;z-index:-1;';
+                // カレンダー部分をクローン
+                const calClone = document.getElementById('calWrap').cloneNode(true);
+                calClone.style.boxShadow = 'none';
+                calClone.style.margin = '0';
+                calClone.style.borderRadius = '0';
+                wrap.appendChild(calClone);
+                // 統計バー
+                const statsBar = document.createElement('div');
+                statsBar.style.cssText = 'padding:14px 18px;background:linear-gradient(135deg,#f0f4ff,#e8ecff);display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:6px;';
+                statsBar.innerHTML = `<div style="text-align:center;"><div style="font-size:20px;">🔥</div><div style="font-size:11px;font-weight:900;color:#555;">連続${streak}日</div></div><div style="text-align:center;"><div style="font-size:20px;">🍎</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.apples}</div></div><div style="text-align:center;"><div style="font-size:20px;">🥉</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.bronze}</div></div><div style="text-align:center;"><div style="font-size:20px;">🥈</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.silver}</div></div><div style="text-align:center;"><div style="font-size:20px;">🥇</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.gold}</div></div><div style="text-align:center;"><div style="font-size:20px;">👑</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.crowns}</div></div>`;
+                wrap.appendChild(statsBar);
+                document.body.appendChild(wrap);
+                _shareCanvas = await html2canvas(wrap, { backgroundColor:'#ffffff', scale:2, logging:false, useCORS:true });
+                wrap.remove();
+                // プレビュー表示
+                const preview = document.getElementById('sharePreviewImg');
+                preview.innerHTML = '';
+                const img = new Image();
+                img.src = _shareCanvas.toDataURL('image/png');
+                img.style.cssText = 'width:100%;display:block;border-radius:12px;';
+                preview.appendChild(img);
+                // Web Share API非対応ならシェアボタン非表示
+                document.getElementById('nativeShareBtn').style.display = navigator.share ? '' : 'none';
+                document.getElementById('sharePreviewModal').style.display = 'flex';
             } catch (e) {
                 console.error(e);
                 alert('画像の生成に失敗しました。');
@@ -4080,6 +4052,24 @@
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
+        };
+        window.closeSharePreview = () => { document.getElementById('sharePreviewModal').style.display='none'; };
+        window.saveShareImage = () => {
+            if(!_shareCanvas) return;
+            const link = document.createElement('a');
+            link.download = `Anulis-Record-${viewY}-${viewM}.png`;
+            link.href = _shareCanvas.toDataURL('image/png');
+            link.click();
+            const t=document.createElement('div'); t.innerText='💾 保存しました！'; t.style='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--primary-color);color:white;padding:12px 24px;border-radius:30px;font-weight:900;z-index:10000;box-shadow:0 10px 30px rgba(0,0,0,0.2);'; document.body.appendChild(t); setTimeout(()=>t.remove(),2500);
+        };
+        window.nativeShareImage = async () => {
+            if(!_shareCanvas||!navigator.share) return;
+            try {
+                _shareCanvas.toBlob(async blob=>{
+                    const file = new File([blob],`Anulis-Record-${viewY}-${viewM}.png`,{type:'image/png'});
+                    await navigator.share({files:[file],title:'Anulis 学習記録',text:`🔥連続${window._bestStreak||0}日の学習記録！`});
+                },'image/png');
+            } catch(e) { if(e.name!=='AbortError') console.error(e); }
         };
     </script>
     <!-- フィードバックパネル -->
