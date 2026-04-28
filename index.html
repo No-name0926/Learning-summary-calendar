@@ -1713,16 +1713,18 @@
         #sharePreviewModal .share-preview-img {
             width: 100%;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
             display: block;
             margin-bottom: 14px;
         }
+
         .share-stats-row {
             display: flex;
             justify-content: center;
             gap: 24px;
             margin-bottom: 16px;
         }
+
         .share-stat-item {
             text-align: center;
             background: #f5f8ff;
@@ -1730,23 +1732,27 @@
             padding: 10px 18px;
             border: 1.5px solid #e0eaff;
         }
+
         .share-stat-val {
             font-size: 26px;
             font-weight: 900;
             color: var(--primary-color);
             display: block;
         }
+
         .share-stat-label {
             font-size: 10px;
             color: #999;
             font-weight: 800;
         }
+
         .share-action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 10px;
         }
+
         .share-action-btn {
             display: flex;
             flex-direction: column;
@@ -1761,8 +1767,14 @@
             font-weight: 900;
             transition: transform 0.15s;
         }
-        .share-action-btn:active { transform: scale(0.95); }
-        .share-action-btn .share-icon { font-size: 22px; }
+
+        .share-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .share-action-btn .share-icon {
+            font-size: 22px;
+        }
 
         @keyframes pulse {
             0% {
@@ -2455,20 +2467,24 @@
         <div class="modal-content" onclick="event.stopPropagation()" style="max-height:92vh; overflow-y:auto;">
             <h2 style="margin:0 0 14px; font-size:17px; font-weight:900; text-align:center;">📸 シェア</h2>
             <!-- プレビュー画像（メダル・連続日数込み合成） -->
-            <div id="sharePreviewImgWrap" style="margin-bottom:16px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center;">
+            <div id="sharePreviewImgWrap"
+                style="margin-bottom:16px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center;">
                 <div id="sharePreviewLoading" style="font-size:13px; color:#999; font-weight:700;">⌛ 画像を生成中...</div>
                 <img id="sharePreviewImg" class="share-preview-img" style="display:none;">
             </div>
             <!-- アクション：2ボタン -->
             <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <button class="share-action-btn" style="flex:1; background:#e8f5e9; color:#2e7d32;" onclick="doShareAction('save')">
+                <button class="share-action-btn" style="flex:1; background:#e8f5e9; color:#2e7d32;"
+                    onclick="doShareAction('save')">
                     <span class="share-icon">💾</span>画像を保存
                 </button>
-                <button class="share-action-btn" id="shareWebShareBtn" style="flex:1; background:#e3f2fd; color:#1565c0;" onclick="doShareAction('share')">
+                <button class="share-action-btn" id="shareWebShareBtn"
+                    style="flex:1; background:#e3f2fd; color:#1565c0;" onclick="doShareAction('share')">
                     <span class="share-icon">📤</span>共有する
                 </button>
             </div>
-            <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:4px;" onclick="closeSharePreview()">閉じる</button>
+            <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:4px;"
+                onclick="closeSharePreview()">閉じる</button>
         </div>
     </div>
 
@@ -4065,7 +4081,7 @@
             for (let i = 0; i < 365; i++) {
                 const d = new Date(today);
                 d.setDate(d.getDate() - i);
-                const key = `log-${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+                const key = `log-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
                 const data = getLogData(key);
                 if (VALID.includes(data.stamp)) {
                     streak++;
@@ -4103,7 +4119,7 @@
             // CSSカスタムプロパティから色を取得
             const rootStyle = getComputedStyle(document.documentElement);
             const primaryColor = rootStyle.getPropertyValue('--primary-color').trim() || '#0070bc';
-            const accentColor  = rootStyle.getPropertyValue('--accent-color').trim()  || '#00c6ff';
+            const accentColor = rootStyle.getPropertyValue('--accent-color').trim() || '#00c6ff';
 
             // 2. 下部パネル用の一時 div を作成して html2canvas
             const calEl = document.getElementById('calWrap');
@@ -4137,7 +4153,7 @@
             // 月ラベル
             const monthLabel = document.createElement('div');
             monthLabel.style.cssText = 'font-size:11px;text-align:center;opacity:0.8;font-weight:700;';
-            monthLabel.textContent = `${viewY}年${viewM}月の記録 · Anulis`;
+            monthLabel.textContent = `${viewY}年${viewM}月の記録 · 学習カレンダー`;
             panel.appendChild(monthLabel);
 
             document.body.appendChild(panel);
@@ -4150,10 +4166,10 @@
 
             // 3. 2枚を縦に合成
             const combined = document.createElement('canvas');
-            combined.width  = calCanvas.width;
+            combined.width = calCanvas.width;
             combined.height = calCanvas.height + panelCanvas.height;
             const ctx = combined.getContext('2d');
-            ctx.drawImage(calCanvas,   0, 0);
+            ctx.drawImage(calCanvas, 0, 0);
             ctx.drawImage(panelCanvas, 0, calCanvas.height);
             return combined;
         }
@@ -4173,7 +4189,7 @@
                 previewImg.src = _shareCanvas.toDataURL('image/png');
                 previewImg.style.display = 'block';
                 document.getElementById('sharePreviewLoading').style.display = 'none';
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 document.getElementById('sharePreviewLoading').textContent = '❌ 画像の生成に失敗しました';
             }
@@ -4186,9 +4202,9 @@
         window.doShareAction = async (action) => {
             if (!_shareCanvas) { alert('画像の準備中です。少し待ってください。'); return; }
             const streak = _calcStreak();
-            const totalMedals = Object.values(_calcMonthMedalCounts()).reduce((a,b)=>a+b,0);
-            const shareText = `📚 Anulis 学習記録\n🔥 連続${streak}日 | 🏅 今月${totalMedals}個のメダル\n#Anulis #勉強 #学習記録`;
-            const fileName = `Anulis-${viewY}-${viewM}.png`;
+            const totalMedals = Object.values(_calcMonthMedalCounts()).reduce((a, b) => a + b, 0);
+            const shareText = `📚 学習カレンダー 学習記録\n🔥 連続${streak}日 | 🏅 今月${totalMedals}個のメダル\n#学習カレンダー #勉強 #学習記録`;
+            const fileName = `学習カレンダー-${viewY}-${viewM}.png`;
 
             if (action === 'save') {
                 const link = document.createElement('a');
@@ -4211,7 +4227,7 @@
                         } else if (navigator.share) {
                             await navigator.share({ text: shareText });
                         }
-                    } catch(e) {
+                    } catch (e) {
                         if (e.name !== 'AbortError') console.error(e);
                     }
                 });
