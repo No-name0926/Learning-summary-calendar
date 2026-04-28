@@ -2453,39 +2453,22 @@
     <!-- シェアプレビューモーダル -->
     <div id="sharePreviewModal" class="modal" onclick="closeSharePreview()">
         <div class="modal-content" onclick="event.stopPropagation()" style="max-height:92vh; overflow-y:auto;">
-            <h2 style="margin:0 0 12px; font-size:17px; font-weight:900; text-align:center;">📸 シェア</h2>
-            <!-- 統計 -->
-            <div class="share-stats-row">
-                <div class="share-stat-item">
-                    <span class="share-stat-val" id="shareStreakVal">0</span>
-                    <span class="share-stat-label">🔥 連続日数</span>
-                </div>
-                <div class="share-stat-item">
-                    <span class="share-stat-val" id="shareMedalVal">0</span>
-                    <span class="share-stat-label">🏅 今月メダル</span>
-                </div>
-            </div>
-            <!-- プレビュー画像 -->
-            <div id="sharePreviewImgWrap" style="margin-bottom:14px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center;">
+            <h2 style="margin:0 0 14px; font-size:17px; font-weight:900; text-align:center;">📸 シェア</h2>
+            <!-- プレビュー画像（メダル・連続日数込み合成） -->
+            <div id="sharePreviewImgWrap" style="margin-bottom:16px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center;">
                 <div id="sharePreviewLoading" style="font-size:13px; color:#999; font-weight:700;">⌛ 画像を生成中...</div>
                 <img id="sharePreviewImg" class="share-preview-img" style="display:none;">
             </div>
-            <!-- アクション -->
-            <div class="share-action-grid">
-                <button class="share-action-btn" style="background:#e8f5e9; color:#2e7d32;" onclick="doShareAction('save')">
+            <!-- アクション：2ボタン -->
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button class="share-action-btn" style="flex:1; background:#e8f5e9; color:#2e7d32;" onclick="doShareAction('save')">
                     <span class="share-icon">💾</span>画像を保存
                 </button>
-                <button class="share-action-btn" style="background:#e3f2fd; color:#1565c0;" onclick="doShareAction('twitter')">
-                    <span class="share-icon">🐦</span>X(Twitter)
-                </button>
-                <button class="share-action-btn" style="background:#e8f5e9; color:#1b5e20;" onclick="doShareAction('line')">
-                    <span class="share-icon">💬</span>LINE
-                </button>
-                <button class="share-action-btn" style="background:#fff3e0; color:#e65100;" onclick="doShareAction('email')">
-                    <span class="share-icon">✉️</span>メール
+                <button class="share-action-btn" id="shareWebShareBtn" style="flex:1; background:#e3f2fd; color:#1565c0;" onclick="doShareAction('share')">
+                    <span class="share-icon">📤</span>共有する
                 </button>
             </div>
-            <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:6px;" onclick="closeSharePreview()">閉じる</button>
+            <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:4px;" onclick="closeSharePreview()">閉じる</button>
         </div>
     </div>
 
@@ -4093,30 +4076,99 @@
             return streak;
         }
 
-        // 今月のメダル数を計算
-        function _calcMonthMedals() {
-            let count = 0;
+        // 今月の各メダル数を計算
+        function _calcMonthMedalCounts() {
+            const counts = { '🍎': 0, '🥉': 0, '🥈': 0, '🥇': 0, '👑': 0 };
             Object.keys(remoteData).forEach(k => {
                 const p = k.split('-');
                 if (parseInt(p[1]) === viewY && parseInt(p[2]) === viewM) {
-                    if (VALID.includes(getLogData(k).stamp)) count++;
+                    const s = getLogData(k).stamp;
+                    if (counts[s] !== undefined) counts[s]++;
                 }
             });
-            return count;
+            return counts;
+        }
+
+        // カレンダー画像＋下部ステータスパネルを合成した canvas を返す
+        async function _buildCombinedCanvas() {
+            // 1. カレンダーをキャプチャ
+            const calCanvas = await html2canvas(document.getElementById('calWrap'), {
+                backgroundColor: '#ffffff', scale: 2, logging: false, useCORS: true
+            });
+
+            const streak = _calcStreak();
+            const medalCounts = _calcMonthMedalCounts();
+            const totalMedals = Object.values(medalCounts).reduce((a, b) => a + b, 0);
+
+            // CSSカスタムプロパティから色を取得
+            const rootStyle = getComputedStyle(document.documentElement);
+            const primaryColor = rootStyle.getPropertyValue('--primary-color').trim() || '#0070bc';
+            const accentColor  = rootStyle.getPropertyValue('--accent-color').trim()  || '#00c6ff';
+
+            // 2. 下部パネル用の一時 div を作成して html2canvas
+            const calEl = document.getElementById('calWrap');
+            const panelW = calEl.offsetWidth;
+
+            const panel = document.createElement('div');
+            panel.style.cssText = [
+                `position:fixed`, `left:-9999px`, `top:0`,
+                `width:${panelW}px`, `box-sizing:border-box`,
+                `background:linear-gradient(90deg,${primaryColor},${accentColor})`,
+                `padding:18px 20px 16px`, `font-family:sans-serif`, `color:white`
+            ].join(';');
+
+            // 連続日数
+            const streakDiv = document.createElement('div');
+            streakDiv.style.cssText = 'font-size:18px;font-weight:900;text-align:center;margin-bottom:14px;text-shadow:0 2px 4px rgba(0,0,0,0.2);';
+            streakDiv.textContent = `🔥 連続 ${streak} 日達成！`;
+            panel.appendChild(streakDiv);
+
+            // メダル内訳
+            const medalRow = document.createElement('div');
+            medalRow.style.cssText = 'display:flex;justify-content:space-around;align-items:center;margin-bottom:12px;';
+            Object.entries(medalCounts).forEach(([emoji, cnt]) => {
+                const item = document.createElement('div');
+                item.style.cssText = 'text-align:center;background:rgba(255,255,255,0.22);border-radius:10px;padding:6px 10px;min-width:40px;';
+                item.innerHTML = `<div style="font-size:22px;line-height:1.2;">${emoji}</div><div style="font-size:13px;font-weight:900;margin-top:3px;">×${cnt}</div>`;
+                medalRow.appendChild(item);
+            });
+            panel.appendChild(medalRow);
+
+            // 月ラベル
+            const monthLabel = document.createElement('div');
+            monthLabel.style.cssText = 'font-size:11px;text-align:center;opacity:0.8;font-weight:700;';
+            monthLabel.textContent = `${viewY}年${viewM}月の記録 · Anulis`;
+            panel.appendChild(monthLabel);
+
+            document.body.appendChild(panel);
+            let panelCanvas;
+            try {
+                panelCanvas = await html2canvas(panel, { backgroundColor: null, scale: 2, logging: false, useCORS: true });
+            } finally {
+                document.body.removeChild(panel);
+            }
+
+            // 3. 2枚を縦に合成
+            const combined = document.createElement('canvas');
+            combined.width  = calCanvas.width;
+            combined.height = calCanvas.height + panelCanvas.height;
+            const ctx = combined.getContext('2d');
+            ctx.drawImage(calCanvas,   0, 0);
+            ctx.drawImage(panelCanvas, 0, calCanvas.height);
+            return combined;
         }
 
         window.openSharePreview = async () => {
-            // 統計を更新
-            document.getElementById('shareStreakVal').textContent = _calcStreak();
-            document.getElementById('shareMedalVal').textContent = _calcMonthMedals();
-            // プレビューをリセット
             document.getElementById('sharePreviewImg').style.display = 'none';
             document.getElementById('sharePreviewLoading').style.display = 'block';
+            document.getElementById('sharePreviewLoading').textContent = '⌛ 画像を生成中...';
             document.getElementById('sharePreviewModal').style.display = 'flex';
+            // Web Share API が使えない環境では「共有する」ボタンを非表示
+            const shareBtn = document.getElementById('shareWebShareBtn');
+            if (shareBtn) shareBtn.style.display = navigator.share ? '' : 'none';
             _shareCanvas = null;
             try {
-                const cal = document.getElementById('calWrap');
-                _shareCanvas = await html2canvas(cal, { backgroundColor: null, scale: 2, logging: false, useCORS: true });
+                _shareCanvas = await _buildCombinedCanvas();
                 const previewImg = document.getElementById('sharePreviewImg');
                 previewImg.src = _shareCanvas.toDataURL('image/png');
                 previewImg.style.display = 'block';
@@ -4133,9 +4185,9 @@
 
         window.doShareAction = async (action) => {
             if (!_shareCanvas) { alert('画像の準備中です。少し待ってください。'); return; }
-            const streak = document.getElementById('shareStreakVal').textContent;
-            const medals = document.getElementById('shareMedalVal').textContent;
-            const shareText = `📚 Anulis 学習記録\n🔥 連続${streak}日 | 🏅 今月${medals}個のメダル\n#Anulis #勉強 #学習記録`;
+            const streak = _calcStreak();
+            const totalMedals = Object.values(_calcMonthMedalCounts()).reduce((a,b)=>a+b,0);
+            const shareText = `📚 Anulis 学習記録\n🔥 連続${streak}日 | 🏅 今月${totalMedals}個のメダル\n#Anulis #勉強 #学習記録`;
             const fileName = `Anulis-${viewY}-${viewM}.png`;
 
             if (action === 'save') {
@@ -4150,37 +4202,19 @@
                 setTimeout(() => toast.remove(), 2500);
                 closeSharePreview();
 
-            } else if (action === 'twitter') {
-                // 画像を先に保存してからTwitterを開く
+            } else if (action === 'share') {
                 _shareCanvas.toBlob(async (blob) => {
-                    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'image/png' })] })) {
-                        try {
-                            await navigator.share({ files: [new File([blob], fileName, { type: 'image/png' })], text: shareText });
-                        } catch(e) { /* cancelled */ }
-                    } else {
-                        // fallback: 画像保存 + Twitterを開く
-                        const link = document.createElement('a'); link.download = fileName; link.href = _shareCanvas.toDataURL('image/png'); link.click();
-                        setTimeout(() => window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText), '_blank'), 500);
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    try {
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({ files: [file], text: shareText });
+                        } else if (navigator.share) {
+                            await navigator.share({ text: shareText });
+                        }
+                    } catch(e) {
+                        if (e.name !== 'AbortError') console.error(e);
                     }
                 });
-
-            } else if (action === 'line') {
-                _shareCanvas.toBlob(async (blob) => {
-                    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'image/png' })] })) {
-                        try {
-                            await navigator.share({ files: [new File([blob], fileName, { type: 'image/png' })], text: shareText });
-                        } catch(e) { /* cancelled */ }
-                    } else {
-                        const link = document.createElement('a'); link.download = fileName; link.href = _shareCanvas.toDataURL('image/png'); link.click();
-                        setTimeout(() => window.open('https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(shareText), '_blank'), 500);
-                    }
-                });
-
-            } else if (action === 'email') {
-                const link = document.createElement('a'); link.download = fileName; link.href = _shareCanvas.toDataURL('image/png'); link.click();
-                setTimeout(() => {
-                    window.location.href = `mailto:?subject=${encodeURIComponent('Anulis 学習記録')}&body=${encodeURIComponent(shareText)}`;
-                }, 500);
             }
         };
     </script>
