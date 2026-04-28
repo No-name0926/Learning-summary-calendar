@@ -155,18 +155,35 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         @keyframes waveFlow {
-            from { background-position: 0 0; }
-            to { background-position: 100px 0; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 100px 0;
+            }
         }
 
         @keyframes floatUp {
-            from { background-position: 0 0; }
-            to { background-position: 0 -80px; }
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 0 -80px;
+            }
         }
 
         @keyframes jellyDrift {
@@ -262,19 +279,42 @@
         }
 
         @keyframes waveFlow {
-            0% { background-position: 0 0; }
-            100% { background-position: 80px 0; }
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 80px 0;
+            }
         }
 
         @keyframes shineRoyal {
-            0% { background-position: 0 0; filter: brightness(1); }
-            50% { background-position: 30px 30px; filter: brightness(1.2); }
-            100% { background-position: 0 0; filter: brightness(1); }
+            0% {
+                background-position: 0 0;
+                filter: brightness(1);
+            }
+
+            50% {
+                background-position: 30px 30px;
+                filter: brightness(1.2);
+            }
+
+            100% {
+                background-position: 0 0;
+                filter: brightness(1);
+            }
         }
 
         @keyframes bubblePop {
-            0%, 100% { background-size: 100px 100px; }
-            50% { background-size: 110px 110px; }
+
+            0%,
+            100% {
+                background-size: 100px 100px;
+            }
+
+            50% {
+                background-size: 110px 110px;
+            }
         }
 
         @keyframes fadeIn {
@@ -1887,72 +1927,150 @@
                     style="background:#f0f0f0; border:none; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer; font-weight:900; color:#aaa; display:flex; align-items:center; justify-content:center; transition:0.2s; flex-shrink:0;">&#8250;</button>
             </div>
 
-        <!-- ページ1 -->
-        <div class="color-grid theme-page" id="themePage0">
-            <div class="color-dot" style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;" onclick="setTheme('blue')">💧</div>
-            <div class="color-dot" style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;" onclick="setTheme('red')">🔥</div>
-            <div class="color-dot" style="background:#f1c40f; background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('yellow')">✨</div>
-            <div class="color-dot" style="background:#2d3436; background-image: radial-gradient(#ffffff22 1px, transparent 1px); background-size: 30px 30px;" onclick="setTheme('black')">🕶️</div>
-            <div class="color-dot" style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);" onclick="setTheme('orange')">🍊</div>
-            <div class="color-dot" style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;" onclick="setTheme('green')">🌿</div>
-            <div class="color-dot" style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);" onclick="setTheme('aqua')">🌊</div>
-            <div class="color-dot" style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;" onclick="setTheme('white')">☁️</div>
-        </div>
-        <!-- ページ2 -->
-        <div class="color-grid theme-page" id="themePage1" style="display:none;">
-            <div class="color-dot" style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;" onclick="setTheme('luxury_carbon')">💎</div>
-            <div class="color-dot" style="background: #e6e9f0; background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px);" onclick="setTheme('royal_paper')">📜</div>
-            <div class="color-dot" style="background: #9b59b6; background-image: linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11);" onclick="setTheme('antique_rug')">🏛️</div>
-            <div class="color-dot" style="background:linear-gradient(180deg,#060e1f 0%,#0a1628 50%,#0d1f3c 100%); background-image:url(" onclick="setTheme('midnight_emoji')">🌃</div>
-            <div class="color-dot" style="background:#c0392b; background-image: linear-gradient(45deg, #f1c40f 25%, transparent 25%), linear-gradient(-45deg, #f1c40f 25%, transparent 25%); background-size: 30px 30px;" onclick="setTheme('charlotte')">☄️</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#050a20 0%,#0a0f2e 60%,#0d1535 100%); background-image:url(" onclick="setTheme('angel_beats')">🪼</div>
-            <div class="color-dot" style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;" onclick="setTheme('steins_gate')">🕰️</div>
-            <div class="color-dot" style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;" onclick="setTheme('lucky_star')">🍀</div>
-        </div>
-        <!-- ページ3：模様強め新作 -->
-        <div class="color-grid theme-page" id="themePage2" style="display:none;">
-            <div class="color-dot" style="background:#1a0533; background-image: repeating-conic-gradient(#7c3aed 0deg 10deg, transparent 10deg 20deg); background-size: 24px 24px;" onclick="setTheme('kaleidoscope')">🔮</div>
-            <div class="color-dot" style="background:#003d2b; background-image: repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px); background-size: 5px 5px;" onclick="setTheme('matrix')">👾</div>
-            <div class="color-dot" style="background:#2d0a1e; background-image: repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%); background-size: 14px 24px;" onclick="setTheme('neon_tribal')">⚡</div>
-            <div class="color-dot" style="background:#0a1628; background-image: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,220,100,0.22) 0%, transparent 70%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.18) 0deg 5deg, transparent 5deg 10deg); background-size: cover, 30px 30px;" onclick="setTheme('sun_temple')">🌅</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#ede7ff 0%,#f3eeff 100%); background-image:url(" onclick="setTheme('aurora_night')">🌠</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#fffde0 0%,#fff8c0 100%); background-image:url(" onclick="setTheme('sunset_desert')">🏜️</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#0d2818 0%,#1a4028 100%); background-image:url(" onclick="setTheme('deep_jungle')">🌿</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#020010 0%,#08042a 50%,#0a0520 100%); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgba%280%2C0%2C0%2C0%29%22%2F%3E%3C%21--%20%E9%BB%84%E9%87%91%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%AA%E6%98%9F%20--%3E%3Cpath%20d%3D%22M40%2030%20L43%2020%20L46%2030%20L56%2033%20L46%2036%20L43%2046%20L40%2036%20L30%2033%20Z%22%20fill%3D%22rgba%28255%2C215%2C50%2C0.95%29%22%2F%3E%3Cpath%20d%3D%22M150%2070%20L153%2062%20L156%2070%20L164%2073%20L156%2076%20L153%2084%20L150%2076%20L142%2073%20Z%22%20fill%3D%22rgba%28255%2C200%2C40%2C0.9%29%22%2F%3E%3Cpath%20d%3D%22M25%20130%20L27.5%20123%20L30%20130%20L37%20133%20L30%20136%20L27.5%20143%20L25%20136%20L18%20133%20Z%22%20fill%3D%22rgba%28255%2C215%2C50%2C0.88%29%22%2F%3E%3C%21--%20%E9%BB%84%E9%87%91%E3%81%AE%E4%B8%AD%E3%82%B5%E3%82%A4%E3%82%BA%E6%98%9F%20--%3E%3Cpath%20d%3D%22M120%2020%20L122%2015%20L124%2020%20L129%2022%20L124%2024%20L122%2029%20L120%2024%20L115%2022%20Z%22%20fill%3D%22rgba%28255%2C210%2C60%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M170%20120%20L172%20115%20L174%20120%20L179%20122%20L174%20124%20L172%20129%20L170%20124%20L165%20122%20Z%22%20fill%3D%22rgba%28255%2C200%2C50%2C0.78%29%22%2F%3E%3Cpath%20d%3D%22M80%20165%20L82%20160%20L84%20165%20L89%20167%20L84%20169%20L82%20174%20L80%20169%20L75%20167%20Z%22%20fill%3D%22rgba%28255%2C210%2C60%2C0.82%29%22%2F%3E%3C%21--%20%E7%99%BD%E3%81%84%E5%B0%8F%E3%81%95%E3%81%AA%E6%98%9F%20--%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%2215%22%20r%3D%221.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.9%29%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2255%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2245%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.85%29%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2210%22%20r%3D%221.3%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%22185%22%20cy%3D%2235%22%20r%3D%221.1%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2280%22%20r%3D%220.9%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2290%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%2210%22%20cy%3D%22100%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22100%22%20r%3D%220.8%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22150%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%22110%22%20cy%3D%22140%22%20r%3D%220.9%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22165%22%20r%3D%221.1%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%2235%22%20cy%3D%22175%22%20r%3D%220.8%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3Ccircle%20cx%3D%22145%22%20cy%3D%22185%22%20r%3D%221.3%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%2295%22%20cy%3D%22190%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3C%21--%20%E8%96%84%E3%81%84%E9%8A%80%E6%B2%B3%20--%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22110%22%20rx%3D%2270%22%20ry%3D%2220%22%20fill%3D%22rgba%28140%2C100%2C255%2C0.1%29%22%20transform%3D%22rotate%28-30%20100%20110%29%22%2F%3E%3C%21--%20%E3%83%A1%E3%82%A4%E3%83%B3%E6%83%91%E6%98%9F%EF%BC%88%E5%A4%A7%E3%81%8D%E3%81%8F%EF%BC%89%20--%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22108%22%20r%3D%2238%22%20fill%3D%22rgba%2860%2C30%2C160%2C0.65%29%22%20stroke%3D%22rgba%28100%2C70%2C220%2C0.5%29%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2288%22%20cy%3D%2298%22%20r%3D%2212%22%20fill%3D%22rgba%2880%2C50%2C180%2C0.5%29%22%2F%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%22114%22%20r%3D%227%22%20fill%3D%22rgba%2850%2C25%2C140%2C0.5%29%22%2F%3E%3Ccircle%20cx%3D%2295%22%20cy%3D%22118%22%20r%3D%224%22%20fill%3D%22rgba%28100%2C70%2C200%2C0.4%29%22%2F%3E%3C%21--%20%E6%83%91%E6%98%9F%E3%83%AA%E3%83%B3%E3%82%B0%20--%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22108%22%20rx%3D%2258%22%20ry%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22rgba%28180%2C150%2C255%2C0.5%29%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-18%20100%20108%29%22%2F%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22108%22%20rx%3D%2250%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22rgba%28200%2C170%2C255%2C0.3%29%22%20stroke-width%3D%221%22%20transform%3D%22rotate%28-18%20100%20108%29%22%2F%3E%3C%21--%20%E5%B0%8F%E6%83%91%E6%98%9F%20--%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%2248%22%20r%3D%226%22%20fill%3D%22rgba%28100%2C80%2C60%2C0.5%29%22%20stroke%3D%22rgba%28150%2C130%2C100%2C0.4%29%22%20stroke-width%3D%221%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2278%22%20r%3D%224%22%20fill%3D%22rgba%2890%2C75%2C55%2C0.45%29%22%20stroke%3D%22rgba%28140%2C120%2C90%2C0.35%29%22%20stroke-width%3D%220.8%22%2F%3E%3C%2Fsvg%3E"); background-size:200px 200px;" onclick="setTheme('galaxy_rose')">🌸</div>
-        </div>
-        <!-- ページ4：イラストチック -->
-        <div class="color-grid theme-page" id="themePage3" style="display:none;">
-            <div class="color-dot" style="background:linear-gradient(160deg,#fff0f5 0%,#ffe4ec 100%); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Ctext%20x%3D%2210%22%20y%3D%2240%22%20font-size%3D%2228%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2265%22%20y%3D%2228%22%20font-size%3D%2218%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%225%22%20y%3D%2290%22%20font-size%3D%2218%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2270%22%20y%3D%2285%22%20font-size%3D%2224%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2240%22%20y%3D%22115%22%20font-size%3D%2216%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%22100%22%20y%3D%22105%22%20font-size%3D%2214%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2288%22%20y%3D%2255%22%20font-size%3D%2212%22%3E%26%23127800%3B%3C%2Ftext%3E%3C%2Fsvg%3E"); background-size:120px 120px;" onclick="setTheme('sakura_spring')">🌌</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#b8e4f0 0%,#8ecfdf 100%); background-image:url(" onclick="setTheme('umi_natsuyoru')">🌊</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#f5e0c8 0%,#e8c8a0 100%); background-image:url(" onclick="setTheme('koyo_autumn')">🍂</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#dbeeff 0%,#c5e4f8 100%); background-image:url(" onclick="setTheme('fuyu_hoshi')">❄️</div>
-            <div class="color-dot" style="background:#f0ede4; background-image:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),radial-gradient(circle 3px at 15px 15px,rgba(160,140,100,.4) 0%,transparent 100%); background-size:30px 30px,30px 30px,30px 30px;" onclick="setTheme('washi_paper')">📄</div>
-            <div class="color-dot" style="background:#2c1810; background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(220,160,60,.22) 0deg 22.5deg,transparent 22.5deg 45deg),repeating-conic-gradient(from 22.5deg at 50% 50%,rgba(180,100,30,.15) 0deg 22.5deg,transparent 22.5deg 45deg),radial-gradient(circle at 50% 50%,rgba(240,180,80,.08) 0%,transparent 70%); background-size:40px 40px,40px 40px,cover;" onclick="setTheme('edo_komon')">⛩️</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#1a6fa8 0%,#0e5a8a 100%); background-image:url(" onclick="setTheme('vogue_blue')">💙</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#38bdf8 0%,#0ea5e9 60%,#fbbf24 100%); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%2820%2C140%2C255%2C0.85%29%22%2F%3E%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22rgba%2880%2C190%2C255%2C0.7%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%280%2C160%2C200%2C0.5%29%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22sea2%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%280%2C160%2C210%2C0.75%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%280%2C100%2C170%2C0.6%29%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22sand%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%28255%2C225%2C140%2C0.9%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%28235%2C195%2C100%2C0.85%29%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3C%21--%20%E7%A9%BA%20--%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22400%22%20height%3D%22175%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3C%21--%20%E5%A4%AA%E9%99%BD%20--%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%2248%22%20r%3D%2232%22%20fill%3D%22rgba%28255%2C235%2C80%2C0.95%29%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%2248%22%20r%3D%2244%22%20fill%3D%22rgba%28255%2C235%2C80%2C0.18%29%22%2F%3E%3C%21--%20%E9%9B%B21%20--%3E%3Cellipse%20cx%3D%2260%22%20cy%3D%2238%22%20rx%3D%2245%22%20ry%3D%2220%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Cellipse%20cx%3D%2288%22%20cy%3D%2230%22%20rx%3D%2228%22%20ry%3D%2218%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Cellipse%20cx%3D%2235%22%20cy%3D%2242%22%20rx%3D%2222%22%20ry%3D%2214%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3C%21--%20%E9%9B%B22%20--%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%2228%22%20rx%3D%2235%22%20ry%3D%2216%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.6%29%22%2F%3E%3Cellipse%20cx%3D%22222%22%20cy%3D%2220%22%20rx%3D%2222%22%20ry%3D%2214%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.55%29%22%2F%3E%3C%21--%20%E6%B5%B7%20--%3E%3Crect%20x%3D%220%22%20y%3D%22168%22%20width%3D%22400%22%20height%3D%2272%22%20fill%3D%22url%28%23sea2%29%22%2F%3E%3C%21--%20%E6%B3%A2%EF%BC%88%E8%A4%87%E6%95%B0%EF%BC%89%20--%3E%3Cpath%20d%3D%22M0%20172%20Q25%20165%2050%20172%20Q75%20179%20100%20172%20Q125%20165%20150%20172%20Q175%20179%20200%20172%20Q225%20165%20250%20172%20Q275%20179%20300%20172%20Q325%20165%20350%20172%20Q375%20179%20400%20172%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.6%29%22%20stroke-width%3D%222%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M0%20182%20Q33%20175%2066%20182%20Q100%20189%20133%20182%20Q166%20175%20200%20182%20Q233%20175%20266%20182%20Q300%20189%20333%20182%20Q366%20175%20400%20182%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.4%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M0%20192%20Q40%20186%2080%20192%20Q120%20198%20160%20192%20Q200%20186%20240%20192%20Q280%20198%20320%20192%20Q360%20186%20400%20192%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.25%29%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%21--%20%E7%A0%82%E6%B5%9C%20--%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22248%22%20rx%3D%22230%22%20ry%3D%2255%22%20fill%3D%22url%28%23sand%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E6%9C%A8%EF%BC%88%E5%B7%A6%EF%BC%89%20--%3E%3Cpath%20d%3D%22M55%20280%20Q58%20240%2065%20195%22%20stroke%3D%22rgba%2890%2C55%2C15%2C0.9%29%22%20stroke-width%3D%227%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3C%21--%20%E8%91%89%EF%BC%88%E5%B7%A6%E3%81%AE%E6%9C%A8%EF%BC%89%20--%3E%3Cpath%20d%3D%22M65%20195%20Q28%20172%2012%20148%20Q42%20162%2065%20195%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.85%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q92%20165%20105%20140%20Q80%20162%2065%20195%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q45%20205%2030%20200%20Q48%20198%2065%20195%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.75%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q80%20208%2085%20202%20Q75%20200%2065%20195%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.7%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E5%AE%9F%20--%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22198%22%20r%3D%225%22%20fill%3D%22rgba%28100%2C60%2C10%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%22194%22%20r%3D%224%22%20fill%3D%22rgba%2890%2C55%2C10%2C0.65%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E6%9C%A8%EF%BC%88%E5%8F%B3%EF%BC%89%20--%3E%3Cpath%20d%3D%22M345%20280%20Q340%20238%20332%20192%22%20stroke%3D%22rgba%2890%2C55%2C15%2C0.9%29%22%20stroke-width%3D%226%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3C%21--%20%E8%91%89%EF%BC%88%E5%8F%B3%E3%81%AE%E6%9C%A8%EF%BC%89%20--%3E%3Cpath%20d%3D%22M332%20192%20Q365%20168%20380%20145%20Q350%20162%20332%20192%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.82%29%22%2F%3E%3Cpath%20d%3D%22M332%20192%20Q305%20170%20295%20146%20Q318%20164%20332%20192%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.78%29%22%2F%3E%3Cpath%20d%3D%22M332%20192%20Q352%20204%20368%20198%20Q352%20197%20332%20192%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.72%29%22%2F%3E%3C%21--%20%E3%83%93%E3%83%BC%E3%83%81%E3%83%81%E3%82%A7%E3%82%A2%EF%BC%88%E5%B7%A6%EF%BC%89%20--%3E%3Cline%20x1%3D%22110%22%20y1%3D%22250%22%20x2%3D%22160%22%20y2%3D%22235%22%20stroke%3D%22rgba%28180%2C120%2C40%2C0.8%29%22%20stroke-width%3D%223%22%2F%3E%3Cline%20x1%3D%22115%22%20y1%3D%22260%22%20x2%3D%22110%22%20y2%3D%22240%22%20stroke%3D%22rgba%28160%2C100%2C30%2C0.7%29%22%20stroke-width%3D%222%22%2F%3E%3Cline%20x1%3D%22155%22%20y1%3D%22248%22%20x2%3D%22160%22%20y2%3D%22228%22%20stroke%3D%22rgba%28160%2C100%2C30%2C0.7%29%22%20stroke-width%3D%222%22%2F%3E%3C%21--%20%E6%97%A5%E3%82%88%E3%81%91%20--%3E%3Cellipse%20cx%3D%22135%22%20cy%3D%22232%22%20rx%3D%2228%22%20ry%3D%228%22%20fill%3D%22rgba%28255%2C80%2C80%2C0.7%29%22%2F%3E%3Cpath%20d%3D%22M107%20232%20Q135%20218%20163%20232%22%20fill%3D%22rgba%28255%2C80%2C80%2C0.6%29%22%2F%3E%3C%21--%20%E3%83%93%E3%83%BC%E3%83%81%E3%83%9C%E3%83%BC%E3%83%AB%20--%3E%3Ccircle%20cx%3D%22215%22%20cy%3D%22240%22%20r%3D%2216%22%20fill%3D%22rgba%28255%2C70%2C70%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M199%20240%20Q215%20224%20231%20240%22%20fill%3D%22rgba%28255%2C230%2C50%2C0.85%29%22%2F%3E%3Cpath%20d%3D%22M199%20240%20Q215%20256%20231%20240%22%20fill%3D%22rgba%2850%2C160%2C255%2C0.85%29%22%2F%3E%3Cline%20x1%3D%22215%22%20y1%3D%22224%22%20x2%3D%22215%22%20y2%3D%22256%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.5%29%22%20stroke-width%3D%220.8%22%2F%3E%3C%21--%20%E3%82%B5%E3%83%BC%E3%83%95%E3%83%9C%E3%83%BC%E3%83%89%20--%3E%3Cellipse%20cx%3D%22270%22%20cy%3D%22252%22%20rx%3D%2236%22%20ry%3D%229%22%20fill%3D%22rgba%28255%2C130%2C40%2C0.82%29%22%20transform%3D%22rotate%28-12%20270%20252%29%22%2F%3E%3Cellipse%20cx%3D%22270%22%20cy%3D%22252%22%20rx%3D%2222%22%20ry%3D%225%22%20fill%3D%22rgba%28255%2C200%2C80%2C0.5%29%22%20transform%3D%22rotate%28-12%20270%20252%29%22%2F%3E%3C%21--%20%E3%82%AB%E3%83%A2%E3%83%A1%20--%3E%3Cpath%20d%3D%22M150%20105%20Q158%2098%20166%20105%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M170%2095%20Q178%2088%20186%2095%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M240%2080%20Q246%2074%20252%2080%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3C%21--%20%E6%B0%B4%E5%B9%B3%E7%B7%9A%E3%81%AE%E5%85%89%20--%3E%3Cline%20x1%3D%220%22%20y1%3D%22168%22%20x2%3D%22400%22%20y2%3D%22168%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.3%29%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E"); background-size:400px 280px;" onclick="setTheme('fashion_mag')">🌺</div>
-        </div>
-        <!-- ページ5：アート/デザイン特化 -->
-        <div class="color-grid theme-page" id="themePage4" style="display:none;">
-            <div class="color-dot" style="background:linear-gradient(160deg,#f7f1e6 0%,#ece2cf 100%);" onclick="setTheme('ink_calligraphy')">🖌️</div>
-            <div class="color-dot" style="background:radial-gradient(circle at 50% 50%,#0ff 0 20%,#1a0033 40%,#0b1020 100%);" onclick="setTheme('cyber_grid')">🧿</div>
-            <div class="color-dot" style="background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 30%,#fbc2eb 65%,#a18cd1 100%);" onclick="setTheme('pop_geometry')">🎨</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#f4fbf5 0%,#d7eedf 100%);" onclick="setTheme('botanical_art')">🌿</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#f2f2f2 0%,#d9d9d9 100%);" onclick="setTheme('marble_gold')">✨</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#fffaf0 0%,#efe8dc 100%);" onclick="setTheme('doodle_sketch')">✏️</div>
-            <div class="color-dot" style="background:linear-gradient(160deg,#f2f6ff 0%,#d7dff0 100%);" onclick="setTheme('nordic_knit')">🧵</div>
-            <div class="color-dot" style="background:conic-gradient(from 90deg,#00f5ff,#36ff8f,#ffe45e,#ff6ec7,#8b5cf6,#00f5ff); filter:drop-shadow(0 0 10px rgba(0,245,255,.7)) drop-shadow(0 0 16px rgba(255,110,199,.45));" onclick="setTheme('stained_glass')">🔷</div>
-        </div>
-        <!-- ページ6：淡い単色 -->
-        <div class="color-grid theme-page" id="themePage5" style="display:none;">
-            <div class="color-dot" style="background:#f0b8b8;" onclick="setTheme('pastel_red')"></div>
-            <div class="color-dot" style="background:#f5cba0;" onclick="setTheme('pastel_orange')"></div>
-            <div class="color-dot" style="background:#f5e6a0;" onclick="setTheme('pastel_yellow')"></div>
-            <div class="color-dot" style="background:#b8ddb8;" onclick="setTheme('pastel_green')"></div>
-            <div class="color-dot" style="background:#a8c8e8;" onclick="setTheme('pastel_blue')"></div>
-            <div class="color-dot" style="background:#a8daea;" onclick="setTheme('pastel_cyan')"></div>
-            <div class="color-dot" style="background:#f0b8d0;" onclick="setTheme('pastel_pink')"></div>
-            <div class="color-dot" style="background:#c8b0d8;" onclick="setTheme('pastel_purple')"></div>
-        </div>
+            <!-- ページ1 -->
+            <div class="color-grid theme-page" id="themePage0">
+                <div class="color-dot"
+                    style="background:#0070bc; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 15px 15px;"
+                    onclick="setTheme('blue')">💧</div>
+                <div class="color-dot"
+                    style="background:#eb4d4b; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0, rgba(255,255,255,0.1) 1px, transparent 0, transparent 50%); background-size: 10px 10px;"
+                    onclick="setTheme('red')">🔥</div>
+                <div class="color-dot"
+                    style="background:#f1c40f; background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 20px 20px;"
+                    onclick="setTheme('yellow')">✨</div>
+                <div class="color-dot"
+                    style="background:#2d3436; background-image: radial-gradient(#ffffff22 1px, transparent 1px); background-size: 30px 30px;"
+                    onclick="setTheme('black')">🕶️</div>
+                <div class="color-dot"
+                    style="background:#ff5f6d; background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 2px, transparent 2px, transparent 10px);"
+                    onclick="setTheme('orange')">🍊</div>
+                <div class="color-dot"
+                    style="background:#11998e; background-image: radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%); background-size: 12px 12px;"
+                    onclick="setTheme('green')">🌿</div>
+                <div class="color-dot"
+                    style="background:#00c6ff; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);"
+                    onclick="setTheme('aqua')">🌊</div>
+                <div class="color-dot"
+                    style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;"
+                    onclick="setTheme('white')">☁️</div>
+            </div>
+            <!-- ページ2 -->
+            <div class="color-grid theme-page" id="themePage1" style="display:none;">
+                <div class="color-dot"
+                    style="background: #2c3e50; background-image: radial-gradient(circle, #4ca1af 1px, transparent 1px); background-size: 20px 20px;"
+                    onclick="setTheme('luxury_carbon')">💎</div>
+                <div class="color-dot"
+                    style="background: #e6e9f0; background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #00000005 20px);"
+                    onclick="setTheme('royal_paper')">📜</div>
+                <div class="color-dot"
+                    style="background: #9b59b6; background-image: linear-gradient(30deg, #ffffff11 12%, transparent 12.5%, transparent 87%, #ffffff11 87.5%, #ffffff11);"
+                    onclick="setTheme('antique_rug')">🏛️</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(180deg,#060e1f 0%,#0a1628 50%,#0d1f3c 100%); background-image:url("
+                    onclick="setTheme('midnight_emoji')">🌃</div>
+                <div class="color-dot"
+                    style="background:#c0392b; background-image: linear-gradient(45deg, #f1c40f 25%, transparent 25%), linear-gradient(-45deg, #f1c40f 25%, transparent 25%); background-size: 30px 30px;"
+                    onclick="setTheme('charlotte')">☄️</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#050a20 0%,#0a0f2e 60%,#0d1535 100%); background-image:url("
+                    onclick="setTheme('angel_beats')">🪼</div>
+                <div class="color-dot"
+                    style="background:#1e272e; background-image: repeating-linear-gradient(90deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px), repeating-linear-gradient(0deg, transparent, transparent 48px, #2ecc71 49px, transparent 50px); background-size: 50px 50px;"
+                    onclick="setTheme('steins_gate')">🕰️</div>
+                <div class="color-dot"
+                    style="background:#ff9ff3; background-image: linear-gradient(45deg, #feca57 25%, transparent 25%, transparent 75%, #feca57 75%, #feca57); background-size: 40px 40px; background-position: 0 0, 20px 20px;"
+                    onclick="setTheme('lucky_star')">🍀</div>
+            </div>
+            <!-- ページ3：模様強め新作 -->
+            <div class="color-grid theme-page" id="themePage2" style="display:none;">
+                <div class="color-dot"
+                    style="background:#1a0533; background-image: repeating-conic-gradient(#7c3aed 0deg 10deg, transparent 10deg 20deg); background-size: 24px 24px;"
+                    onclick="setTheme('kaleidoscope')">🔮</div>
+                <div class="color-dot"
+                    style="background:#003d2b; background-image: repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px), repeating-linear-gradient(90deg,transparent,transparent 4px,rgba(0,255,128,0.35) 4px,rgba(0,255,128,0.35) 5px); background-size: 5px 5px;"
+                    onclick="setTheme('matrix')">👾</div>
+                <div class="color-dot"
+                    style="background:#2d0a1e; background-image: repeating-linear-gradient(60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(-60deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%), repeating-linear-gradient(0deg,#e91e8c 0,#e91e8c 1px,transparent 0,transparent 50%); background-size: 14px 24px;"
+                    onclick="setTheme('neon_tribal')">⚡</div>
+                <div class="color-dot"
+                    style="background:#0a1628; background-image: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,220,100,0.22) 0%, transparent 70%), repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,200,50,0.18) 0deg 5deg, transparent 5deg 10deg); background-size: cover, 30px 30px;"
+                    onclick="setTheme('sun_temple')">🌅</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#ede7ff 0%,#f3eeff 100%); background-image:url("
+                    onclick="setTheme('aurora_night')">🌠</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#fffde0 0%,#fff8c0 100%); background-image:url("
+                    onclick="setTheme('sunset_desert')">🏜️</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#0d2818 0%,#1a4028 100%); background-image:url("
+                    onclick="setTheme('deep_jungle')">🌿</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#020010 0%,#08042a 50%,#0a0520 100%); background-image:url("
+                    data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22rgba%280%2C0%2C0%2C0%29%22%2F%3E%3C%21--%20%E9%BB%84%E9%87%91%E3%81%AE%E5%A4%A7%E3%81%8D%E3%81%AA%E6%98%9F%20--%3E%3Cpath%20d%3D%22M40%2030%20L43%2020%20L46%2030%20L56%2033%20L46%2036%20L43%2046%20L40%2036%20L30%2033%20Z%22%20fill%3D%22rgba%28255%2C215%2C50%2C0.95%29%22%2F%3E%3Cpath%20d%3D%22M150%2070%20L153%2062%20L156%2070%20L164%2073%20L156%2076%20L153%2084%20L150%2076%20L142%2073%20Z%22%20fill%3D%22rgba%28255%2C200%2C40%2C0.9%29%22%2F%3E%3Cpath%20d%3D%22M25%20130%20L27.5%20123%20L30%20130%20L37%20133%20L30%20136%20L27.5%20143%20L25%20136%20L18%20133%20Z%22%20fill%3D%22rgba%28255%2C215%2C50%2C0.88%29%22%2F%3E%3C%21--%20%E9%BB%84%E9%87%91%E3%81%AE%E4%B8%AD%E3%82%B5%E3%82%A4%E3%82%BA%E6%98%9F%20--%3E%3Cpath%20d%3D%22M120%2020%20L122%2015%20L124%2020%20L129%2022%20L124%2024%20L122%2029%20L120%2024%20L115%2022%20Z%22%20fill%3D%22rgba%28255%2C210%2C60%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M170%20120%20L172%20115%20L174%20120%20L179%20122%20L174%20124%20L172%20129%20L170%20124%20L165%20122%20Z%22%20fill%3D%22rgba%28255%2C200%2C50%2C0.78%29%22%2F%3E%3Cpath%20d%3D%22M80%20165%20L82%20160%20L84%20165%20L89%20167%20L84%20169%20L82%20174%20L80%20169%20L75%20167%20Z%22%20fill%3D%22rgba%28255%2C210%2C60%2C0.82%29%22%2F%3E%3C%21--%20%E7%99%BD%E3%81%84%E5%B0%8F%E3%81%95%E3%81%AA%E6%98%9F%20--%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%2215%22%20r%3D%221.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.9%29%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2255%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2245%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.85%29%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2210%22%20r%3D%221.3%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%22185%22%20cy%3D%2235%22%20r%3D%221.1%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2280%22%20r%3D%220.9%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2290%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%2210%22%20cy%3D%22100%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22130%22%20cy%3D%22100%22%20r%3D%220.8%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%22150%22%20r%3D%221.2%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%22110%22%20cy%3D%22140%22%20r%3D%220.9%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22165%22%20r%3D%221.1%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Ccircle%20cx%3D%2235%22%20cy%3D%22175%22%20r%3D%220.8%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3Ccircle%20cx%3D%22145%22%20cy%3D%22185%22%20r%3D%221.3%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%2F%3E%3Ccircle%20cx%3D%2295%22%20cy%3D%22190%22%20r%3D%221%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3C%21--%20%E8%96%84%E3%81%84%E9%8A%80%E6%B2%B3%20--%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22110%22%20rx%3D%2270%22%20ry%3D%2220%22%20fill%3D%22rgba%28140%2C100%2C255%2C0.1%29%22%20transform%3D%22rotate%28-30%20100%20110%29%22%2F%3E%3C%21--%20%E3%83%A1%E3%82%A4%E3%83%B3%E6%83%91%E6%98%9F%EF%BC%88%E5%A4%A7%E3%81%8D%E3%81%8F%EF%BC%89%20--%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22108%22%20r%3D%2238%22%20fill%3D%22rgba%2860%2C30%2C160%2C0.65%29%22%20stroke%3D%22rgba%28100%2C70%2C220%2C0.5%29%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2288%22%20cy%3D%2298%22%20r%3D%2212%22%20fill%3D%22rgba%2880%2C50%2C180%2C0.5%29%22%2F%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%22114%22%20r%3D%227%22%20fill%3D%22rgba%2850%2C25%2C140%2C0.5%29%22%2F%3E%3Ccircle%20cx%3D%2295%22%20cy%3D%22118%22%20r%3D%224%22%20fill%3D%22rgba%28100%2C70%2C200%2C0.4%29%22%2F%3E%3C%21--%20%E6%83%91%E6%98%9F%E3%83%AA%E3%83%B3%E3%82%B0%20--%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22108%22%20rx%3D%2258%22%20ry%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22rgba%28180%2C150%2C255%2C0.5%29%22%20stroke-width%3D%222%22%20transform%3D%22rotate%28-18%20100%20108%29%22%2F%3E%3Cellipse%20cx%3D%22100%22%20cy%3D%22108%22%20rx%3D%2250%22%20ry%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22rgba%28200%2C170%2C255%2C0.3%29%22%20stroke-width%3D%221%22%20transform%3D%22rotate%28-18%20100%20108%29%22%2F%3E%3C%21--%20%E5%B0%8F%E6%83%91%E6%98%9F%20--%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%2248%22%20r%3D%226%22%20fill%3D%22rgba%28100%2C80%2C60%2C0.5%29%22%20stroke%3D%22rgba%28150%2C130%2C100%2C0.4%29%22%20stroke-width%3D%221%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2278%22%20r%3D%224%22%20fill%3D%22rgba%2890%2C75%2C55%2C0.45%29%22%20stroke%3D%22rgba%28140%2C120%2C90%2C0.35%29%22%20stroke-width%3D%220.8%22%2F%3E%3C%2Fsvg%3E");
+                    background-size:200px 200px;" onclick="setTheme('galaxy_rose')">🌸</div>
+            </div>
+            <!-- ページ4：イラストチック -->
+            <div class="color-grid theme-page" id="themePage3" style="display:none;">
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#fff0f5 0%,#ffe4ec 100%); background-image:url("
+                    data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Ctext%20x%3D%2210%22%20y%3D%2240%22%20font-size%3D%2228%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2265%22%20y%3D%2228%22%20font-size%3D%2218%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%225%22%20y%3D%2290%22%20font-size%3D%2218%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2270%22%20y%3D%2285%22%20font-size%3D%2224%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2240%22%20y%3D%22115%22%20font-size%3D%2216%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%22100%22%20y%3D%22105%22%20font-size%3D%2214%22%3E%26%23127800%3B%3C%2Ftext%3E%3Ctext%20x%3D%2288%22%20y%3D%2255%22%20font-size%3D%2212%22%3E%26%23127800%3B%3C%2Ftext%3E%3C%2Fsvg%3E");
+                    background-size:120px 120px;" onclick="setTheme('sakura_spring')">🌌</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#b8e4f0 0%,#8ecfdf 100%); background-image:url("
+                    onclick="setTheme('umi_natsuyoru')">🌊</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#f5e0c8 0%,#e8c8a0 100%); background-image:url("
+                    onclick="setTheme('koyo_autumn')">🍂</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#dbeeff 0%,#c5e4f8 100%); background-image:url("
+                    onclick="setTheme('fuyu_hoshi')">❄️</div>
+                <div class="color-dot"
+                    style="background:#f0ede4; background-image:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),repeating-linear-gradient(90deg,transparent,transparent 29px,rgba(180,160,120,.25) 29px,rgba(180,160,120,.25) 30px),radial-gradient(circle 3px at 15px 15px,rgba(160,140,100,.4) 0%,transparent 100%); background-size:30px 30px,30px 30px,30px 30px;"
+                    onclick="setTheme('washi_paper')">📄</div>
+                <div class="color-dot"
+                    style="background:#2c1810; background-image:repeating-conic-gradient(from 0deg at 50% 50%,rgba(220,160,60,.22) 0deg 22.5deg,transparent 22.5deg 45deg),repeating-conic-gradient(from 22.5deg at 50% 50%,rgba(180,100,30,.15) 0deg 22.5deg,transparent 22.5deg 45deg),radial-gradient(circle at 50% 50%,rgba(240,180,80,.08) 0%,transparent 70%); background-size:40px 40px,40px 40px,cover;"
+                    onclick="setTheme('edo_komon')">⛩️</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#1a6fa8 0%,#0e5a8a 100%); background-image:url("
+                    onclick="setTheme('vogue_blue')">💙</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(160deg,#38bdf8 0%,#0ea5e9 60%,#fbbf24 100%); background-image:url("
+                    data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22280%22%20viewBox%3D%220%200%20400%20280%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%2820%2C140%2C255%2C0.85%29%22%2F%3E%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22rgba%2880%2C190%2C255%2C0.7%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%280%2C160%2C200%2C0.5%29%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22sea2%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%280%2C160%2C210%2C0.75%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%280%2C100%2C170%2C0.6%29%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22sand%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22rgba%28255%2C225%2C140%2C0.9%29%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22rgba%28235%2C195%2C100%2C0.85%29%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3C%21--%20%E7%A9%BA%20--%3E%3Crect%20x%3D%220%22%20y%3D%220%22%20width%3D%22400%22%20height%3D%22175%22%20fill%3D%22url%28%23bg%29%22%2F%3E%3C%21--%20%E5%A4%AA%E9%99%BD%20--%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%2248%22%20r%3D%2232%22%20fill%3D%22rgba%28255%2C235%2C80%2C0.95%29%22%2F%3E%3Ccircle%20cx%3D%22320%22%20cy%3D%2248%22%20r%3D%2244%22%20fill%3D%22rgba%28255%2C235%2C80%2C0.18%29%22%2F%3E%3C%21--%20%E9%9B%B21%20--%3E%3Cellipse%20cx%3D%2260%22%20cy%3D%2238%22%20rx%3D%2245%22%20ry%3D%2220%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%2F%3E%3Cellipse%20cx%3D%2288%22%20cy%3D%2230%22%20rx%3D%2228%22%20ry%3D%2218%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%2F%3E%3Cellipse%20cx%3D%2235%22%20cy%3D%2242%22%20rx%3D%2222%22%20ry%3D%2214%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.65%29%22%2F%3E%3C%21--%20%E9%9B%B22%20--%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%2228%22%20rx%3D%2235%22%20ry%3D%2216%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.6%29%22%2F%3E%3Cellipse%20cx%3D%22222%22%20cy%3D%2220%22%20rx%3D%2222%22%20ry%3D%2214%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.55%29%22%2F%3E%3C%21--%20%E6%B5%B7%20--%3E%3Crect%20x%3D%220%22%20y%3D%22168%22%20width%3D%22400%22%20height%3D%2272%22%20fill%3D%22url%28%23sea2%29%22%2F%3E%3C%21--%20%E6%B3%A2%EF%BC%88%E8%A4%87%E6%95%B0%EF%BC%89%20--%3E%3Cpath%20d%3D%22M0%20172%20Q25%20165%2050%20172%20Q75%20179%20100%20172%20Q125%20165%20150%20172%20Q175%20179%20200%20172%20Q225%20165%20250%20172%20Q275%20179%20300%20172%20Q325%20165%20350%20172%20Q375%20179%20400%20172%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.6%29%22%20stroke-width%3D%222%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M0%20182%20Q33%20175%2066%20182%20Q100%20189%20133%20182%20Q166%20175%20200%20182%20Q233%20175%20266%20182%20Q300%20189%20333%20182%20Q366%20175%20400%20182%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.4%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M0%20192%20Q40%20186%2080%20192%20Q120%20198%20160%20192%20Q200%20186%20240%20192%20Q280%20198%20320%20192%20Q360%20186%20400%20192%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.25%29%22%20stroke-width%3D%221%22%20fill%3D%22none%22%2F%3E%3C%21--%20%E7%A0%82%E6%B5%9C%20--%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22248%22%20rx%3D%22230%22%20ry%3D%2255%22%20fill%3D%22url%28%23sand%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E6%9C%A8%EF%BC%88%E5%B7%A6%EF%BC%89%20--%3E%3Cpath%20d%3D%22M55%20280%20Q58%20240%2065%20195%22%20stroke%3D%22rgba%2890%2C55%2C15%2C0.9%29%22%20stroke-width%3D%227%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3C%21--%20%E8%91%89%EF%BC%88%E5%B7%A6%E3%81%AE%E6%9C%A8%EF%BC%89%20--%3E%3Cpath%20d%3D%22M65%20195%20Q28%20172%2012%20148%20Q42%20162%2065%20195%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.85%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q92%20165%20105%20140%20Q80%20162%2065%20195%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q45%20205%2030%20200%20Q48%20198%2065%20195%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.75%29%22%2F%3E%3Cpath%20d%3D%22M65%20195%20Q80%20208%2085%20202%20Q75%20200%2065%20195%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.7%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E5%AE%9F%20--%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%22198%22%20r%3D%225%22%20fill%3D%22rgba%28100%2C60%2C10%2C0.7%29%22%2F%3E%3Ccircle%20cx%3D%2270%22%20cy%3D%22194%22%20r%3D%224%22%20fill%3D%22rgba%2890%2C55%2C10%2C0.65%29%22%2F%3E%3C%21--%20%E3%83%A4%E3%82%B7%E3%81%AE%E6%9C%A8%EF%BC%88%E5%8F%B3%EF%BC%89%20--%3E%3Cpath%20d%3D%22M345%20280%20Q340%20238%20332%20192%22%20stroke%3D%22rgba%2890%2C55%2C15%2C0.9%29%22%20stroke-width%3D%226%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%2F%3E%3C%21--%20%E8%91%89%EF%BC%88%E5%8F%B3%E3%81%AE%E6%9C%A8%EF%BC%89%20--%3E%3Cpath%20d%3D%22M332%20192%20Q365%20168%20380%20145%20Q350%20162%20332%20192%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.82%29%22%2F%3E%3Cpath%20d%3D%22M332%20192%20Q305%20170%20295%20146%20Q318%20164%20332%20192%22%20fill%3D%22rgba%2828%2C135%2C28%2C0.78%29%22%2F%3E%3Cpath%20d%3D%22M332%20192%20Q352%20204%20368%20198%20Q352%20197%20332%20192%22%20fill%3D%22rgba%2834%2C150%2C34%2C0.72%29%22%2F%3E%3C%21--%20%E3%83%93%E3%83%BC%E3%83%81%E3%83%81%E3%82%A7%E3%82%A2%EF%BC%88%E5%B7%A6%EF%BC%89%20--%3E%3Cline%20x1%3D%22110%22%20y1%3D%22250%22%20x2%3D%22160%22%20y2%3D%22235%22%20stroke%3D%22rgba%28180%2C120%2C40%2C0.8%29%22%20stroke-width%3D%223%22%2F%3E%3Cline%20x1%3D%22115%22%20y1%3D%22260%22%20x2%3D%22110%22%20y2%3D%22240%22%20stroke%3D%22rgba%28160%2C100%2C30%2C0.7%29%22%20stroke-width%3D%222%22%2F%3E%3Cline%20x1%3D%22155%22%20y1%3D%22248%22%20x2%3D%22160%22%20y2%3D%22228%22%20stroke%3D%22rgba%28160%2C100%2C30%2C0.7%29%22%20stroke-width%3D%222%22%2F%3E%3C%21--%20%E6%97%A5%E3%82%88%E3%81%91%20--%3E%3Cellipse%20cx%3D%22135%22%20cy%3D%22232%22%20rx%3D%2228%22%20ry%3D%228%22%20fill%3D%22rgba%28255%2C80%2C80%2C0.7%29%22%2F%3E%3Cpath%20d%3D%22M107%20232%20Q135%20218%20163%20232%22%20fill%3D%22rgba%28255%2C80%2C80%2C0.6%29%22%2F%3E%3C%21--%20%E3%83%93%E3%83%BC%E3%83%81%E3%83%9C%E3%83%BC%E3%83%AB%20--%3E%3Ccircle%20cx%3D%22215%22%20cy%3D%22240%22%20r%3D%2216%22%20fill%3D%22rgba%28255%2C70%2C70%2C0.8%29%22%2F%3E%3Cpath%20d%3D%22M199%20240%20Q215%20224%20231%20240%22%20fill%3D%22rgba%28255%2C230%2C50%2C0.85%29%22%2F%3E%3Cpath%20d%3D%22M199%20240%20Q215%20256%20231%20240%22%20fill%3D%22rgba%2850%2C160%2C255%2C0.85%29%22%2F%3E%3Cline%20x1%3D%22215%22%20y1%3D%22224%22%20x2%3D%22215%22%20y2%3D%22256%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.5%29%22%20stroke-width%3D%220.8%22%2F%3E%3C%21--%20%E3%82%B5%E3%83%BC%E3%83%95%E3%83%9C%E3%83%BC%E3%83%89%20--%3E%3Cellipse%20cx%3D%22270%22%20cy%3D%22252%22%20rx%3D%2236%22%20ry%3D%229%22%20fill%3D%22rgba%28255%2C130%2C40%2C0.82%29%22%20transform%3D%22rotate%28-12%20270%20252%29%22%2F%3E%3Cellipse%20cx%3D%22270%22%20cy%3D%22252%22%20rx%3D%2222%22%20ry%3D%225%22%20fill%3D%22rgba%28255%2C200%2C80%2C0.5%29%22%20transform%3D%22rotate%28-12%20270%20252%29%22%2F%3E%3C%21--%20%E3%82%AB%E3%83%A2%E3%83%A1%20--%3E%3Cpath%20d%3D%22M150%20105%20Q158%2098%20166%20105%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.8%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M170%2095%20Q178%2088%20186%2095%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.75%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3Cpath%20d%3D%22M240%2080%20Q246%2074%20252%2080%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.7%29%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3C%21--%20%E6%B0%B4%E5%B9%B3%E7%B7%9A%E3%81%AE%E5%85%89%20--%3E%3Cline%20x1%3D%220%22%20y1%3D%22168%22%20x2%3D%22400%22%20y2%3D%22168%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.3%29%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+                    background-size:400px 280px;" onclick="setTheme('fashion_mag')">🌺</div>
+            </div>
+            <!-- ページ5：アート/デザイン特化 -->
+            <div class="color-grid theme-page" id="themePage4" style="display:none;">
+                <div class="color-dot" style="background:linear-gradient(160deg,#f7f1e6 0%,#ece2cf 100%);"
+                    onclick="setTheme('ink_calligraphy')">🖌️</div>
+                <div class="color-dot"
+                    style="background:radial-gradient(circle at 50% 50%,#0ff 0 20%,#1a0033 40%,#0b1020 100%);"
+                    onclick="setTheme('cyber_grid')">🧿</div>
+                <div class="color-dot"
+                    style="background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 30%,#fbc2eb 65%,#a18cd1 100%);"
+                    onclick="setTheme('pop_geometry')">🎨</div>
+                <div class="color-dot" style="background:linear-gradient(160deg,#f4fbf5 0%,#d7eedf 100%);"
+                    onclick="setTheme('botanical_art')">🌿</div>
+                <div class="color-dot" style="background:linear-gradient(160deg,#f2f2f2 0%,#d9d9d9 100%);"
+                    onclick="setTheme('marble_gold')">✨</div>
+                <div class="color-dot" style="background:linear-gradient(160deg,#fffaf0 0%,#efe8dc 100%);"
+                    onclick="setTheme('doodle_sketch')">✏️</div>
+                <div class="color-dot" style="background:linear-gradient(160deg,#f2f6ff 0%,#d7dff0 100%);"
+                    onclick="setTheme('nordic_knit')">🧵</div>
+                <div class="color-dot"
+                    style="background:conic-gradient(from 90deg,#00f5ff,#36ff8f,#ffe45e,#ff6ec7,#8b5cf6,#00f5ff); filter:drop-shadow(0 0 10px rgba(0,245,255,.7)) drop-shadow(0 0 16px rgba(255,110,199,.45));"
+                    onclick="setTheme('stained_glass')">🔷</div>
+            </div>
+            <!-- ページ6：淡い単色 -->
+            <div class="color-grid theme-page" id="themePage5" style="display:none;">
+                <div class="color-dot" style="background:#f0b8b8;" onclick="setTheme('pastel_red')"></div>
+                <div class="color-dot" style="background:#f5cba0;" onclick="setTheme('pastel_orange')"></div>
+                <div class="color-dot" style="background:#f5e6a0;" onclick="setTheme('pastel_yellow')"></div>
+                <div class="color-dot" style="background:#b8ddb8;" onclick="setTheme('pastel_green')"></div>
+                <div class="color-dot" style="background:#a8c8e8;" onclick="setTheme('pastel_blue')"></div>
+                <div class="color-dot" style="background:#a8daea;" onclick="setTheme('pastel_cyan')"></div>
+                <div class="color-dot" style="background:#f0b8d0;" onclick="setTheme('pastel_pink')"></div>
+                <div class="color-dot" style="background:#c8b0d8;" onclick="setTheme('pastel_purple')"></div>
+            </div>
 
             <div class="login-section" style="padding-top:10px;">
                 <p style="font-size: 14px; font-weight: 900; color:#666; margin: 0 0 12px;">👤 アカウント</p>
@@ -1967,7 +2085,8 @@
                 <div class="preview" id="menuIconPreviewMini" style="display:none;">👤</div>
                 <div style="font-size:10px; color:#999; font-weight:700; margin:-4px 0 10px 6px;">※アイコンをタップして設定できます
                 </div>
-                <label style="font-size: 14px; font-weight: 900; color:#666; margin: 12px 0 8px; display:block;">🏷️ ランキング表示名（本名✕）</label>
+                <label style="font-size: 14px; font-weight: 900; color:#666; margin: 12px 0 8px; display:block;">🏷️
+                    ランキング表示名（本名✕）</label>
                 <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：マナビ太郎" maxlength="20"
                     style="margin:0 0 10px; font-weight:900; color:#444; border:1.5px solid #eee; border-radius:12px; padding:12px;">
                 <div class="setting-switch">
@@ -2265,17 +2384,25 @@
                     style="max-height: 250px; overflow-y: auto; background:#fafafa; border-radius:12px;"></div>
             </div>
             <!-- メモ検索・振り返り（アコーディオン） -->
-            <details style="margin-top:18px; border-radius:16px; border:1.5px solid rgba(0,0,0,0.08); overflow:hidden; background:#f9fbff;">
-                <summary style="padding:14px; font-size:13px; font-weight:900; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; color:#5c6bc0;">
+            <details
+                style="margin-top:18px; border-radius:16px; border:1.5px solid rgba(0,0,0,0.08); overflow:hidden; background:#f9fbff;">
+                <summary
+                    style="padding:14px; font-size:13px; font-weight:900; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; color:#5c6bc0;">
                     <span>🔍 メモ検索・振り返り</span>
                     <span style="font-size:10px; opacity:0.6;">タップで開く ▼</span>
                 </summary>
                 <div style="padding:14px; background:white; border-top:1px solid #f0f3ff;">
                     <div style="display:flex; gap:8px; margin-bottom:12px;">
-                        <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力" style="margin:0; flex:1; font-size:13px; padding:10px 14px; border:1.5px solid #eee; border-radius:12px;" oninput="searchMemos(this.value)">
+                        <input type="text" id="memoSearchInput" class="setting-input" placeholder="キーワードを入力"
+                            style="margin:0; flex:1; font-size:13px; padding:10px 14px; border:1.5px solid #eee; border-radius:12px;"
+                            oninput="searchMemos(this.value)">
                     </div>
-                    <div id="memoSearchResults" style="max-height:180px; overflow-y:auto; display:none; background:#fafbff; border-radius:12px; border:1px solid #e8eaff; margin-bottom:12px;"></div>
-                    <button onclick="showRandomReflection()" style="width:100%; padding:12px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:14px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.25);">🎲 ランダム振り返り</button>
+                    <div id="memoSearchResults"
+                        style="max-height:180px; overflow-y:auto; display:none; background:#fafbff; border-radius:12px; border:1px solid #e8eaff; margin-bottom:12px;">
+                    </div>
+                    <button onclick="showRandomReflection()"
+                        style="width:100%; padding:12px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:14px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.25);">🎲
+                        ランダム振り返り</button>
                 </div>
             </details>
             <button class="save-btn" style="margin-top:20px; width:100%;" onclick="toggleYearModal()">閉じる</button>
@@ -2344,7 +2471,7 @@
             <button class="save-btn" id="saveCustomIconBtn" onclick="saveCustomIcon()"
                 style="margin-top:8px;">保存</button>
             <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:8px;"
-onclick="closeIconSettings()">閉じる</button>
+                onclick="closeIconSettings()">閉じる</button>
         </div>
     </div>
 
@@ -2593,7 +2720,7 @@ onclick="closeIconSettings()">閉じる</button>
             localStorage.setItem('study-calendar-theme', name);
             if (myChart) renderWeeklyChart(); if (yearStackChart) updateStats();
             if (typeof _applyFavUI === 'function') _applyFavUI();
-            
+
             // サーバー保存
             if (window._currentUser && profileRef) {
                 update(profileRef, { lastTheme: name });
