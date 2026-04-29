@@ -1960,17 +1960,6 @@
                 </svg>
                 X（Twitter）でログイン
             </button>
-
-            <div style="margin-top: 24px; display: flex; justify-content: center; gap: 20px;">
-                <div onclick="openWhatsNew({ markSeen: false })"
-                    style="cursor: pointer; font-size: 13px; font-weight: 900; color: #777; display: flex; align-items: center; gap: 6px;">
-                    <span>🆕</span> 更新履歴
-                </div>
-                <div onclick="window.showTutorial && window.showTutorial()"
-                    style="cursor: pointer; font-size: 13px; font-weight: 900; color: #777; display: flex; align-items: center; gap: 6px;">
-                    <span>📖</span> 使い方
-                </div>
-            </div>
             <div
                 style="margin-top:20px; font-size:11px; color:#bbb; font-weight:700; line-height:1.8; text-align:center;">
                 ログインすることで
@@ -2292,7 +2281,7 @@
                     <button onclick="window.open('https://no-name0926.github.io/Anulis/', '_blank')"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">🐦‍⬛</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">作者</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">Anulis</span>
                     </button>
                 </div>
             </div>
@@ -3219,6 +3208,7 @@ lsc.app.support@gmail.com
                         if (p.lastTheme && !document.getElementById('randomThemeToggle').checked) setTheme(p.lastTheme);
                         updateMenuUser(user);
                         renderIconPresets(p.iconMode || 'provider');
+                        pushRankingData(p);
                     });
                     // ランキング購読
                     onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
@@ -3312,6 +3302,7 @@ lsc.app.support@gmail.com
                 if (!window._currentUser || !rankingRef) return;
                 const user = window._currentUser;
                 const profile = passedProfile || profileCache || {};
+                if (!profile || Object.keys(profile).length === 0) return; // プロフィール未ロード時は何もしない
                 const showInRanking = (profile.showInRanking === true);
                 const rankEntry = ref(db, `ranking/${user.uid}`);
                 if (!showInRanking) { remove(rankEntry); return; }
