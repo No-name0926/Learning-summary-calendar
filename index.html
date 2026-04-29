@@ -2845,6 +2845,16 @@ lsc.app.support@gmail.com
                 pastel_purple: { primary: '#705098', accent: '#9878c0', bg: '#c8b0d8', text: '#666', box: 'rgba(255,255,255,0.55)', author: '#777', pattern: 'none', pOpacity: 0, pSize: '1px 1px' },
             };
 
+            const THEME_EMOJIS = {
+                blue: '💧', red: '🔥', yellow: '✨', black: '🕶️', orange: '🍊', green: '🌿', aqua: '🌊', white: '☁️',
+                luxury_carbon: '💎', royal_paper: '📜', antique_rug: '🏛️', midnight_emoji: '🌃', charlotte: '☄️', angel_beats: '🪼', steins_gate: '🕰️', lucky_star: '🍀',
+                kaleidoscope: '🔮', matrix: '👾', neon_tribal: '⚡', sun_temple: '🌅', aurora_night: '🌠', sunset_desert: '🏜️', deep_jungle: '🌿', galaxy_rose: '🌸',
+                sakura_spring: '🌌', umi_natsuyoru: '🌊', koyo_autumn: '🍂', fuyu_hoshi: '❄️', washi_paper: '📄', edo_komon: '⛩️', vogue_blue: '💙', fashion_mag: '🌺',
+                ink_calligraphy: '🖌️', cyber_grid: '🧿', pop_geometry: '🎨', botanical_art: '🌿', marble_gold: '✨', doodle_sketch: '✏️', nordic_knit: '🧵', stained_glass: '🔷',
+                pastel_red: '🌸', pastel_orange: '🍑', pastel_yellow: '🌼', pastel_green: '🍃', pastel_blue: '🫧', pastel_cyan: '🩵', pastel_pink: '🩷', pastel_purple: '🪻'
+            };
+
+
             let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
             let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
             let goalRef = null;
@@ -4112,7 +4122,8 @@ streak++;
                     const sq = document.getElementById('profileThemeSq');
                     sq.style.background = themeData.bg || themeData.primary;
                     sq.title = tName;
-                    sq.innerHTML = `<div style="font-size:7px; color:${themeData.text || '#000'}; font-weight:900; text-align:center; padding-top:10px;">${tName}</div>`;
+                    const tEmoji = THEME_EMOJIS[tName] || '🎨';
+                    sq.innerHTML = `<div style="font-size:16px; line-height:28px; text-align:center;">${tEmoji}</div>`;
                 };
                 updateThemeUI(e.theme || 'blue');
 
