@@ -3708,6 +3708,67 @@ streak++;
                 });
             }
 
+            let _titlePage = 0;
+            const _titlePages = ['crown', 'star', 'collection', 'streak'];
+
+            function _renderTitlePage() {
+                const list = document.getElementById('titleRoadmapList');
+                if (!list) return;
+                list.innerHTML = '';
+                const pageType = _titlePages[_titlePage];
+                const totalPages = _titlePages.length;
+                document.getElementById('titlePageLabel').innerText = `${_titlePage + 1} / ${totalPages}`;
+                document.getElementById('titlePagePrev').disabled = _titlePage === 0;
+                document.getElementById('titlePageNext').disabled = _titlePage === totalPages - 1;
+
+                // ページごとのタイトルを変更
+                const headings = { crown: '👑 称号ロードマップ（王冠）', star: '🌟 称号ロードマップ（目標星）', collection: '🏅 称号ロードマップ（コレクション）', streak: '🔥 称号ロードマップ（連続記録）' };
+                document.getElementById('titleModalHeading').innerText = headings[pageType] || '👑 称号ロードマップ';
+
+                let crowns = 0, stars = 0;
+                Object.keys(remoteData).forEach(k => { if (getLogData(k).stamp === '👑') crowns++; if (getLogData(k).star) stars++; });
+                const bestStreak = window._bestStreak || 0;
+                const currentTitle = resolveCurrentTitle(crowns, stars);
+
+                let items = [];
+                if (pageType === 'crown') {
+                    items = TITLES.map(t => ({ name: t.name, req: `👑 ${t.req}個`, unlocked: crowns >= t.req }));
+                } else if (pageType === 'star') {
+                    items = STAR_TITLES.map(t => ({ name: t.name, req: `🌟 ${t.req}個`, unlocked: stars >= t.req }));
+                } else if (pageType === 'collection') {
+                    const counts = _getCollectionCounts();
+                    items = COLLECTION_TITLES.map(t => {
+                        const labelMap = { totalMedals: '合計', '🍎': '🍎', '🥉': '🥉', '🥈': '🥈', '🥇': '🥇' };
+                        return { name: t.name, req: `${labelMap[t.check] || t.check} ${t.req}個`, unlocked: _isCollectionUnlocked(t) };
+                    });
+                } else if (pageType === 'streak') {
+                    items = STREAK_TITLES.map(t => ({ name: t.name, req: `🔥 ${t.req}日`, unlocked: bestStreak >= t.req }));
+                }
+
+                items.forEach(item => {
+                    const isEquipped = currentTitle === item.name;
+                    const row = document.createElement('div');
+                    row.style.cssText = `display:flex; align-items:center; justify-content:space-between; padding:12px 14px; margin-bottom:8px; border-radius:16px; background:${item.unlocked ? (isEquipped ? 'linear-gradient(135deg,#fffbe6,#fff3cd)' : '#f0faf0') : '#f8f8f8'}; border:1.5px solid ${item.unlocked ? (isEquipped ? '#f0c040' : '#c8e6c9') : '#eee'}; transition:0.2s;`;
+                    const left = document.createElement('div');
+                    left.innerHTML = `<div style="font-size:14px; font-weight:900; color:${item.unlocked ? '#333' : '#ccc'};">${item.name}</div><div style="font-size:11px; color:${item.unlocked ? '#888' : '#ddd'}; font-weight:700; margin-top:2px;">${item.req}</div>`;
+                    row.appendChild(left);
+                    if (item.unlocked) {
+                        const btn = document.createElement('button');
+                        btn.style.cssText = `border:none; border-radius:12px; padding:6px 14px; font-size:11px; font-weight:900; cursor:pointer; transition:0.2s; ${isEquipped ? 'background:#f0c040; color:#5a4000;' : 'background:#e8f5e9; color:#2e7d32;'}`;
+                        btn.textContent = isEquipped ? '装備中' : '装備する';
+                        if (!isEquipped) btn.onclick = () => selectTitle(item.name);
+                        row.appendChild(btn);
+                    } else {
+                        const lock = document.createElement('span');
+                        lock.style.cssText = 'font-size:16px; color:#ddd;';
+                        lock.textContent = '🔒';
+                        row.appendChild(lock);
+                    }
+                    list.appendChild(row);
+                });
+            }
+
+            window.titlePageChange = function (dir) {
                 _titlePage = Math.max(0, Math.min(_titlePages.length - 1, _titlePage + dir));
                 _renderTitlePage();
             };
