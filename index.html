@@ -1017,22 +1017,20 @@
             z-index: 4500;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: none;
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            width: 88%;
+            background: white;
+            width: 85%;
             max-width: 420px;
             max-height: 85vh;
-            border-radius: 32px;
+            border-radius: 28px;
             overflow-y: auto;
-            padding: 28px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 25px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         .month-memo-btn {
@@ -1103,12 +1101,11 @@
         }
 
         /* ユーザープロフィールモーダル */
-        .profile-stat-row { display: flex; gap: 6px; margin-bottom: 8px; }
-        .profile-stat-box { background: rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 12px 4px; text-align: center; flex: 1; border: 1.5px solid rgba(0,0,0,0.03); transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-        .profile-stat-box:active { transform: scale(0.96); opacity: 0.8; }
-        .profile-stat-val { font-size: 15px; font-weight: 900; color: #333; display: block; margin-top: 2px; }
-        .profile-stat-label { font-size: 10px; color: #999; font-weight: 800; display: block; }
-        .profile-theme-sq { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); display: inline-block; border: 2px solid white; cursor: help; }
+        .profile-stat-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .profile-stat-box { background: #f8faff; border-radius: 16px; padding: 10px 6px; text-align: center; flex: 1; border: 1px solid #eef2ff; }
+        .profile-stat-val { font-size: 14px; font-weight: 900; color: #444; display: block; margin-top: 2px; }
+        .profile-stat-label { font-size: 9px; color: #888; font-weight: 800; display: block; }
+        .profile-theme-sq { width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); display: inline-block; }
 
             font-size: 15px;
             box-sizing: border-box;
@@ -2185,7 +2182,7 @@
                         <span style="font-size:20px;">📮</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
                     </button>
-                    <button onclick="openInstallApp()" id="installAppBtn"
+                    <button onclick="window.safeOpenModal(() => window.openInstallApp && openInstallApp())" id="installAppBtn"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📲</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">DL</span>
@@ -2232,7 +2229,7 @@
             <div class="grid" id="calendarGrid"></div>
         </div>
         <!-- 月目標バナー -->
-        <div class="goal-banner" id="goalBanner" onclick="event.stopPropagation(); window.openGoalModal && openGoalModal()">
+        <div class="goal-banner" id="goalBanner" onclick="event.stopPropagation(); window.safeOpenModal(() => window.openGoalModal && openGoalModal())">
             <span style="font-size:18px;">🌟</span>
             <div style="flex:1; min-width:0;">
                 <div style="font-size:10px; font-weight:900; color:var(--text-on-bg); opacity:0.7; margin-bottom:2px;">
@@ -2769,7 +2766,9 @@
             }
 
             const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '', star: false }; return (typeof d === 'string') ? { stamp: d, memo: '', star: false } : { stamp: d.stamp || '', memo: d.memo || '', star: d.star || false }; };
+            let _pendingModalFn = null;
             window.safeOpenModal = (fn) => {
+                _pendingModalFn = fn;
                 // サイドメニューを閉じる
                 const menu = document.getElementById('sideMenu');
                 const overlay = document.getElementById('menuOverlay');
@@ -2790,7 +2789,12 @@
                 });
 
                 // 少し遅延させて実行することで、メニューが閉じるアニメーションと干渉させない
-                setTimeout(fn, 180);
+                setTimeout(() => {
+                    if (_pendingModalFn === fn) {
+                        fn();
+                        _pendingModalFn = null;
+                    }
+                }, 180);
             };
             window.toggleMenu = () => {
  const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
@@ -3960,26 +3964,6 @@ streak++;
             };
             window.closeUserProfile = () => { document.getElementById('userProfileModal').style.display = 'none'; };
 
-            // 称号ページスワイプ（より感度を高め、干渉を防ぐ）
-            (function(){
-                let startX = 0, startY = 0, moved = false;
-                const modal = document.getElementById('titleModal');
-                if(!modal) return;
-                modal.addEventListener('touchstart', e => { 
-                    startX = e.touches[0].clientX; 
-                    startY = e.touches[0].clientY; 
-                    moved = false; 
-                }, {passive:true});
-                modal.addEventListener('touchmove', e => { moved = true; }, {passive:true});
-                modal.addEventListener('touchend', e => {
-                    if(!moved) return;
-                    const dx = e.changedTouches[0].clientX - startX;
-                    const dy = e.changedTouches[0].clientY - startY;
-                    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-                        window.titlePageChange(dx > 0 ? -1 : 1);
-                    }
-                }, {passive:true});
-            })();
 
             window.openDayModal = (y, m, d) => {
                 selectedDateKey = `log-${y}-${m}-${d}`;
@@ -4527,14 +4511,10 @@ streak++;
             else { window.addEventListener('load', function () { if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" }); }); }
         })();
         window.openFeedback = function () {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('menuOverlay').style.display = 'none';
-            setTimeout(() => {
-                document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
-                document.getElementById('feedbackMessage').value = '';
-                document.getElementById('feedbackStatus').textContent = '';
-                const btn = document.getElementById('sendFeedbackBtn'); btn.disabled = false; btn.textContent = '送信する 🚀';
-            }, 360);
+            document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
+            document.getElementById('feedbackMessage').value = '';
+            document.getElementById('feedbackStatus').textContent = '';
+            const btn = document.getElementById('sendFeedbackBtn'); btn.disabled = false; btn.textContent = '送信する 🚀';
         };
         window.closeFeedback = function () { document.getElementById('feedbackPanel').style.transform = 'translateX(0)'; };
         window.sendFeedback = async function () {
