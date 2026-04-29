@@ -4075,7 +4075,7 @@ streak++;
                 const e = rankAllEntries.find(x => x.uid === uid); if (!e) return;
                 closeAllModals();
                 
-                // 1. ランキングにある情報を即座に表示
+                // 1. ランキングにある情報を即座に表示（公開されているデータのみ）
                 document.getElementById('profileName').textContent = e.displayName || 'ゲスト';
                 document.getElementById('profileTitle').textContent = e.title || '（無称号）';
                 document.getElementById('profileIcon').innerHTML = avatar('profile-avatar-sq', e.photoURL, '👤', null, 'square');
@@ -4085,11 +4085,11 @@ streak++;
                 document.getElementById('profileStreak').textContent = (e.bestStreak || 0) + ' 日';
                 document.getElementById('profileStatus').textContent = e.status || 'ステータス未設定';
                 
-                // 参加日の初期表示
+                // 参加日の表示
                 const jAt = e.joinedAt;
-                document.getElementById('profileJoinedDate').textContent = jAt ? new Date(jAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '...';
+                document.getElementById('profileJoinedDate').textContent = jAt ? new Date(jAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '不明';
                 
-                // メダルの初期表示
+                // メダルの表示
                 const m = e.medals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                 const mm = e.monthlyMedals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                 
@@ -4118,13 +4118,12 @@ streak++;
 
                 document.getElementById('userProfileModal').style.display = 'flex';
 
-                // 自分自身の場合はキャッシュを使用（最速・確実）
+                // 自分自身の場合は詳細な最新キャッシュを使用して表示
                 if (window._currentUser && window._currentUser.uid === uid) {
                     if (profileCache.status) document.getElementById('profileStatus').textContent = profileCache.status;
                     if (profileCache.joinedAt) document.getElementById('profileJoinedDate').textContent = new Date(profileCache.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
                     if (profileCache.lastTheme) updateThemeUI(profileCache.lastTheme);
                     
-                    // メダル再計算
                     const myM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                     const myMM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                     const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
@@ -4148,80 +4147,9 @@ streak++;
                     });
                     updateMedalUI(myM, myMM);
                     document.getElementById('rankStatus').value = profileCache.status || '';
-                    return;
                 }
-
-                // 他人の場合はFirebaseから補完を試みる
-                if (db) {
-                    try {
-                        // プロフィール取得
-                        get(ref(db, `users/${uid}/profile`)).then(snap => {
-                            const p = snap.val();
-                            if (p) {
-                                if (p.status) document.getElementById('profileStatus').textContent = p.status;
-                                if (p.lastTheme) updateThemeUI(p.lastTheme);
-                                if (p.joinedAt) {
-                                    document.getElementById('profileJoinedDate').textContent = new Date(p.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
-                                }
-                            }
-                        }).catch(() => {});
-
-                        // ログ取得と解析（メダル数・最古日）
-                        get(ref(db, `users/${uid}/my_logs`)).then(snap => {
-                            const logs = snap.val();
-                            if (logs && Object.keys(logs).length > 0) {
-                                const newM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
-                                const newMM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
-                                const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
-                                let earliest = Infinity;
-
-                                Object.entries(logs).forEach(([k, d]) => {
-                                    const stamp = (typeof d === 'string') ? d : d.stamp;
-                                    if (VALID.includes(stamp)) {
-                                        if (stamp === '🍎') newM.apples++;
-                                        else if (stamp === '🥉') newM.bronze++;
-                                        else if (stamp === '🥈') newM.silver++;
-                                        else if (stamp === '🥇') newM.gold++;
-                                        else if (stamp === '👑') newM.crowns++;
-                                        
-                                        const parts = k.split('-');
-                                        if (parts.length === 4) {
-                                            const ld = new Date(parts[1], parts[2]-1, parts[3]);
-                                            const lt = ld.getTime();
-                                            if (lt < earliest) earliest = lt;
-                                            if (parts[1] == cy && parts[2] == cm) {
-                                                if (stamp === '🍎') newMM.apples++;
-                                                else if (stamp === '🥉') newMM.bronze++;
-                                                else if (stamp === '🥈') newMM.silver++;
-                                                else if (stamp === '🥇') newMM.gold++;
-                                                else if (stamp === '👑') newMM.crowns++;
-                                            }
-                                        }
-                                    }
-                                });
-                                updateMedalUI(newM, newMM);
-                                // もしプロファイルに参加日がなければ、ログの最古日を採用
-                                if (earliest !== Infinity && document.getElementById('profileJoinedDate').textContent === '...') {
-                                    document.getElementById('profileJoinedDate').textContent = new Date(earliest).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
-                                }
-                            } else {
-                                if (document.getElementById('profileJoinedDate').textContent === '...') {
-                                    document.getElementById('profileJoinedDate').textContent = '不明';
-                                }
-                            }
-                        }).catch(() => {
-                            if (document.getElementById('profileJoinedDate').textContent === '...') {
-                                document.getElementById('profileJoinedDate').textContent = '不明';
-                            }
-                        });
-                    } catch (err) {
-                        console.warn("Profile fetch error:", err);
-                    }
-                }
-
-                if (window._currentUser && window._currentUser.uid === uid) {
-                    document.getElementById('rankStatus').value = e.status || '';
-                }
+                // 他人のプライベートデータ（メモ等）には一切アクセスしません。
+                // 必要な情報はすべてランキングノードに集約されています。
             };
 ectTitle = function (name) {
                 if (!window._currentUser) return;
