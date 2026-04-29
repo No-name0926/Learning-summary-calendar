@@ -4337,7 +4337,8 @@ streak++;
         function _formatReleaseDate(isoDate) { const d = new Date(`${isoDate}T00:00:00`); if (Number.isNaN(d.getTime())) return isoDate; const week = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]; return `${d.getMonth() + 1}月${d.getDate()}日（${week}）`; }
         function _renderWhatsNew() {
             const note = RELEASE_NOTES[_whatsNewIndex]; if (!note) return;
-            document.getElementById('whatsNewDate').textContent = `＜${_formatReleaseDate(note.date)}＞`;
+            const dateEl = document.getElementById('whatsNewDate'); if (!dateEl) return;
+            dateEl.textContent = `＜${_formatReleaseDate(note.date)}＞`;
             document.getElementById('whatsNewTitle').textContent = note.title;
             document.getElementById('whatsNewPage').textContent = `${_whatsNewIndex + 1} / ${RELEASE_NOTES.length}`;
             document.getElementById('whatsNewBody').innerHTML = note.body.map(t => `<li>${t}</li>`).join('');
@@ -4348,21 +4349,25 @@ streak++;
         function closeWhatsNew() { document.getElementById('whatsNewModal').style.display = 'none'; }
         function openWhatsNew(options = {}) {
             if (!RELEASE_NOTES.length) { alert('表示できる更新内容がありません'); return; }
+            var modal = document.getElementById('whatsNewModal'); if (!modal) { setTimeout(function(){ openWhatsNew(options); }, 300); return; }
             const { markSeen = true } = options; _whatsNewIndex = 0; _renderWhatsNew();
-            document.getElementById('whatsNewModal').style.display = 'flex';
+            modal.style.display = 'flex';
             if (markSeen) { localStorage.setItem(RELEASE_SEEN_KEY, RELEASE_NOTES[0].id); }
         }
         function maybeShowWhatsNewOnLaunch() {
             if (_didAutoShowWhatsNew || !RELEASE_NOTES.length) return;
             const latestId = RELEASE_NOTES[0].id;
             if (localStorage.getItem(RELEASE_SEEN_KEY) === latestId) return;
+            if (!document.getElementById('whatsNewModal')) { setTimeout(maybeShowWhatsNewOnLaunch, 300); return; }
             const tutorial = document.getElementById('tutorialOverlay');
             if (tutorial && tutorial.style.display === 'flex') { setTimeout(maybeShowWhatsNewOnLaunch, 500); return; }
             _didAutoShowWhatsNew = true; openWhatsNew({ markSeen: true });
         }
         window.openWhatsNew = openWhatsNew; window.closeWhatsNew = closeWhatsNew; window.shiftWhatsNew = shiftWhatsNew; window.maybeShowWhatsNewOnLaunch = maybeShowWhatsNewOnLaunch;
-        if (window.__pendingWhatsNewCheck) { window.__pendingWhatsNewCheck = false; maybeShowWhatsNewOnLaunch(); }
+        try { if (window.__pendingWhatsNewCheck) { window.__pendingWhatsNewCheck = false; maybeShowWhatsNewOnLaunch(); } } catch(e) { console.error('WhatsNew init:', e); }
 
+    </script>
+    <script>
         const TUT_STEPS = [
             { color: '#f0f7ff', accent: '#0070bc', icon: '📅', title: 'カレンダーに記録しよう', body: '日付をタップするとその日の記録画面が開きます。学習時間に合ったメダルを選んでスタンプ！メモも一緒に残せます📝', tip: '⚪ 0h～　🍎 1h〜　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜' },
             { color: '#fff8f0', accent: '#e85d04', icon: '📊', title: 'グラフ・記録を振り返る', body: 'カレンダーの下にメダル集計・7日間グラフ・学習分析が自動で表示されます。右上の「記録 📊」では年間の記録をまとめて確認できます！', tip: '月ごとのメモ一覧も「記録 📊」から読み返せます' },
@@ -4393,10 +4398,10 @@ streak++;
             if (_tutStep >= TUT_STEPS.length) { document.getElementById('tutorialOverlay').style.display = 'none'; localStorage.setItem('lsc-tutorial-done', '1'); return; }
             document.getElementById('tutSlide' + _tutStep).style.display = 'block'; _tutUpdateDots();
         };
-        function showTutorial() { _tutStep = 0; _tutBuild(); document.getElementById('tutorialOverlay').style.display = 'flex'; };
+        function showTutorial() { _tutStep = 0; var ov = document.getElementById('tutorialOverlay'); if (!ov) { setTimeout(showTutorial, 200); return; } _tutBuild(); ov.style.display = 'flex'; };
         function checkTutorial() { if (localStorage.getItem('lsc-tutorial-done')) return; if (!document.getElementById('tutorialOverlay')) { setTimeout(checkTutorial, 200); return; } setTimeout(showTutorial, 800); }
         window.tutNext = tutNext; window.showTutorial = showTutorial; window.checkTutorial = checkTutorial;
-        if (window.__pendingTutorialCheck) { window.__pendingTutorialCheck = false; checkTutorial(); }
+        try { if (window.__pendingTutorialCheck) { window.__pendingTutorialCheck = false; checkTutorial(); } } catch(e) { console.error('Tutorial init:', e); }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
