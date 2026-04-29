@@ -2215,12 +2215,12 @@
                         <span style="font-size:20px;">🆕</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新</span>
                     </button>
-                    <button onclick="showTutorial()"
+                    <button onclick="window.showTutorial && window.showTutorial()"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📖</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">使い方</span>
                     </button>
-                    <button onclick="openFeedback()"
+                    <button onclick="window.openFeedback && window.openFeedback()"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📮</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
@@ -3331,7 +3331,7 @@
             }
 
             function avatar(cls, photoURL, fallback, uid, shape = 'circle') {
-                const click = uid ? `onclick="openUserProfile('${uid}')" style="cursor:pointer;"` : '';
+                const click = uid ? `onclick="window.openUserProfile('${uid}')" style="cursor:pointer;"` : '';
                 const style = shape === 'square' ? 'border-radius:16px;' : 'border-radius:50%;';
                 if (photoURL) return `<div class="${cls}" ${click} style="${style}"><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';" style="width:100%;height:100%;object-fit:cover;"></div>`;
                 return `<div class="${cls}" ${click} style="${style}">${fallback}</div>`;
@@ -3458,7 +3458,6 @@
                 clearTimeout(profileNameSaveTimer);
                 await saveProfileSettings();
             });
-            let _rankTab = 'level';
             window.switchRankTab = function (tab) {
                 _rankTab = tab;
                 document.getElementById('rankTabLevel').classList.toggle('active', tab === 'level');
