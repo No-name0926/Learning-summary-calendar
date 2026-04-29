@@ -4072,7 +4072,7 @@ streak++;
                 const e = rankAllEntries.find(x => x.uid === uid); if (!e) return;
                 closeAllModals();
                 
-                // 基本情報を即時表示
+                // 基本情報を即時表示（ランキングに既にある分）
                 document.getElementById('profileName').textContent = e.displayName;
                 document.getElementById('profileTitle').textContent = e.title || '（無称号）';
                 document.getElementById('profileIcon').innerHTML = avatar('profile-avatar-sq', e.photoURL, '👤', null, 'square');
@@ -4083,8 +4083,8 @@ streak++;
                 document.getElementById('profileStatus').textContent = e.status || 'ステータス未設定';
                 
                 // メダル、参加日、テーマの初期化
-                const joinedDate = e.joinedAt ? new Date(e.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '...';
-                document.getElementById('profileJoinedDate').textContent = joinedDate;
+                const joinedAtFromRank = e.joinedAt;
+                document.getElementById('profileJoinedDate').textContent = joinedAtFromRank ? new Date(joinedAtFromRank).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '...';
                 
                 const m = e.medals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                 const mm = e.monthlyMedals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
@@ -4114,9 +4114,8 @@ streak++;
 
                 document.getElementById('userProfileModal').style.display = 'flex';
 
-                // 不足データのオンデマンド取得
-                const isDataIncomplete = !e.joinedAt || !e.medals || !e.theme;
-                if (isDataIncomplete && db) {
+                // 不足データのオンデマンド取得（ランキングデータが古い場合のバックアップ）
+                if (db) {
                     try {
                         const [pSnap, lSnap] = await Promise.all([
                             get(ref(db, `users/${uid}/profile`)),
@@ -4126,9 +4125,16 @@ streak++;
                         const profile = pSnap.val() || {};
                         const logs = lSnap.val() || {};
 
+                        // ステータスの更新
+                        if (profile.status) {
+                            document.getElementById('profileStatus').textContent = profile.status;
+                        }
+
                         // 参加日の更新
                         if (profile.joinedAt) {
                             document.getElementById('profileJoinedDate').textContent = new Date(profile.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
+                        } else if (!joinedAtFromRank) {
+                            document.getElementById('profileJoinedDate').textContent = '不明';
                         }
 
                         // テーマの更新
@@ -4136,8 +4142,8 @@ streak++;
                             updateThemeUI(profile.lastTheme);
                         }
 
-                        // メダルの計算と更新
-                        if (Object.keys(logs).length > 0) {
+                        // メダルの計算と更新（ログが空でない場合のみ上書き）
+                        if (logs && Object.keys(logs).length > 0) {
                             const newM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                             const newMM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
                             const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
@@ -4163,6 +4169,7 @@ streak++;
                         }
                     } catch (err) {
                         console.warn("Failed to fetch additional user data:", err);
+                        if (!joinedAtFromRank) document.getElementById('profileJoinedDate').textContent = '不明';
                     }
                 }
 
