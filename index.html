@@ -1904,6 +1904,36 @@
                 opacity: 0.8;
             }
         }
+        <div id="loginScreen">
+            <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 340px;">
+                <div class="login-card">
+                    <div class="login-icon">🍰</div>
+                    <h1 class="login-title">Anulis</h1>
+                    <p class="login-sub">毎日の積み重ねを、<br>もっと楽しく、もっと確かに。</p>
+                    <button class="google-btn" id="googleLoginBtn">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"
+                            height="18" alt="Google icon">
+                        Googleでログイン
+                    </button>
+                    <button class="twitter-btn" id="twitterLoginBtn">
+                        <img src="https://abs.twimg.com/favicons/twitter-pip.2.ico" width="18" height="18"
+                            alt="Twitter icon" style="filter: brightness(0) invert(1);">
+                        Twitterでログイン
+                    </button>
+                </div>
+                <div
+                    style="margin-top: 24px; display: flex; gap: 20px; background: rgba(255,255,255,0.7); padding: 12px 24px; border-radius: 50px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);">
+                    <div onclick="openWhatsNew({ markSeen: false })"
+                        style="cursor: pointer; font-size: 13px; font-weight: 900; color: #555; display: flex; align-items: center; gap: 6px;">
+                        <span>🆕</span> 更新履歴
+                    </div>
+                    <div onclick="window.showTutorial && window.showTutorial()"
+                        style="cursor: pointer; font-size: 13px; font-weight: 900; color: #555; display: flex; align-items: center; gap: 6px;">
+                        <span>📖</span> 使い方
+                    </div>
+                </div>
+            </div>
+        </div>
     </style>
 </head>
 
@@ -1948,10 +1978,39 @@
                 ログインすることで
                 <span onclick="window.openTermsModal && window.openTermsModal()"
                     style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">利用規約</span>
-                および
+                と
                 <span onclick="window.openPrivacyModal && window.openPrivacyModal()"
                     style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">プライバシーポリシー</span>
-                に同意したものとみなします。
+                に同意したとみなされます。
+            </div>
+        </div>
+    </div>
+
+    <!-- 重要なモーダルをログイン画面の直後に移動 -->
+    <div id="whatsNewModal" class="modal" onclick="window.closeWhatsNew()">
+        <div class="modal-content" style="max-width:430px;" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">🆕 更新内容</h2>
+                <button onclick="window.closeWhatsNew()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
+            </div>
+            <div id="whatsNewDate" style="font-size:12px; font-weight:900; color:var(--primary-color); margin-bottom:8px;">＜-＞</div>
+            <div id="whatsNewTitle" style="font-size:16px; font-weight:900; color:#333; margin-bottom:10px;">-</div>
+            <ul id="whatsNewBody" style="margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:#555; font-weight:700;"></ul>
+            <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
+                <button id="whatsNewPrev" onclick="window.shiftWhatsNew(-1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">◀ 前へ</button>
+                <div id="whatsNewPage" style="font-size:12px; color:#999; font-weight:800;">1 / 1</div>
+                <button id="whatsNewNext" onclick="window.shiftWhatsNew(1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">次へ ▶</button>
+            </div>
+            <button class="save-btn" style="margin-top:14px;" onclick="window.closeWhatsNew()">閉じる</button>
+        </div>
+    </div>
+
+    <div id="tutorialOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9100; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+        <div style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
+            <div id="tutSlideWrap" style="overflow:hidden; position:relative;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
+                <div id="tutDots" style="display:flex; gap:6px;"></div>
+                <button id="tutBtn" onclick="window.tutNext()" style="background:var(--primary-color); color:white; border:none; border-radius:14px; padding:10px 22px; font-weight:900; font-size:14px; cursor:pointer; box-shadow:0 6px 15px rgba(0,0,0,0.1);">次へ →</button>
             </div>
         </div>
     </div>
@@ -2204,11 +2263,6 @@
                 </div>
                 <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
                 <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;">
-                    <button onclick="downloadMyData()"
-                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
-                        <span style="font-size:20px;">📥</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">保存</span>
-                    </button>
                     <button onclick="openWhatsNew({ markSeen: false })"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">🆕</span>
@@ -2223,6 +2277,11 @@
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📮</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
+                    </button>
+                    <button onclick="downloadMyData()"
+                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:20px;">📥</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">保存</span>
                     </button>
                     <button onclick="openInstallApp()" id="installAppBtn"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
@@ -2244,7 +2303,7 @@
 
     <button class="menu-toggle-btn" onclick="toggleMenu()">☰</button>
 
-    <div class="container">
+    <div class="container" id="mainContainer" style="display: none;">
         <button class="year-summary-btn" onclick="toggleYearModal()">記録 📊</button>
         <div style="text-align:center;">
             <div class="title-badge" id="titleDisplay" onclick="showTitleGuide()">🐣 見習い学習者</div>
@@ -2336,7 +2395,6 @@
             </div>
         </div>
 
-        <!-- ランキング -->
         <div class="ranking-container">
             <div class="stats-title">🏆 ランキング</div>
             <div class="rank-tab-wrap">
@@ -2356,8 +2414,7 @@
         <div
             style="text-align:center; padding:24px 16px 32px; font-size:11px; color:#bbb; font-weight:700; line-height:2;">
             <span onclick="window.openTermsModal && window.openTermsModal()"
-                style="color:#aaa; cursor:pointer; text-decoration:underline;">利用規約</span>
-            　|　
+                style="color:#aaa; cursor:pointer; text-decoration:underline; margin-right:12px;">利用規約</span>
             <span onclick="window.openPrivacyModal && window.openPrivacyModal()"
                 style="color:#aaa; cursor:pointer; text-decoration:underline;">プライバシーポリシー</span>
             <br>© 2026 学習集計カレンダー
@@ -2370,42 +2427,42 @@
         <div class="modal-content" onclick="event.stopPropagation()" style="max-height:85vh; overflow-y:auto;">
             <h2 style="margin:0 0 16px; font-size:18px; font-weight:900;">📋 利用規約</h2>
             <div style="font-size:12px; line-height:1.9; color:#555; font-weight:600; white-space:pre-wrap;">利用規約
-                本利用規約（以下「本規約」といいます。）は、学習集計カレンダー（以下「本アプリ」といいます。）の提供条件および本アプリの利用者（以下「ユーザー」といいます。）との間の権利義務関係を定めるものです。
+本利用規約（以下「本規約」といいます。）は、学習集計カレンダー（以下「本アプリ」といいます。）の提供条件および本アプリの利用者（以下「ユーザー」といいます。）との間の権利義務関係を定めるものです。
 
-                第1条（適用）
-                本規約は、ユーザーと本アプリの開発者（以下「開発者」といいます。）との間の本アプリの利用に関わる一切の関係に適用されます。
+第1条（適用）
+本規約は、ユーザーと本アプリの開発者（以下「開発者」といいます。）との間の本アプリの利用に関わる一切の関係に適用されます。
 
-                第2条（サービスの内容）
-                本アプリは、ユーザーが自身の勉強時間をカレンダーに記録し、ランキング形式で他のユーザーと競い合うことができる学習支援ツールです。
+第2条（サービスの内容）
+本アプリは、ユーザーが自身の勉強時間をカレンダーに記録し、ランキング形式で他のユーザーと競い合うことができる学習支援ツールです。
 
-                第3条（ユーザー情報の管理）
-                1. ユーザーは、本アプリの利用に際して登録するニックネーム等の情報を、自己の責任において適切に管理するものとします。
-                2. 開発者は、ユーザーの不注意による情報の流出や不正利用について、一切の責任を負いません。
+第3条（ユーザー情報の管理）
+1. ユーザーは、本アプリの利用に際して登録するニックネーム等の情報を、自己の責任において適切に管理するものとします。
+2. 開発者は、ユーザーの不注意による情報の流出や不正利用について、一切の責任を負いません。
 
-                第4条（禁止事項）
-                ユーザーは、本アプリの利用にあたり、以下の行為を行ってはなりません。
-                1. ランキングやメモ機能において、公序良俗に反する表現や、他者に不快感を与える表現を使用する行為。
-                2. 虚偽の学習時間を登録し、ランキングの公正性を損なう行為。
-                3. 他のユーザー、開発者、または第三者の知的財産権、名誉、プライバシーを侵害する行為。
-                4. 本アプリのサーバーやネットワークの機能を破壊したり、妨害したりする行為。
-                5. その他、開発者が不適切と判断する行為。
+第4条（禁止事項）
+ユーザーは、本アプリの利用にあたり、以下の行為を行ってはなりません。
+1. ランキングやメモ機能において、公序良俗に反する表現や、他者に不快感を与える表現を使用する行為。
+2. 虚偽の学習時間を登録し、ランキングの公正性を損なう行為。
+3. 他のユーザー、開発者、または第三者の知的財産権、名誉、プライバシーを侵害する行為。
+4. 本アプリのサーバーやネットワークの機能を破壊したり、妨害したりする行為。
+5. その他、開発者が不適切と判断する行為。
 
-                第5条（投稿内容の削除・利用停止）
-                開発者は、ユーザーが前条の禁止事項に該当すると判断した場合、事前の通知なく、当該ユーザーが作成したデータの削除、または本アプリの利用停止措置を講じることができるものとします。
+第5条（投稿内容の削除・利用停止）
+開発者は、ユーザーが前条の禁止事項に該当すると判断した場合、事前の通知なく、当該ユーザーが作成したデータの削除、または本アプリの利用停止措置を講じることができるものとします。
 
-                第6条（免責事項）
-                1. 開発者は、本アプリがユーザーの特定の目的に適合すること、または不具合が生じないことを保証するものではありません。
-                2. 開発者は、本アプリの利用によりユーザーに生じた損害について、一切の責任を負いません。
-                3. 本アプリは予告なく、サービス内容の変更、中断、または終了することがあります。
+第6条（免責事項）
+1. 開発者は、本アプリがユーザーの特定の目的に適合すること、または不具合が生じないことを保証するものではありません。
+2. 開発者は、本アプリの利用によりユーザーに生じた損害について、一切の責任を負いません。
+3. 本アプリは予告なく、サービス内容の変更、中断、または終了することがあります。
 
-                第7条（利用規約の変更）
-                開発者は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。
+第7条（利用規約の変更）
+開発者は、必要と判断した場合には、ユーザーに通知することなくいつでも本規約を変更することができるものとします。
 
-                第8条（準拠法・裁判管轄）
-                1. 本規約の解釈にあたっては、日本法を準拠法とします。
-                2. 本アプリに関して紛争が生じた場合には、開発者の所在地を管轄する裁判所を専属的合意管轄とします。
+第8条（準拠法・裁判管轄）
+1. 本規約の解釈にあたっては、日本法を準拠法とします。
+2. 本アプリに関して紛争が生じた場合には、開発者の所在地を管轄する裁判所を専属的合意管轄とします。
 
-                附則　2026年3月24日 制定</div>
+附則　2026年3月24日 制定</div>
             <button class="save-btn" onclick="document.getElementById('termsModal').style.display='none'"
                 style="margin-top:16px;">閉じる</button>
         </div>
@@ -2416,48 +2473,50 @@
         <div class="modal-content" onclick="event.stopPropagation()" style="max-height:85vh; overflow-y:auto;">
             <h2 style="margin:0 0 16px; font-size:18px; font-weight:900;">🔒 プライバシーポリシー</h2>
             <div style="font-size:12px; line-height:1.9; color:#555; font-weight:600; white-space:pre-wrap;">プライバシーポリシー
-                学習集計カレンダーの開発者（以下「開発者」といいます。）は、本アプリにおいて提供するサービスにおける、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシーを定めます。
+学習集計カレンダーの開発者（以下「開発者」といいます。）は、本アプリにおいて提供するサービスにおける、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシーを定めます。
 
-                第1条（取得する情報および利用目的）
-                1. ログイン情報（Google, Twitterアカウント）
-                　取得情報：各プラットフォームの識別子（ID）、ユーザー名、プロフィール画像URL
-                　利用目的：ユーザー認証、ユーザー識別、ランキングへの表示
+第1条（取得する情報および利用目的）
+1. ログイン情報（Google, Twitterアカウント）
+　取得情報：各プラットフォームの識別子（ID）、ユーザー名、プロフィール画像URL
+　利用目的：ユーザー認証、ユーザー識別、ランキングへの表示
 
-                2. 学習記録データ
-                　取得情報：スタンプの種類、学習時間、メモ内容
-                　利用目的：カレンダー表示、学習管理機能の提供、ランキングの算出
+2. 学習記録データ
+　取得情報：スタンプの種類、学習時間、メモ内容
+　利用目的：カレンダー表示、学習管理機能の提供、ランキングの算出
 
-                3. お問い合わせ情報
-                　取得情報：送信された内容、連絡先情報
-                　利用目的：お問い合わせへの回答、本人確認
+3. お問い合わせ情報
+　取得情報：送信された内容、連絡先情報
+　利用目的：お問い合わせへの回答、本人確認
 
-                第2条（データの保存および管理）
-                本アプリは、データの保存・管理のために Google が提供する Firebase を利用しています。取得したデータは Firebase
-                のサーバー上に保存されます。開発者は、不正アクセスや紛失、漏洩を防止するため、適切なセキュリティ対策を講じます。
+第2条（データの保存および管理）
+本アプリは、データの保存・管理のために Google が提供する Firebase を利用しています。取得したデータは Firebase
+のサーバー上に保存されます。開発者は、不正アクセスや紛失、漏洩を防止するため、適切なセキュリティ対策を講じます。
 
-                第3条（第三者提供の禁止）
-                開発者は、法令に基づく場合等を除いて、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。
+第3条（第三者提供の禁止）
+開発者は、法令に基づく場合等を除いて、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。
 
-                第4条（情報の公開範囲）
-                ユーザーがランキング機能を利用する場合、設定した「ニックネーム」および「学習記録」が他のユーザーに公開されます。メモ内容は公開されません。
+第4条（情報の公開範囲）
+ユーザーがランキング機能を利用する場合、設定した「ニックネーム」および「学習記録」が他のユーザーに公開されます。メモ内容は公開されません。
 
-                第5条（データの削除）
-                ユーザーがデータの削除を希望する場合、本アプリ内のフィードバック機能またはlsc.app.support@gmail.comを通じて申し出ることができるものとし、開発者は合理的な範囲で速やかにデータを削除します。
+第5条（データの削除）
+ユーザーがデータの削除を希望する場合、本アプリ内のフィードバック機能またはlsc.app.support@gmail.comを通じて申し出ることができるものとし、開発者は合理的な範囲で速やかにデータを削除します。
 
-                第6条（GitHubでの公開について）
-                本アプリのソースコードは GitHub にて公開されていますが、ユーザーの個人情報や個別の学習データがソースコード内に含まれることはありません。
+第6条（GitHubでの公開について）
+本アプリのソースコードは GitHub にて公開されていますが、ユーザーの個人情報や個別の学習データがソースコード内に含まれることはありません。
 
-                第7条（プライバシーポリシーの変更）
-                本ポリシーの内容は、ユーザーに通知することなく変更することができるものとします。
+第7条（プライバシーポリシーの変更）
+本ポリシーの内容は、ユーザーに通知することなく変更することができるものとします。
 
-                第8条（お問い合わせ窓口）
-                lsc.app.support@gmail.com
+第8条（お問い合わせ窓口）
+lsc.app.support@gmail.com
 
-                附則　2026年3月24日 制定</div>
+附則　2026年3月24日 制定</div>
             <button class="save-btn" onclick="document.getElementById('privacyModal').style.display='none'"
                 style="margin-top:16px;">閉じる</button>
         </div>
     </div>
+
+
 
     <div id="titleModal" class="modal" onclick="closeTitleModal()">
         <div class="modal-content" onclick="event.stopPropagation()" style="max-height:85vh; overflow-y:auto;">
@@ -3121,18 +3180,22 @@
                     eventsRef = ref(db, `users/${user.uid}/my_events`);
                     profileRef = ref(db, `users/${user.uid}/profile`);
                     rankingRef = ref(db, `ranking`);
+                    let isInitialized = false;
                     logsUnsubscribe = onValue(logsRef, (snap) => {
                         remoteData = snap.val() || {};
-                        // オフライン用バックアップ
                         if (user) localStorage.setItem(`lsc-data-${user.uid}`, JSON.stringify(remoteData));
                         document.getElementById('loading').style.display = 'none';
                         render();
                         updateGoalBanner();
                         pushRankingData();
-                        if (typeof checkTutorial === 'function') checkTutorial();
-                        else window.__pendingTutorialCheck = true;
-                        if (typeof maybeShowWhatsNewOnLaunch === 'function') maybeShowWhatsNewOnLaunch();
-                        else window.__pendingWhatsNewCheck = true;
+                        
+                        if (!isInitialized) {
+                            if (typeof checkTutorial === 'function') checkTutorial();
+                            else window.__pendingTutorialCheck = true;
+                            if (typeof maybeShowWhatsNewOnLaunch === 'function') maybeShowWhatsNewOnLaunch();
+                            else window.__pendingWhatsNewCheck = true;
+                            isInitialized = true;
+                        }
                     });
                     eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
                     // フリーズデータ購読：変更時にカレンダー再描画
@@ -3141,6 +3204,7 @@
                         freezeUsedData = snap.val() || {};
                         if (JSON.stringify(freezeUsedData) !== prev) render();
                     });
+                    document.getElementById('mainContainer').style.display = 'block';
                     // プロフィール読み込み
                     get(profileRef).then(snap => {
                         const p = snap.val() || {};
@@ -3172,6 +3236,7 @@
                     // 未ログイン：Loadingを隠してログイン画面表示
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('loginScreen').style.display = 'flex';
+                    document.getElementById('mainContainer').style.display = 'none';
                     if (logsUnsubscribe) { logsUnsubscribe(); logsUnsubscribe = null; }
                     if (eventsUnsubscribe) { eventsUnsubscribe(); eventsUnsubscribe = null; }
                     logsRef = null; eventsRef = null;
@@ -4607,34 +4672,6 @@ streak++;
             } catch (err) { statusEl.style.color = '#e74c3c'; statusEl.textContent = `❌ 失敗`; btn.disabled = false; btn.textContent = '送信する 🚀'; }
         };
     </script>
-
-    <div id="whatsNewModal" class="modal" onclick="window.closeWhatsNew()">
-        <div class="modal-content" style="max-width:430px;" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">🆕 更新内容</h2>
-                <button onclick="window.closeWhatsNew()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
-            </div>
-            <div id="whatsNewDate" style="font-size:12px; font-weight:900; color:var(--primary-color); margin-bottom:8px;">＜-＞</div>
-            <div id="whatsNewTitle" style="font-size:16px; font-weight:900; color:#333; margin-bottom:10px;">-</div>
-            <ul id="whatsNewBody" style="margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:#555; font-weight:700;"></ul>
-            <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
-                <button id="whatsNewPrev" onclick="window.shiftWhatsNew(-1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">◀ 前へ</button>
-                <div id="whatsNewPage" style="font-size:12px; color:#999; font-weight:800;">1 / 1</div>
-                <button id="whatsNewNext" onclick="window.shiftWhatsNew(1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">次へ ▶</button>
-            </div>
-            <button class="save-btn" style="margin-top:14px;" onclick="window.closeWhatsNew()">閉じる</button>
-        </div>
-    </div>
-
-    <div id="tutorialOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9100; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
-        <div style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
-            <div id="tutSlideWrap" style="overflow:hidden; position:relative;"></div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
-                <div id="tutDots" style="display:flex; gap:6px; align-items:center;"></div>
-                <button id="tutBtn" onclick="window.tutNext()" style="border:none; background:var(--primary-color); color:white; font-weight:900; font-size:13px; border-radius:999px; padding:10px 16px; cursor:pointer;">次へ →</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         window.openInstallApp = () => { closeAllModals(); document.getElementById('installGuideModal').style.display = 'flex'; };
