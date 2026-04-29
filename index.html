@@ -4068,44 +4068,104 @@ streak++;
             }
             window.showMonthMemos = showMonthMemos;
 
-            window.openUserProfile = (uid) => {
+            window.openUserProfile = async (uid) => {
                 const e = rankAllEntries.find(x => x.uid === uid); if (!e) return;
                 closeAllModals();
+                
+                // 基本情報を即時表示
                 document.getElementById('profileName').textContent = e.displayName;
                 document.getElementById('profileTitle').textContent = e.title || '（無称号）';
                 document.getElementById('profileIcon').innerHTML = avatar('profile-avatar-sq', e.photoURL, '👤', null, 'square');
                 document.getElementById('profileLv').textContent = e.level;
                 document.getElementById('profileExp').textContent = `EXP ${e.exp % 100} / 100`;
                 document.getElementById('profileBar').style.width = (e.exp % 100) + '%';
-                
-                const joinedDate = e.joinedAt ? new Date(e.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '不明';
-                document.getElementById('profileJoinedDate').textContent = joinedDate;
                 document.getElementById('profileStreak').textContent = (e.bestStreak || 0) + ' 日';
                 document.getElementById('profileStatus').textContent = e.status || 'ステータス未設定';
-
-                const m = e.medals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
-                const mm = e.monthlyMedals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
                 
-                document.getElementById('p-m-apples').textContent = mm.apples || 0;
-                document.getElementById('p-m-bronze').textContent = mm.bronze || 0;
-                document.getElementById('p-m-silver').textContent = mm.silver || 0;
-                document.getElementById('p-m-gold').textContent = mm.gold || 0;
-                document.getElementById('p-m-crowns').textContent = mm.crowns || 0;
+                // メダル、参加日、テーマの初期化
+                const joinedDate = e.joinedAt ? new Date(e.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '...';
+                document.getElementById('profileJoinedDate').textContent = joinedDate;
                 
-                document.getElementById('p-a-apples').textContent = m.apples || 0;
-                document.getElementById('p-a-bronze').textContent = m.bronze || 0;
-                document.getElementById('p-a-silver').textContent = m.silver || 0;
-                document.getElementById('p-a-gold').textContent = m.gold || 0;
-                document.getElementById('p-a-crowns').textContent = m.crowns || 0;
+                const m = e.medals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                const mm = e.monthlyMedals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                
+                const updateMedalUI = (targetM, targetMM) => {
+                    document.getElementById('p-m-apples').textContent = targetMM.apples || 0;
+                    document.getElementById('p-m-bronze').textContent = targetMM.bronze || 0;
+                    document.getElementById('p-m-silver').textContent = targetMM.silver || 0;
+                    document.getElementById('p-m-gold').textContent = targetMM.gold || 0;
+                    document.getElementById('p-m-crowns').textContent = targetMM.crowns || 0;
+                    document.getElementById('p-a-apples').textContent = targetM.apples || 0;
+                    document.getElementById('p-a-bronze').textContent = targetM.bronze || 0;
+                    document.getElementById('p-a-silver').textContent = targetM.silver || 0;
+                    document.getElementById('p-a-gold').textContent = targetM.gold || 0;
+                    document.getElementById('p-a-crowns').textContent = targetM.crowns || 0;
+                };
+                updateMedalUI(m, mm);
 
-                const themeName = e.theme || 'blue';
-                const themeData = THEMES[themeName] || THEMES.blue;
-                const sq = document.getElementById('profileThemeSq');
-                sq.style.background = themeData.bg || themeData.primary;
-                sq.title = themeName;
-                sq.innerHTML = `<div style="font-size:7px; color:${themeData.text || '#000'}; font-weight:900; text-align:center; padding-top:10px;">${themeName}</div>`;
+                const updateThemeUI = (tName) => {
+                    const themeData = THEMES[tName] || THEMES.blue;
+                    const sq = document.getElementById('profileThemeSq');
+                    sq.style.background = themeData.bg || themeData.primary;
+                    sq.title = tName;
+                    sq.innerHTML = `<div style="font-size:7px; color:${themeData.text || '#000'}; font-weight:900; text-align:center; padding-top:10px;">${tName}</div>`;
+                };
+                updateThemeUI(e.theme || 'blue');
 
                 document.getElementById('userProfileModal').style.display = 'flex';
+
+                // 不足データのオンデマンド取得
+                const isDataIncomplete = !e.joinedAt || !e.medals || !e.theme;
+                if (isDataIncomplete && db) {
+                    try {
+                        const [pSnap, lSnap] = await Promise.all([
+                            get(ref(db, `users/${uid}/profile`)),
+                            get(ref(db, `users/${uid}/my_logs`))
+                        ]);
+                        
+                        const profile = pSnap.val() || {};
+                        const logs = lSnap.val() || {};
+
+                        // 参加日の更新
+                        if (profile.joinedAt) {
+                            document.getElementById('profileJoinedDate').textContent = new Date(profile.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
+                        }
+
+                        // テーマの更新
+                        if (profile.lastTheme) {
+                            updateThemeUI(profile.lastTheme);
+                        }
+
+                        // メダルの計算と更新
+                        if (Object.keys(logs).length > 0) {
+                            const newM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                            const newMM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                            const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
+                            
+                            Object.entries(logs).forEach(([k, d]) => {
+                                const stamp = (typeof d === 'string') ? d : d.stamp;
+                                if (stamp === '🍎') newM.apples++;
+                                else if (stamp === '🥉') newM.bronze++;
+                                else if (stamp === '🥈') newM.silver++;
+                                else if (stamp === '🥇') newM.gold++;
+                                else if (stamp === '👑') newM.crowns++;
+                                
+                                const p = k.split('-'); // log-YYYY-MM-DD
+                                if (p[1] == cy && p[2] == cm) {
+                                    if (stamp === '🍎') newMM.apples++;
+                                    else if (stamp === '🥉') newMM.bronze++;
+                                    else if (stamp === '🥈') newMM.silver++;
+                                    else if (stamp === '🥇') newMM.gold++;
+                                    else if (stamp === '👑') newMM.crowns++;
+                                }
+                            });
+                            updateMedalUI(newM, newMM);
+                        }
+                    } catch (err) {
+                        console.warn("Failed to fetch additional user data:", err);
+                    }
+                }
+
                 if (window._currentUser && window._currentUser.uid === uid) {
                     document.getElementById('rankStatus').value = e.status || '';
                 }
