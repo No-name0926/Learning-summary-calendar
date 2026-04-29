@@ -1971,12 +1971,12 @@
             style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
             <h3 style="margin:0; color:#222; font-weight:900; font-size:22px; white-space:nowrap;">設定</h3>
             <div style="display:flex; gap:6px; flex-shrink:0;">
-                <button onclick="document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display='none'; window.showTutorial && window.showTutorial();" title="使い方を見る"
+                <button onclick="window.closeAllModals(); window.showTutorial && window.showTutorial();" title="使い方を見る"
                     style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
                     <span style="font-size:15px;">📖</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">使い方</span>
                 </button>
-                <button onclick="document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display='none'; window.openFeedback && window.openFeedback();" title="ご意見・フィードバック"
+                <button onclick="window.closeAllModals(); window.openFeedback && window.openFeedback();" title="ご意見・フィードバック"
                     style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
                     <span style="font-size:15px;">📮</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">意見を送る</span>
@@ -2058,6 +2058,7 @@
                 <div class="color-dot"
                     style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;"
                     onclick="setTheme('white')">☁️</div>
+                <div class="color-dot" style="background:#ff9ff3; border: 1.5px solid #ff4dff; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:900;" onclick="window.closeAllModals(); window.openWhatsNew && window.openWhatsNew();">更新<br>内容</div>
             </div>
             <!-- ページ2 -->
             <div class="color-grid theme-page" id="themePage1" style="display:none;">
@@ -2771,6 +2772,7 @@
 
             let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
             let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
+            let rankAllEntries = [], rankMyUid = null, rankCurrentPage = 0, _rankTab = 'exp';
             let goalRef = null;
             let freezeRef = null;
             let freezeUsedData = {};
