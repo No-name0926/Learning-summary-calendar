@@ -4420,7 +4420,7 @@ streak++;
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '⌛ 生成中...'; btn.disabled = true;
                 try {
-                    const streak = window._bestStreak || 0;
+                    const streak = parseInt(document.getElementById('streakDisplay')?.innerText || '0', 10) || 0;
                     const cc = _getCollectionCounts();
                     const wrap = document.createElement('div');
                     const rootStyles = getComputedStyle(document.documentElement);
@@ -4447,7 +4447,7 @@ streak++;
                     
                     const statsBar = document.createElement('div');
                     statsBar.style.cssText = 'padding:24px 18px;background:rgba(255,255,255,0.4);display:flex;justify-content:space-around;font-weight:900;font-size:18px;color:#333;border-top:1px solid rgba(0,0,0,0.05);';
-                    statsBar.innerHTML = `<div style="display:flex;align-items:center;gap:4px;">🔥 <span style="font-size:22px;">${streak}</span></div>` + 
+                    statsBar.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;line-height:1.1;"><span style="font-size:10px;color:#666;font-weight:700;">連続記録</span><div style="display:flex;align-items:center;gap:4px;">🔥 <span style="font-size:22px;">${streak}</span></div></div>` + 
                                        `<div>🍎 ${cc.apples}</div><div>🥉 ${cc.bronze}</div><div>🥈 ${cc.silver}</div><div>🥇 ${cc.gold}</div><div>👑 ${cc.crowns}</div>`;
                     inner.appendChild(statsBar);
                     document.body.appendChild(wrap);
