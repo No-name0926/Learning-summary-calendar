@@ -1946,10 +1946,10 @@
             <div
                 style="margin-top:20px; font-size:11px; color:#bbb; font-weight:700; line-height:1.8; text-align:center;">
                 ログインすることで
-                <span onclick="document.getElementById('termsModal').style.display='flex'"
+                <span onclick="window.openTermsModal && window.openTermsModal()"
                     style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">利用規約</span>
                 および
-                <span onclick="document.getElementById('privacyModal').style.display='flex'"
+                <span onclick="window.openPrivacyModal && window.openPrivacyModal()"
                     style="color:var(--primary-color); cursor:pointer; text-decoration:underline;">プライバシーポリシー</span>
                 に同意したものとみなします。
             </div>
@@ -2058,7 +2058,6 @@
                 <div class="color-dot"
                     style="background:#ffffff; border: 1px solid #eee; background-image: radial-gradient(#00000005 2px, transparent 0); background-size: 20px 20px;"
                     onclick="setTheme('white')">☁️</div>
-                <div class="color-dot" style="background:#ff9ff3; border: 1.5px solid #ff4dff; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:900;" onclick="window.closeAllModals(); window.openWhatsNew && window.openWhatsNew();">更新<br>内容</div>
             </div>
             <!-- ページ2 -->
             <div class="color-grid theme-page" id="themePage1" style="display:none;">
@@ -2356,10 +2355,10 @@
         </div>
         <div
             style="text-align:center; padding:24px 16px 32px; font-size:11px; color:#bbb; font-weight:700; line-height:2;">
-            <span onclick="document.getElementById('termsModal').style.display='flex'"
+            <span onclick="window.openTermsModal && window.openTermsModal()"
                 style="color:#aaa; cursor:pointer; text-decoration:underline;">利用規約</span>
             　|　
-            <span onclick="document.getElementById('privacyModal').style.display='flex'"
+            <span onclick="window.openPrivacyModal && window.openPrivacyModal()"
                 style="color:#aaa; cursor:pointer; text-decoration:underline;">プライバシーポリシー</span>
             <br>© 2026 学習集計カレンダー
         </div>
@@ -2812,13 +2811,15 @@
             window.closeAllModals = () => {
                 const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay');
                 if (menu) menu.classList.remove('open'); if (overlay) overlay.style.display = 'none';
-                const ids = ['titleModal', 'yearModal', 'dayModal', 'goalModal', 'themeModal', 'iconModal', 'userProfileModal', 'feedbackPanel', 'whatsNewModal', 'tutorialOverlay', 'sharePreviewModal', 'installGuideModal', 'termsModal', 'privacyModal'];
+                const ids = ['titleModal', 'yearModal', 'dayModal', 'goalModal', 'themeModal', 'iconModal', 'userProfileModal', 'feedbackPanel', 'whatsNewModal', 'tutorialOverlay', 'sharePreviewModal', 'installGuideModal', 'termsModal', 'privacyModal', 'iconSettingsModal'];
                 ids.forEach(id => {
                     const el = document.getElementById(id); if (!el) return;
+                    el.style.display = 'none';
                     if (id === 'feedbackPanel') el.style.transform = 'translateX(0)';
-                    else el.style.display = 'none';
                 });
             };
+            window.openTermsModal = () => { window.closeAllModals(); document.getElementById('termsModal').style.display = 'flex'; };
+            window.openPrivacyModal = () => { window.closeAllModals(); document.getElementById('privacyModal').style.display = 'flex'; };
             window.safeOpenModal = (fn) => { closeAllModals(); setTimeout(fn, 10); };
             window.toggleMenu = () => {
  const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
