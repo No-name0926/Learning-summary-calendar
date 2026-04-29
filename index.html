@@ -1021,16 +1021,18 @@
         }
 
         .modal-content {
-            background: white;
-            width: 85%;
+            background: rgba(255, 255, 255, 0.85);
+            width: 88%;
             max-width: 420px;
             max-height: 85vh;
-            border-radius: 28px;
+            border-radius: 32px;
             overflow-y: auto;
-            padding: 25px;
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 28px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         .month-memo-btn {
@@ -1098,6 +1100,16 @@
             border-radius: 16px;
             border: 2.5px solid #f0f0f0;
             background: #fafafa;
+        }
+
+        /* ユーザープロフィールモーダル */
+        .profile-stat-row { display: flex; gap: 6px; margin-bottom: 8px; }
+        .profile-stat-box { background: rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 12px 4px; text-align: center; flex: 1; border: 1.5px solid rgba(0,0,0,0.03); transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .profile-stat-box:active { transform: scale(0.96); opacity: 0.8; }
+        .profile-stat-val { font-size: 15px; font-weight: 900; color: #333; display: block; margin-top: 2px; }
+        .profile-stat-label { font-size: 10px; color: #999; font-weight: 800; display: block; }
+        .profile-theme-sq { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); display: inline-block; border: 2px solid white; cursor: help; }
+
             font-size: 15px;
             box-sizing: border-box;
             outline: none;
@@ -2158,17 +2170,17 @@
                         <span style="font-size:20px;">📥</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">保存</span>
                     </button>
-                    <button onclick="document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display='none'; window.openWhatsNew && window.openWhatsNew({ markSeen: false });"
+                    <button onclick="window.safeOpenModal(() => window.openWhatsNew({ markSeen: false }))"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">🆕</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新</span>
                     </button>
-                    <button onclick="document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display='none'; window.showTutorial && window.showTutorial();"
+                    <button onclick="window.safeOpenModal(() => window.showTutorial())"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📖</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">使い方</span>
                     </button>
-                    <button onclick="document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display='none'; window.openFeedback && window.openFeedback();"
+                    <button onclick="window.safeOpenModal(() => window.openFeedback())"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📮</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
@@ -2220,7 +2232,7 @@
             <div class="grid" id="calendarGrid"></div>
         </div>
         <!-- 月目標バナー -->
-        <div class="goal-banner" id="goalBanner" onclick="openGoalModal()">
+        <div class="goal-banner" id="goalBanner" onclick="event.stopPropagation(); window.openGoalModal && openGoalModal()">
             <span style="font-size:18px;">🌟</span>
             <div style="flex:1; min-width:0;">
                 <div style="font-size:10px; font-weight:900; color:var(--text-on-bg); opacity:0.7; margin-bottom:2px;">
@@ -2757,7 +2769,31 @@
             }
 
             const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '', star: false }; return (typeof d === 'string') ? { stamp: d, memo: '', star: false } : { stamp: d.stamp || '', memo: d.memo || '', star: d.star || false }; };
-            window.toggleMenu = () => { const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
+            window.safeOpenModal = (fn) => {
+                // サイドメニューを閉じる
+                const menu = document.getElementById('sideMenu');
+                const overlay = document.getElementById('menuOverlay');
+                if (menu) menu.classList.remove('open');
+                if (overlay) overlay.style.display = 'none';
+
+                // 存在する可能性のある全てのモーダル・パネルを一度閉じる
+                const modals = [
+                    'titleModal', 'yearModal', 'dayModal', 'goalModal', 'themeModal', 'iconModal', 
+                    'userProfileModal', 'feedbackPanel', 'whatsNewModal', 'tutorialOverlay', 
+                    'sharePreviewModal', 'installGuideModal', 'termsModal', 'privacyModal'
+                ];
+                modals.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    if (id === 'feedbackPanel') el.style.transform = 'translateX(0)';
+                    else el.style.display = 'none';
+                });
+
+                // 少し遅延させて実行することで、メニューが閉じるアニメーションと干渉させない
+                setTimeout(fn, 180);
+            };
+            window.toggleMenu = () => {
+ const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
             window.setTheme = (name) => {
                 const theme = THEMES[name]; if (!theme) return;
                 const root = document.documentElement;
@@ -3178,19 +3214,41 @@
                 const showInRanking = (profile.showInRanking === true);
                 const rankEntry = ref(db, `ranking/${user.uid}`);
                 if (!showInRanking) { remove(rankEntry); return; }
-                let totalExp = 0, crownsCount = 0;
-                Object.keys(remoteData).forEach(k => {
-                    const s = getLogData(k).stamp;
+                
+                let totalExp = 0, totalStars = 0, crownsCount = 0;
+                let medals = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                let monthlyMedals = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
+                const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
+
+                Object.entries(remoteData).forEach(([k, d]) => {
+                    const data = (typeof d === 'string') ? { stamp: d } : d;
+                    const s = data.stamp;
                     totalExp += (EXP_MAP[s] || 0);
-                    if (s === '👑') crownsCount++;
+                    if (data.star) totalStars++;
+                    
+                    if (s === '🍎') medals.apples++;
+                    else if (s === '🥉') medals.bronze++;
+                    else if (s === '🥈') medals.silver++;
+                    else if (s === '🥇') medals.gold++;
+                    else if (s === '👑') { medals.crowns++; crownsCount++; }
+                    
+                    const p = k.split('-'); // log-YYYY-MM-DD
+                    if (p[1] == cy && p[2] == cm) {
+                        if (s === '🍎') monthlyMedals.apples++;
+                        else if (s === '🥉') monthlyMedals.bronze++;
+                        else if (s === '🥈') monthlyMedals.silver++;
+                        else if (s === '🥇') monthlyMedals.gold++;
+                        else if (s === '👑') monthlyMedals.crowns++;
+                    }
                 });
+                
                 const level = Math.floor(totalExp / 100) + 1;
                 const displayName = profile.displayName || user.displayName || 'ゲスト';
                 const effectivePhotoURL = getEffectivePhotoURL(profile, user);
-                let totalStars = 0;
-                Object.keys(remoteData).forEach(k => { if (getLogData(k).star) totalStars++; });
                 const titleName = resolveCurrentTitle(crownsCount, totalStars);
                 const bestStreak = window._bestStreak || 0;
+                const currentTheme = localStorage.getItem('study-calendar-theme') || 'blue';
+
                 await set(rankEntry, {
                     displayName,
                     photoURL: effectivePhotoURL,
@@ -3199,6 +3257,9 @@
                     title: titleName,
                     totalStars,
                     bestStreak,
+                    medals,
+                    monthlyMedals,
+                    theme: currentTheme,
                     updatedAt: Date.now()
                 });
             }
@@ -3235,9 +3296,10 @@
                 renderRankingPage();
             }
 
-            function avatar(cls, photoURL, fallback) {
-                if (photoURL) return `<div class="${cls}"><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';"></div>`;
-                return `<div class="${cls}">${fallback}</div>`;
+            function avatar(cls, photoURL, fallback, uid) {
+                const click = uid ? `onclick="window.openUserProfile('${uid}')" style="cursor:pointer;"` : '';
+                if (photoURL) return `<div class="${cls}" ${click}><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';"></div>`;
+                return `<div class="${cls}" ${click}>${fallback}</div>`;
             }
 
             function renderRankingPage() {
@@ -3272,8 +3334,8 @@
                         row.className = 'rank-row-1';
                         row.innerHTML = `
                     <div class="rank-num-1">🥇</div>
-                    ${avatar('rank-avatar-1', entry.photoURL, '👤')}
-                    <div class="rank-info">
+                    ${avatar('rank-avatar-1', entry.photoURL, '👤', entry.uid)}
+                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b8860b;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3283,8 +3345,8 @@
                         row.className = 'rank-row-2' + (isMe ? ' me' : '');
                         row.innerHTML = `
                     <div class="rank-num-2">🥈</div>
-                    ${avatar('rank-avatar-2', entry.photoURL, '👤')}
-                    <div class="rank-info">
+                    ${avatar('rank-avatar-2', entry.photoURL, '👤', entry.uid)}
+                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#8a9aaa;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3294,8 +3356,8 @@
                         row.className = 'rank-row-3' + (isMe ? ' me' : '');
                         row.innerHTML = `
                     <div class="rank-num-3">🥉</div>
-                    ${avatar('rank-avatar-3', entry.photoURL, '👤')}
-                    <div class="rank-info">
+                    ${avatar('rank-avatar-3', entry.photoURL, '👤', entry.uid)}
+                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07840;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3305,8 +3367,8 @@
                         row.className = 'rank-row-n' + (isMe ? ' me' : '');
                         row.innerHTML = `
                     <div class="rank-num-n">${rank}</div>
-                    ${avatar('rank-avatar-n', entry.photoURL, '👤')}
-                    <div class="rank-info">
+                    ${avatar('rank-avatar-n', entry.photoURL, '👤', entry.uid)}
+                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
                         ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.4px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3864,6 +3926,60 @@ streak++;
                 area.style.display = 'block';
             }
             window.showMonthMemos = showMonthMemos;
+
+            window.openUserProfile = (uid) => {
+                const e = rankAllEntries.find(x => x.uid === uid); if (!e) return;
+                document.getElementById('profileName').textContent = e.displayName;
+                document.getElementById('profileTitle').textContent = e.title || '（無称号）';
+                document.getElementById('profileIcon').innerHTML = avatar('profile-avatar-large', e.photoURL, '👤');
+                document.getElementById('profileLv').textContent = e.level;
+                document.getElementById('profileExp').textContent = `EXP ${e.exp}`;
+                document.getElementById('profileBar').style.width = (e.exp % 100) + '%';
+                
+                const m = e.medals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
+                const mm = e.monthlyMedals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
+                
+                document.getElementById('p-m-apples').textContent = mm.apples || 0;
+                document.getElementById('p-m-bronze').textContent = mm.bronze || 0;
+                document.getElementById('p-m-silver').textContent = mm.silver || 0;
+                document.getElementById('p-m-gold').textContent = mm.gold || 0;
+                document.getElementById('p-m-crowns').textContent = mm.crowns || 0;
+                
+                document.getElementById('p-a-apples').textContent = m.apples || 0;
+                document.getElementById('p-a-bronze').textContent = m.bronze || 0;
+                document.getElementById('p-a-silver').textContent = m.silver || 0;
+                document.getElementById('p-a-gold').textContent = m.gold || 0;
+                document.getElementById('p-a-crowns').textContent = m.crowns || 0;
+
+                const themeData = THEMES[e.theme || 'blue'] || THEMES.blue;
+                const sq = document.getElementById('profileThemeSq');
+                sq.style.background = themeData.bg || themeData.primary;
+                sq.title = e.theme || 'blue';
+
+                document.getElementById('userProfileModal').style.display = 'flex';
+            };
+            window.closeUserProfile = () => { document.getElementById('userProfileModal').style.display = 'none'; };
+
+            // 称号ページスワイプ（より感度を高め、干渉を防ぐ）
+            (function(){
+                let startX = 0, startY = 0, moved = false;
+                const modal = document.getElementById('titleModal');
+                if(!modal) return;
+                modal.addEventListener('touchstart', e => { 
+                    startX = e.touches[0].clientX; 
+                    startY = e.touches[0].clientY; 
+                    moved = false; 
+                }, {passive:true});
+                modal.addEventListener('touchmove', e => { moved = true; }, {passive:true});
+                modal.addEventListener('touchend', e => {
+                    if(!moved) return;
+                    const dx = e.changedTouches[0].clientX - startX;
+                    const dy = e.changedTouches[0].clientY - startY;
+                    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+                        window.titlePageChange(dx > 0 ? -1 : 1);
+                    }
+                }, {passive:true});
+            })();
 
             window.openDayModal = (y, m, d) => {
                 selectedDateKey = `log-${y}-${m}-${d}`;
@@ -4481,6 +4597,59 @@ streak++;
                 <p style="margin:0;"><b>🤖 Android (Chrome)</b><br>メニュー（⋮）→「ホーム画面に追加」または「アプリをインストール」</p>
             </div>
             <button class="save-btn" style="margin-top:14px;" onclick="window.closeInstallGuide()">閉じる</button>
+        </div>
+    </div>
+    <div id="userProfileModal" class="modal" onclick="window.closeUserProfile()">
+        <div class="modal-content" style="max-width:380px; padding:20px;" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <div id="profileIcon"></div>
+                    <div>
+                        <div id="profileTitle" style="font-size:10px; font-weight:900; color:#b8860b;"></div>
+                        <div id="profileName" style="font-size:18px; font-weight:900; color:#222;"></div>
+                    </div>
+                </div>
+                <button onclick="window.closeUserProfile()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
+            </div>
+            
+            <div style="background:#f8faff; border-radius:18px; padding:15px; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:6px;">
+                    <span style="font-size:13px; font-weight:900;">Lv.<span id="profileLv">1</span></span>
+                    <span id="profileExp" style="font-size:11px; font-weight:800; color:#888;">EXP 0</span>
+                </div>
+                <div style="height:8px; background:#eee; border-radius:4px; overflow:hidden;">
+                    <div id="profileBar" style="height:100%; width:0%; background:var(--primary-color); transition:0.8s;"></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <div style="font-size:12px; font-weight:900; color:#666; margin-bottom:8px; display:flex; align-items:center; gap:6px;">📅 今月のスタンプ</div>
+                <div class="profile-stat-row">
+                    <div class="profile-stat-box"><span class="profile-stat-label">🍎</span><span class="profile-stat-val" id="p-m-apples">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥉</span><span class="profile-stat-val" id="p-m-bronze">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥈</span><span class="profile-stat-val" id="p-m-silver">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥇</span><span class="profile-stat-val" id="p-m-gold">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">👑</span><span class="profile-stat-val" id="p-m-crowns">0</span></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <div style="font-size:12px; font-weight:900; color:#666; margin-bottom:8px; display:flex; align-items:center; gap:6px;">🏆 累計スタンプ</div>
+                <div class="profile-stat-row">
+                    <div class="profile-stat-box"><span class="profile-stat-label">🍎</span><span class="profile-stat-val" id="p-a-apples">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥉</span><span class="profile-stat-val" id="p-a-bronze">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥈</span><span class="profile-stat-val" id="p-a-silver">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">🥇</span><span class="profile-stat-val" id="p-a-gold">0</span></div>
+                    <div class="profile-stat-box"><span class="profile-stat-label">👑</span><span class="profile-stat-val" id="p-a-crowns">0</span></div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#fcfcfc; border:1px solid #f0f0f0; border-radius:16px; padding:12px 16px;">
+                <span style="font-size:12px; font-weight:900; color:#666;">使用中のテーマ</span>
+                <div id="profileThemeSq" class="profile-theme-sq"></div>
+            </div>
+            
+            <button class="save-btn" style="margin-top:18px;" onclick="window.closeUserProfile()">閉じる</button>
         </div>
     </div>
 </body>
