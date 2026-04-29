@@ -2772,7 +2772,6 @@
 
             let viewY = new Date().getFullYear(), viewM = new Date().getMonth() + 1, remoteData = {}, remoteEvents = {}, myChart = null, yearStackChart = null, currentEventIndex = 0;
             let selectedDateKey = null, selectedStamp = '', currentLv = 0, _selectedStar = false;
-            let rankAllEntries = [], rankMyUid = null, rankCurrentPage = 0, _rankTab = 'exp';
             let goalRef = null;
             let freezeRef = null;
             let freezeUsedData = {};
@@ -3300,7 +3299,7 @@
 
             const RANK_FIRST_PAGE = 6;
             const RANK_REST_PAGE = 8;
-            let rankAllEntries = [], rankCurrentPage = 0, rankMyUid = '';
+            let rankAllEntries = [], rankCurrentPage = 0, rankMyUid = '', _rankTab = 'level';
 
             function rankPageStart(page) {
                 if (page === 0) return 0;
