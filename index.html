@@ -1499,6 +1499,23 @@
         }
 
         /* ランキング */
+        .profile-status {
+            background: #fdfaf0;
+            border: 1.5px dashed #f5d97a;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #7a6a40;
+            margin: 10px 0;
+            line-height: 1.6;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
         /* ── ランキング全体 ── */
         .ranking-container {
             background: white;
@@ -2252,6 +2269,9 @@
                 <label style="font-size: 14px; font-weight: 900; color:#666; margin: 12px 0 8px; display:block;">🏷️
                     ランキング表示名（本名✕）</label>
                 <input type="text" id="rankDisplayName" class="setting-input" placeholder="例：マナビ太郎" maxlength="20"
+                    style="margin:0 0 10px; font-weight:900; color:#444; border:1.5px solid #eee; border-radius:12px; padding:12px;">
+                <label style="font-size: 11px; font-weight: 900; color:#999; margin: 4px 0 6px; display:block;">💬 一言ステータス</label>
+                <input type="text" id="rankStatus" class="setting-input" placeholder="例：毎日10時間頑張る！" maxlength="40"
                     style="margin:0 0 10px; font-weight:900; color:#444; border:1.5px solid #eee; border-radius:12px; padding:12px;">
                 <div class="setting-switch">
                     <span class="switch-label"
@@ -3213,6 +3233,7 @@ lsc.app.support@gmail.com
                         profileCache = p;
                         if (!p.joinedAt) { const now = Date.now(); update(profileRef, { joinedAt: now }); profileCache.joinedAt = now; }
                         document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
+                        document.getElementById('rankStatus').value = p.status || '';
                         document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
                         if (p.lastTheme && !document.getElementById('randomThemeToggle').checked) setTheme(p.lastTheme);
                         updateMenuUser(user);
@@ -3429,6 +3450,7 @@ lsc.app.support@gmail.com
                     const rank = start + pageIdx + 1;
                     const isMe = entry.uid === rankMyUid;
                     const meTag = isMe ? ' <span style="font-size:10px;color:var(--primary-color);font-weight:900;">（あなた）</span>' : '';
+                    const row = document.createElement('div');
                     row.style.cursor = 'pointer';
                     row.onclick = () => window.openUserProfile(entry.uid);
 
@@ -3498,10 +3520,12 @@ lsc.app.support@gmail.com
             async function saveProfileSettings() {
                 if (!window._currentUser || !profileRef) return;
                 const displayName = document.getElementById('rankDisplayName').value.trim() || (window._currentUser.displayName || 'ゲスト');
+                const rankStatus = document.getElementById('rankStatus').value.trim();
                 const showInRanking = document.getElementById('showInRankingToggle').checked;
                 const payload = {
                     ...profileCache,
                     displayName,
+                    status: rankStatus,
                     showInRanking,
                     photoURL: window._currentUser.photoURL || profileCache.photoURL || '',
                     iconMode: profileCache.iconMode || 'provider',
@@ -3522,6 +3546,16 @@ lsc.app.support@gmail.com
                 }, 600);
             });
             document.getElementById('rankDisplayName').addEventListener('blur', async () => {
+                clearTimeout(profileNameSaveTimer);
+                await saveProfileSettings();
+            });
+            document.getElementById('rankStatus').addEventListener('input', () => {
+                clearTimeout(profileNameSaveTimer);
+                profileNameSaveTimer = setTimeout(() => {
+                    saveProfileSettings();
+                }, 800);
+            });
+            document.getElementById('rankStatus').addEventListener('blur', async () => {
                 clearTimeout(profileNameSaveTimer);
                 await saveProfileSettings();
             });
@@ -4043,6 +4077,7 @@ streak++;
                 const joinedDate = e.joinedAt ? new Date(e.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' }) : '不明';
                 document.getElementById('profileJoinedDate').textContent = joinedDate;
                 document.getElementById('profileStreak').textContent = (e.bestStreak || 0) + ' 日';
+                document.getElementById('profileStatus').textContent = e.status || 'ステータス未設定';
 
                 const m = e.medals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
                 const mm = e.monthlyMedals || { apples:0, bronze:0, silver:0, gold:0, crowns:0 };
@@ -4065,6 +4100,9 @@ streak++;
                 sq.title = e.theme || 'blue';
 
                 document.getElementById('userProfileModal').style.display = 'flex';
+                if (window._currentUser && window._currentUser.uid === uid) {
+                    document.getElementById('rankStatus').value = e.status || '';
+                }
             };
             window.closeUserProfile = () => { document.getElementById('userProfileModal').style.display = 'none'; };
 
@@ -4720,6 +4758,8 @@ streak++;
                         <span id="profileStreak" class="profile-info-val">0 日</span>
                     </div>
                 </div>
+
+                <div id="profileStatus" class="profile-status">...</div>
 
                 <div class="profile-lv-area">
                     <div class="profile-lv-row">
