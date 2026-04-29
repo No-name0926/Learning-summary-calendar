@@ -4121,13 +4121,13 @@ streak++;
                 // 不足データのオンデマンド取得（ランキングデータが古い場合のバックアップ）
                 if (db) {
                     try {
-                        const [pSnap, lSnap] = await Promise.all([
+                        const [pSnap, rankSnap] = await Promise.all([
                             get(ref(db, `users/${uid}/profile`)),
-                            get(ref(db, `users/${uid}/my_logs`))
+                            get(ref(db, `ranking/${uid}`))
                         ]);
                         
                         const profile = pSnap.val() || {};
-                        const logs = lSnap.val() || {};
+                        const rankData = rankSnap.val() || {};
 
                         // ステータスの更新
                         if (profile.status) {
@@ -4137,18 +4137,9 @@ streak++;
                         // 参加日の更新（プロファイルにある場合）
                         let finalJoinedAt = profile.joinedAt || joinedAtFromRank;
                         
-                        // 参加日がプロファイルにない場合、ログの最古日を探索
-                        if (!finalJoinedAt && logs && Object.keys(logs).length > 0) {
-                            const logDates = Object.keys(logs)
-                                .map(k => {
-                                    const p = k.split('-'); // log-YYYY-MM-DD
-                                    if (p.length !== 4) return null;
-                                    return new Date(p[1], p[2] - 1, p[3]).getTime();
-                                })
-                                .filter(t => t && !isNaN(t));
-                            if (logDates.length > 0) {
-                                finalJoinedAt = Math.min(...logDates);
-                            }
+                        // 参加日はランキング側の値をバックアップとして使用
+                        if (!finalJoinedAt && rankData.joinedAt) {
+                            finalJoinedAt = rankData.joinedAt;
                         }
 
                         if (finalJoinedAt) {
@@ -4162,30 +4153,14 @@ streak++;
                             updateThemeUI(profile.lastTheme);
                         }
 
-                        // メダルの計算と更新（ログが空でない場合のみ上書き）
-                        if (logs && Object.keys(logs).length > 0) {
-                            const newM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
-                            const newMM = { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 };
-                            const now = new Date(), cy = now.getFullYear(), cm = now.getMonth() + 1;
-                            
-                            Object.entries(logs).forEach(([k, d]) => {
-                                const stamp = (typeof d === 'string') ? d : d.stamp;
-                                if (stamp === '🍎') newM.apples++;
-                                else if (stamp === '🥉') newM.bronze++;
-                                else if (stamp === '🥈') newM.silver++;
-                                else if (stamp === '🥇') newM.gold++;
-                                else if (stamp === '👑') newM.crowns++;
-                                
-                                const p = k.split('-'); // log-YYYY-MM-DD
-                                if (p[1] == cy && p[2] == cm) {
-                                    if (stamp === '🍎') newMM.apples++;
-                                    else if (stamp === '🥉') newMM.bronze++;
-                                    else if (stamp === '🥈') newMM.silver++;
-                                    else if (stamp === '🥇') newMM.gold++;
-                                    else if (stamp === '👑') newMM.crowns++;
-                                }
-                            });
-                            updateMedalUI(newM, newMM);
+                        // メダルは公開用ランキングデータからのみ更新（my_logsは参照しない）
+                        const rankMedals = rankData.medals || rankData.readOnlyMedals || rankData.publicMedals;
+                        const rankMonthlyMedals = rankData.monthlyMedals || rankData.readOnlyMonthlyMedals || rankData.publicMonthlyMedals;
+                        if (rankMedals || rankMonthlyMedals) {
+                            updateMedalUI(
+                                rankMedals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 },
+                                rankMonthlyMedals || { apples: 0, bronze: 0, silver: 0, gold: 0, crowns: 0 }
+                            );
                         }
                     } catch (err) {
                         console.warn("Failed to fetch additional user data:", err);
