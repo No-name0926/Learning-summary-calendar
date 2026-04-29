@@ -1098,6 +1098,7 @@
             border-radius: 16px;
             border: 2.5px solid #f0f0f0;
             background: #fafafa;
+            box-sizing: border-box;
         }
 
         /* ユーザープロフィールモーダル */
@@ -1106,7 +1107,12 @@
         .profile-stat-val { font-size: 14px; font-weight: 900; color: #444; display: block; margin-top: 2px; }
         .profile-stat-label { font-size: 9px; color: #888; font-weight: 800; display: block; }
         .profile-theme-sq { width: 32px; height: 32px; border-radius: 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); display: inline-block; }
-
+        .setting-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #f8faff;
+            border: 1.5px solid #eef2ff;
+            border-radius: 14px;
             font-size: 15px;
             box-sizing: border-box;
             outline: none;
@@ -1128,7 +1134,6 @@
             z-index: 6000;
             font-weight: 900;
             color: var(--primary-color);
-            padding-bottom: 45vh;
             box-sizing: border-box;
         }
 
@@ -2766,9 +2771,7 @@
             }
 
             const getLogData = (key) => { const d = remoteData[key]; if (!d) return { stamp: '', memo: '', star: false }; return (typeof d === 'string') ? { stamp: d, memo: '', star: false } : { stamp: d.stamp || '', memo: d.memo || '', star: d.star || false }; };
-            let _pendingModalFn = null;
             window.safeOpenModal = (fn) => {
-                _pendingModalFn = fn;
                 // サイドメニューを閉じる
                 const menu = document.getElementById('sideMenu');
                 const overlay = document.getElementById('menuOverlay');
@@ -2788,13 +2791,7 @@
                     else el.style.display = 'none';
                 });
 
-                // 少し遅延させて実行することで、メニューが閉じるアニメーションと干渉させない
-                setTimeout(() => {
-                    if (_pendingModalFn === fn) {
-                        fn();
-                        _pendingModalFn = null;
-                    }
-                }, 180);
+                fn();
             };
             window.toggleMenu = () => {
  const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay'), isOpen = menu.classList.toggle('open'); overlay.style.display = isOpen ? 'block' : 'none'; };
