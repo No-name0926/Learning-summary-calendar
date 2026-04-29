@@ -3233,7 +3233,11 @@ lsc.app.support@gmail.com
                     get(profileRef).then(snap => {
                         const p = snap.val() || {};
                         profileCache = p;
-                        if (!p.joinedAt) { const now = Date.now(); update(profileRef, { joinedAt: now }); profileCache.joinedAt = now; }
+                        if (!p.joinedAt) {
+                            const creation = user.metadata.creationTime ? new Date(user.metadata.creationTime).getTime() : Date.now();
+                            update(profileRef, { joinedAt: creation });
+                            profileCache.joinedAt = creation;
+                        }
                         document.getElementById('rankDisplayName').value = p.displayName || user.displayName || '';
                         document.getElementById('rankStatus').value = p.status || '';
                         document.getElementById('showInRankingToggle').checked = (p.showInRanking === true);
@@ -4130,10 +4134,26 @@ streak++;
                             document.getElementById('profileStatus').textContent = profile.status;
                         }
 
-                        // 参加日の更新
-                        if (profile.joinedAt) {
-                            document.getElementById('profileJoinedDate').textContent = new Date(profile.joinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
-                        } else if (!joinedAtFromRank) {
+                        // 参加日の更新（プロファイルにある場合）
+                        let finalJoinedAt = profile.joinedAt || joinedAtFromRank;
+                        
+                        // 参加日がプロファイルにない場合、ログの最古日を探索
+                        if (!finalJoinedAt && logs && Object.keys(logs).length > 0) {
+                            const logDates = Object.keys(logs)
+                                .map(k => {
+                                    const p = k.split('-'); // log-YYYY-MM-DD
+                                    if (p.length !== 4) return null;
+                                    return new Date(p[1], p[2] - 1, p[3]).getTime();
+                                })
+                                .filter(t => t && !isNaN(t));
+                            if (logDates.length > 0) {
+                                finalJoinedAt = Math.min(...logDates);
+                            }
+                        }
+
+                        if (finalJoinedAt) {
+                            document.getElementById('profileJoinedDate').textContent = new Date(finalJoinedAt).toLocaleDateString('ja-JP', { year:'numeric', month:'2-digit', day:'2-digit' });
+                        } else {
                             document.getElementById('profileJoinedDate').textContent = '不明';
                         }
 
