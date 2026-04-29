@@ -1921,36 +1921,6 @@
                 opacity: 0.8;
             }
         }
-        <div id="loginScreen">
-            <div style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 340px;">
-                <div class="login-card">
-                    <div class="login-icon">🍰</div>
-                    <h1 class="login-title">Anulis</h1>
-                    <p class="login-sub">毎日の積み重ねを、<br>もっと楽しく、もっと確かに。</p>
-                    <button class="google-btn" id="googleLoginBtn">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"
-                            height="18" alt="Google icon">
-                        Googleでログイン
-                    </button>
-                    <button class="twitter-btn" id="twitterLoginBtn">
-                        <img src="https://abs.twimg.com/favicons/twitter-pip.2.ico" width="18" height="18"
-                            alt="Twitter icon" style="filter: brightness(0) invert(1);">
-                        Twitterでログイン
-                    </button>
-                </div>
-                <div
-                    style="margin-top: 24px; display: flex; gap: 20px; background: rgba(255,255,255,0.7); padding: 12px 24px; border-radius: 50px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.5);">
-                    <div onclick="openWhatsNew({ markSeen: false })"
-                        style="cursor: pointer; font-size: 13px; font-weight: 900; color: #555; display: flex; align-items: center; gap: 6px;">
-                        <span>🆕</span> 更新履歴
-                    </div>
-                    <div onclick="window.showTutorial && window.showTutorial()"
-                        style="cursor: pointer; font-size: 13px; font-weight: 900; color: #555; display: flex; align-items: center; gap: 6px;">
-                        <span>📖</span> 使い方
-                    </div>
-                </div>
-            </div>
-        </div>
     </style>
 </head>
 
@@ -1990,6 +1960,17 @@
                 </svg>
                 X（Twitter）でログイン
             </button>
+
+            <div style="margin-top: 24px; display: flex; justify-content: center; gap: 20px;">
+                <div onclick="openWhatsNew({ markSeen: false })"
+                    style="cursor: pointer; font-size: 13px; font-weight: 900; color: #777; display: flex; align-items: center; gap: 6px;">
+                    <span>🆕</span> 更新履歴
+                </div>
+                <div onclick="window.showTutorial && window.showTutorial()"
+                    style="cursor: pointer; font-size: 13px; font-weight: 900; color: #777; display: flex; align-items: center; gap: 6px;">
+                    <span>📖</span> 使い方
+                </div>
+            </div>
             <div
                 style="margin-top:20px; font-size:11px; color:#bbb; font-weight:700; line-height:1.8; text-align:center;">
                 ログインすることで
@@ -2311,7 +2292,7 @@
                     <button onclick="window.open('https://no-name0926.github.io/Anulis/', '_blank')"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">🐦‍⬛</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">Anulis</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">作者</span>
                     </button>
                 </div>
             </div>
@@ -3327,11 +3308,10 @@ lsc.app.support@gmail.com
             }
 
             // ── ランキング関連 ────────────────────────
-            async function pushRankingData() {
+            async function pushRankingData(passedProfile = null) {
                 if (!window._currentUser || !rankingRef) return;
                 const user = window._currentUser;
-                const snap = await get(profileRef);
-                const profile = snap.val() || {};
+                const profile = passedProfile || profileCache || {};
                 const showInRanking = (profile.showInRanking === true);
                 const rankEntry = ref(db, `ranking/${user.uid}`);
                 if (!showInRanking) { remove(rankEntry); return; }
@@ -3381,6 +3361,7 @@ lsc.app.support@gmail.com
                     medals,
                     monthlyMedals,
                     theme: currentTheme,
+                    status: profile.status || '',
                     joinedAt: profile.joinedAt || Date.now(),
                     updatedAt: Date.now()
                 });
@@ -3534,7 +3515,7 @@ lsc.app.support@gmail.com
                 await set(profileRef, payload);
                 profileCache = payload;
                 updateMenuUser(window._currentUser);
-                await pushRankingData();
+                await pushRankingData(payload);
             }
 
             let profileNameSaveTimer = null;
@@ -4098,6 +4079,7 @@ streak++;
                 const sq = document.getElementById('profileThemeSq');
                 sq.style.background = themeData.bg || themeData.primary;
                 sq.title = e.theme || 'blue';
+                sq.innerHTML = e.theme ? '' : '<span style="font-size:8px;color:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;height:100%;">未設定</span>';
 
                 document.getElementById('userProfileModal').style.display = 'flex';
                 if (window._currentUser && window._currentUser.uid === uid) {
@@ -4737,7 +4719,7 @@ streak++;
     <div id="userProfileModal" class="modal" onclick="window.closeUserProfile()">
         <div class="profile-card" onclick="event.stopPropagation()">
             <div class="profile-header">
-                <div class="profile-id-tag">ANULIS MEMBER CARD</div>
+                <div class="profile-id-tag">LEARNING SUMMARY CARD</div>
                 <div class="profile-main">
                     <div id="profileIcon" class="profile-avatar-sq"></div>
                     <div class="profile-name-box">
