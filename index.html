@@ -2228,9 +2228,34 @@
                 <div class="user-info-card" id="menuUserInfo">
                     <div class="user-avatar-placeholder" id="menuUserIcon" onclick="openIconSettings()"
                         style="cursor:pointer;">👤</div>
-                    <div>
+                    <div style="flex:1; min-width:0;">
                         <div class="user-name" id="menuUserName">未ログイン</div>
                         <div class="user-email" id="menuUserEmail">-</div>
+                        <div id="menuUserStats" style="font-size:10px; color:#888; font-weight:700; margin-top:4px; display:none;">
+                            <span id="menuUserJoinedAt">...</span> 参加
+                        </div>
+                    </div>
+                </div>
+                <div id="menuMedalSummary" style="display:none; grid-template-columns: repeat(5, 1fr); gap:4px; margin-bottom:12px;">
+                    <div style="background:#fcfdfe; border:1px solid #f2f6f9; border-radius:10px; padding:6px 2px; text-align:center;">
+                        <span style="font-size:12px; display:block;">🍎</span>
+                        <span id="menu-m-apples" style="font-size:11px; font-weight:900; color:#444;">0</span>
+                    </div>
+                    <div style="background:#fcfdfe; border:1px solid #f2f6f9; border-radius:10px; padding:6px 2px; text-align:center;">
+                        <span style="font-size:12px; display:block;">🥉</span>
+                        <span id="menu-m-bronze" style="font-size:11px; font-weight:900; color:#444;">0</span>
+                    </div>
+                    <div style="background:#fcfdfe; border:1px solid #f2f6f9; border-radius:10px; padding:6px 2px; text-align:center;">
+                        <span style="font-size:12px; display:block;">🥈</span>
+                        <span id="menu-m-silver" style="font-size:11px; font-weight:900; color:#444;">0</span>
+                    </div>
+                    <div style="background:#fcfdfe; border:1px solid #f2f6f9; border-radius:10px; padding:6px 2px; text-align:center;">
+                        <span style="font-size:12px; display:block;">🥇</span>
+                        <span id="menu-m-gold" style="font-size:11px; font-weight:900; color:#444;">0</span>
+                    </div>
+                    <div style="background:#fcfdfe; border:1px solid #f2f6f9; border-radius:10px; padding:6px 2px; text-align:center;">
+                        <span style="font-size:12px; display:block;">👑</span>
+                        <span id="menu-m-crowns" style="font-size:11px; font-weight:900; color:#444;">0</span>
                     </div>
                 </div>
                 <div class="preview" id="menuIconPreviewMini" style="display:none;">👤</div>
@@ -3159,45 +3184,52 @@ lsc.app.support@gmail.com
                 window._currentUser = user;
                 updateMenuUser(user);
                 if (user) {
-                    // ログイン済み：ログイン画面を隠してLoading表示
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('loading').style.display = 'flex';
-                    // 前のリスナーを解除
                     if (logsUnsubscribe) logsUnsubscribe();
                     if (eventsUnsubscribe) eventsUnsubscribe();
-                    // ユーザーごとのパスで購読開始
+                    
                     logsRef = ref(db, `users/${user.uid}/my_logs`);
                     goalRef = ref(db, `users/${user.uid}/monthly_goals`);
                     freezeRef = ref(db, `users/${user.uid}/freeze_used`);
                     eventsRef = ref(db, `users/${user.uid}/my_events`);
                     profileRef = ref(db, `users/${user.uid}/profile`);
                     rankingRef = ref(db, `ranking`);
+                    
                     let isInitialized = false;
+                    let logsReady = false;
+                    let profileReady = false;
+
+                    const tryPushRanking = () => {
+                        if (logsReady && profileReady) {
+                            pushRankingData();
+                        }
+                    };
+
                     logsUnsubscribe = onValue(logsRef, (snap) => {
                         remoteData = snap.val() || {};
                         if (user) localStorage.setItem(`lsc-data-${user.uid}`, JSON.stringify(remoteData));
                         document.getElementById('loading').style.display = 'none';
                         render();
                         updateGoalBanner();
-                        pushRankingData();
+                        logsReady = true;
+                        tryPushRanking();
                         
                         if (!isInitialized) {
                             if (typeof checkTutorial === 'function') checkTutorial();
-                            else window.__pendingTutorialCheck = true;
                             if (typeof maybeShowWhatsNewOnLaunch === 'function') maybeShowWhatsNewOnLaunch();
-                            else window.__pendingWhatsNewCheck = true;
                             isInitialized = true;
                         }
                     });
+
                     eventsUnsubscribe = onValue(eventsRef, (snap) => { remoteEvents = snap.val() || {}; updateCountdown(); });
-                    // フリーズデータ購読：変更時にカレンダー再描画
                     onValue(freezeRef, (snap) => {
                         const prev = JSON.stringify(freezeUsedData);
                         freezeUsedData = snap.val() || {};
                         if (JSON.stringify(freezeUsedData) !== prev) render();
                     });
                     document.getElementById('mainContainer').style.display = 'block';
-                    // プロフィール読み込み
+                    
                     get(profileRef).then(snap => {
                         const p = snap.val() || {};
                         profileCache = p;
@@ -3208,9 +3240,10 @@ lsc.app.support@gmail.com
                         if (p.lastTheme && !document.getElementById('randomThemeToggle').checked) setTheme(p.lastTheme);
                         updateMenuUser(user);
                         renderIconPresets(p.iconMode || 'provider');
-                        pushRankingData(p);
+                        profileReady = true;
+                        tryPushRanking();
                     });
-                    // ランキング購読
+                    
                     onValue(rankingRef, (snap) => { renderRanking(snap.val() || {}, user.uid); });
                     if (avatarRefreshTimer) clearInterval(avatarRefreshTimer);
                     avatarRefreshTimer = setInterval(async () => {
@@ -3227,7 +3260,6 @@ lsc.app.support@gmail.com
                         }
                     }, 120000);
                 } else {
-                    // 未ログイン：Loadingを隠してログイン画面表示
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('loginScreen').style.display = 'flex';
                     document.getElementById('mainContainer').style.display = 'none';
@@ -3339,7 +3371,7 @@ lsc.app.support@gmail.com
                 const effectivePhotoURL = getEffectivePhotoURL(profile, user);
                 const titleName = resolveCurrentTitle(crownsCount, totalStars);
                 const bestStreak = window._bestStreak || 0;
-                const currentTheme = localStorage.getItem('study-calendar-theme') || 'blue';
+                const currentTheme = profile.lastTheme || localStorage.getItem('study-calendar-theme') || 'blue';
 
                 await set(rankEntry, {
                     displayName,
@@ -4066,11 +4098,12 @@ streak++;
                 document.getElementById('p-a-gold').textContent = m.gold || 0;
                 document.getElementById('p-a-crowns').textContent = m.crowns || 0;
 
-                const themeData = THEMES[e.theme || 'blue'] || THEMES.blue;
+                const themeName = e.theme || 'blue';
+                const themeData = THEMES[themeName] || THEMES.blue;
                 const sq = document.getElementById('profileThemeSq');
                 sq.style.background = themeData.bg || themeData.primary;
-                sq.title = e.theme || 'blue';
-                sq.innerHTML = e.theme ? '' : '<span style="font-size:8px;color:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;height:100%;">未設定</span>';
+                sq.title = themeName;
+                sq.innerHTML = `<div style="font-size:7px; color:${themeData.text || '#000'}; font-weight:900; text-align:center; padding-top:10px;">${themeName}</div>`;
 
                 document.getElementById('userProfileModal').style.display = 'flex';
                 if (window._currentUser && window._currentUser.uid === uid) {
