@@ -2671,29 +2671,31 @@ lsc.app.support@gmail.com
             <button class="save-btn" style="background:none; color:#999; box-shadow:none; margin-top:8px;"
                 onclick="closeGoalModal()">閉じる</button>
         </div>
-        <!-- テーマ選択モーダル -->
-        <div id="themeModal" class="modal" onclick="closeThemeModal()">
-            <div class="modal-content" onclick="event.stopPropagation()" style="max-width:420px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">🎨 デザイン & テクスチャ</h2>
-                    <button onclick="closeThemeModal()"
-                        style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
-                </div>
+    </div>
 
-                <div id="themeGrid" class="theme-grid"></div>
-
-                <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
-                    <button onclick="shiftThemePage(-1)"
-                        style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">◀
-                        前へ</button>
-                    <div id="themeModalPageLabel" style="font-size:12px; color:#999; font-weight:800;">1 / 6</div>
-                    <button onclick="shiftThemePage(1)"
-                        style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">次へ
-                        ▶</button>
-                </div>
-                <button class="save-btn" style="margin-top:14px;" onclick="closeThemeModal()">閉じる</button>
+    <!-- テーマ選択モーダル -->
+    <div id="themeModal" class="modal" onclick="closeThemeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:420px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">🎨 デザイン & テクスチャ</h2>
+                <button onclick="closeThemeModal()"
+                    style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
             </div>
+
+            <div id="themeGrid" class="theme-grid"></div>
+
+            <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
+                <button onclick="shiftThemePage(-1)"
+                    style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">◀
+                    前へ</button>
+                <div id="themeModalPageLabel" style="font-size:12px; color:#999; font-weight:800;">1 / 6</div>
+                <button onclick="shiftThemePage(1)"
+                    style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 14px; font-weight:900; color:#555; cursor:pointer;">次へ
+                    ▶</button>
+            </div>
+            <button class="save-btn" style="margin-top:14px;" onclick="closeThemeModal()">閉じる</button>
         </div>
+    </div>
 
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -2870,7 +2872,7 @@ lsc.app.support@gmail.com
             window.closeAllModals = () => {
                 const menu = document.getElementById('sideMenu'), overlay = document.getElementById('menuOverlay');
                 if (menu) menu.classList.remove('open'); if (overlay) overlay.style.display = 'none';
-                const ids = ['titleModal', 'yearModal', 'dayModal', 'goalModal', 'themeModal', 'iconModal', 'userProfileModal', 'feedbackPanel', 'whatsNewModal', 'tutorialOverlay', 'sharePreviewModal', 'installGuideModal', 'termsModal', 'privacyModal', 'iconSettingsModal'];
+                const ids = ['titleModal', 'yearModal', 'dayModal', 'goalModal', 'themeModal', 'iconModal', 'userProfileModal', 'feedbackPanel', 'whatsNewModal', 'tutorialOverlay', 'sharePreviewModal', 'installGuideModal', 'termsModal', 'privacyModal'];
                 ids.forEach(id => {
                     const el = document.getElementById(id); if (!el) return;
                     el.style.display = 'none';
@@ -3396,10 +3398,9 @@ lsc.app.support@gmail.com
             }
 
             function avatar(cls, photoURL, fallback, uid, shape = 'circle') {
-                const click = uid ? `onclick="window.openUserProfile('${uid}')" style="cursor:pointer;"` : '';
                 const style = shape === 'square' ? 'border-radius:16px;' : 'border-radius:50%;';
-                if (photoURL) return `<div class="${cls}" ${click} style="${style}"><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';" style="width:100%;height:100%;object-fit:cover;"></div>`;
-                return `<div class="${cls}" ${click} style="${style}">${fallback}</div>`;
+                if (photoURL) return `<div class="${cls}" style="${style}"><img src="${cacheBust(photoURL)}" referrerpolicy="no-referrer" onerror="this.parentElement.textContent='👤';" style="width:100%;height:100%;object-fit:cover;"></div>`;
+                return `<div class="${cls}" style="${style}">${fallback}</div>`;
             }
 
             function renderRankingPage() {
@@ -3428,14 +3429,15 @@ lsc.app.support@gmail.com
                     const rank = start + pageIdx + 1;
                     const isMe = entry.uid === rankMyUid;
                     const meTag = isMe ? ' <span style="font-size:10px;color:var(--primary-color);font-weight:900;">（あなた）</span>' : '';
-                    const row = document.createElement('div');
+                    row.style.cursor = 'pointer';
+                    row.onclick = () => window.openUserProfile(entry.uid);
 
                     if (rank === 1) {
                         row.className = 'rank-row-1';
                         row.innerHTML = `
                     <div class="rank-num-1">🥇</div>
                     ${avatar('rank-avatar-1', entry.photoURL, '👤', entry.uid)}
-                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
+                    <div class="rank-info">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b8860b;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-1">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-1">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3446,7 +3448,7 @@ lsc.app.support@gmail.com
                         row.innerHTML = `
                     <div class="rank-num-2">🥈</div>
                     ${avatar('rank-avatar-2', entry.photoURL, '👤', entry.uid)}
-                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
+                    <div class="rank-info">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#8a9aaa;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-2">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-2">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3457,7 +3459,7 @@ lsc.app.support@gmail.com
                         row.innerHTML = `
                     <div class="rank-num-3">🥉</div>
                     ${avatar('rank-avatar-3', entry.photoURL, '👤', entry.uid)}
-                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
+                    <div class="rank-info">
                         ${entry.title ? `<div style="font-size:9px;font-weight:900;color:#b07840;letter-spacing:0.5px;margin-bottom:2px;opacity:0.85;">${entry.title}</div>` : ''}
                         <div class="rank-name-3">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-3">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -3468,7 +3470,7 @@ lsc.app.support@gmail.com
                         row.innerHTML = `
                     <div class="rank-num-n">${rank}</div>
                     ${avatar('rank-avatar-n', entry.photoURL, '👤', entry.uid)}
-                    <div class="rank-info" onclick="window.openUserProfile('${entry.uid}')" style="cursor:pointer;">
+                    <div class="rank-info">
                         ${entry.title ? `<div style="font-size:9px;font-weight:800;color:#bbb;letter-spacing:0.4px;margin-bottom:1px;">${entry.title}</div>` : ''}
                         <div class="rank-name-n">${entry.displayName}${meTag}</div>
                         <div class="rank-sub-n">Lv.${entry.level} ／ EXP ${entry.exp}</div>
@@ -4647,7 +4649,9 @@ streak++;
         })();
         window.openFeedback = function () {
             closeAllModals();
-            document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
+            const panel = document.getElementById('feedbackPanel');
+            panel.style.display = 'flex';
+            panel.style.transform = 'translateX(300px)';
             document.getElementById('feedbackMessage').value = '';
             document.getElementById('feedbackStatus').textContent = '';
             const btn = document.getElementById('sendFeedbackBtn'); btn.disabled = false; btn.textContent = '送信する 🚀';
