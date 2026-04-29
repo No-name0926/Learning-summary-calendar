@@ -2158,17 +2158,17 @@
                         <span style="font-size:20px;">📥</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">保存</span>
                     </button>
-                    <button onclick="if(window.openWhatsNew) { window.openWhatsNew({ markSeen: false }); window.toggleMenu(); }"
+                    <button onclick="window.toggleMenu(); setTimeout(function(){ if(window.openWhatsNew) window.openWhatsNew({ markSeen: false }); }, 400);"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">🆕</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新</span>
                     </button>
-                    <button onclick="if(window.showTutorial) { window.showTutorial(); window.toggleMenu(); }"
+                    <button onclick="window.toggleMenu(); setTimeout(function(){ if(window.showTutorial) window.showTutorial(); }, 400);"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📖</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">使い方</span>
                     </button>
-                    <button onclick="if(window.openFeedback) { window.openFeedback(); }"
+                    <button onclick="if(window.openFeedback) window.openFeedback();"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
                         <span style="font-size:20px;">📮</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
@@ -3786,6 +3786,85 @@ streak++;
                 document.getElementById('titleModal').style.display = 'flex';
             };
             window.closeTitleModal = () => document.getElementById('titleModal').style.display = 'none';
+
+            window.toggleYearModal = function () {
+                const modal = document.getElementById('yearModal');
+                if (modal.style.display === 'flex') { modal.style.display = 'none'; return; }
+                // 年間サマリーを描画
+                const title = document.getElementById('modalYearTitle');
+                title.innerText = `${viewY}年 サマリー`;
+                const listDiv = document.getElementById('modalYearList');
+                listDiv.innerHTML = '';
+                let yearTotal = {};
+                VALID.forEach(v => yearTotal[v] = 0);
+                for (let m = 1; m <= 12; m++) {
+                    const days = new Date(viewY, m, 0).getDate();
+                    let monthCount = {};
+                    VALID.forEach(v => monthCount[v] = 0);
+                    let hasMemo = false;
+                    for (let d = 1; d <= days; d++) {
+                        const data = getLogData(`log-${viewY}-${m}-${d}`);
+                        if (VALID.includes(data.stamp)) { monthCount[data.stamp]++; yearTotal[data.stamp]++; }
+                        if (data.memo) hasMemo = true;
+                    }
+                    const total = VALID.reduce((s, v) => s + monthCount[v], 0);
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:12px 14px; margin-bottom:6px; border-radius:14px; background:#f8faff; border:1px solid #eef2ff;';
+                    const left = document.createElement('div');
+                    left.style.cssText = 'display:flex; align-items:center; gap:10px;';
+                    left.innerHTML = `<span style="font-size:14px; font-weight:900; color:var(--primary-color); min-width:40px;">${m}月</span><span style="font-size:12px; color:#888; font-weight:700;">${VALID.map(v => monthCount[v] > 0 ? `${v}${monthCount[v]}` : '').filter(Boolean).join(' ') || '-'}</span>`;
+                    const right = document.createElement('div');
+                    right.style.cssText = 'display:flex; align-items:center; gap:8px;';
+                    if (hasMemo) {
+                        const memoBtn = document.createElement('button');
+                        memoBtn.className = 'month-memo-btn';
+                        memoBtn.textContent = '📝';
+                        memoBtn.onclick = () => showMonthMemos(viewY, m);
+                        right.appendChild(memoBtn);
+                    }
+                    const badge = document.createElement('span');
+                    badge.style.cssText = 'font-size:13px; font-weight:900; color:#555; min-width:30px; text-align:right;';
+                    badge.textContent = total > 0 ? `${total}日` : '-';
+                    right.appendChild(badge);
+                    row.appendChild(left);
+                    row.appendChild(right);
+                    listDiv.appendChild(row);
+                }
+                // 年間合計
+                const totalDiv = document.getElementById('modalYearTotal');
+                const yearSum = VALID.reduce((s, v) => s + yearTotal[v], 0);
+                totalDiv.innerHTML = VALID.map(v => `<div style="text-align:center;"><div style="font-size:18px;">${v}</div><div style="font-size:14px; font-weight:900; color:var(--primary-color);">${yearTotal[v]}</div></div>`).join('') + `<div style="text-align:center;"><div style="font-size:14px; font-weight:900;">合計</div><div style="font-size:14px; font-weight:900; color:var(--primary-color);">${yearSum}日</div></div>`;
+                document.getElementById('monthMemoArea').style.display = 'none';
+                modal.style.display = 'flex';
+            };
+
+            window.closeMemoArea = function () {
+                document.getElementById('monthMemoArea').style.display = 'none';
+            };
+
+            function showMonthMemos(year, month) {
+                const area = document.getElementById('monthMemoArea');
+                const title = document.getElementById('memoAreaTitle');
+                const list = document.getElementById('memoAreaList');
+                title.innerText = `${month}月のメモ一覧`;
+                list.innerHTML = '';
+                const days = new Date(year, month, 0).getDate();
+                let found = false;
+                for (let d = 1; d <= days; d++) {
+                    const data = getLogData(`log-${year}-${month}-${d}`);
+                    if (data.memo) {
+                        found = true;
+                        const item = document.createElement('div');
+                        item.className = 'memo-list-item';
+                        item.innerHTML = `<span class="memo-list-date">${month}/${d}</span>${data.memo}`;
+                        list.appendChild(item);
+                    }
+                }
+                if (!found) list.innerHTML = '<div style="padding:15px; text-align:center; color:#ccc; font-size:12px;">メモはありません</div>';
+                area.style.display = 'block';
+            }
+            window.showMonthMemos = showMonthMemos;
+
             window.openDayModal = (y, m, d) => {
                 selectedDateKey = `log-${y}-${m}-${d}`;
                 const data = getLogData(selectedDateKey);
