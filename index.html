@@ -1914,18 +1914,18 @@
         <div class="level-up-text">LEVEL UP!</div>
     </div>
 
-    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="menu-overlay" id="menuOverlay" onclick="window.toggleMenu()"></div>
     <div id="sideMenu">
         <div
             style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #f0f0f0; padding-bottom:18px; margin-top:0;">
             <h3 style="margin:0; color:#222; font-weight:900; font-size:22px; white-space:nowrap;">設定</h3>
             <div style="display:flex; gap:6px; flex-shrink:0;">
-                <button onclick="window.showTutorial(); toggleMenu();" title="使い方を見る"
+                <button onclick="console.log('Tutorial clicked'); if(window.showTutorial) { window.showTutorial(); window.toggleMenu(); } else { console.error('showTutorial not defined'); }" title="使い方を見る"
                     style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
                     <span style="font-size:15px;">📖</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">使い方</span>
                 </button>
-                <button onclick="openFeedback()" title="ご意見・フィードバック"
+                <button onclick="console.log('Feedback clicked'); if(window.openFeedback) { window.openFeedback(); } else { console.error('openFeedback not defined'); }" title="ご意見・フィードバック"
                     style="background:#f0f7ff; border:none; border-radius:12px; padding:5px 9px; cursor:pointer; display:flex; align-items:center; gap:4px; transition:0.2s;">
                     <span style="font-size:15px;">📮</span>
                     <span style="font-size:10px; font-weight:900; color:#0070bc; white-space:nowrap;">意見を送る</span>
@@ -2152,25 +2152,35 @@
                     </label>
                 </div>
                 <button class="logout-btn" id="logoutBtn" style="margin-top:10px;">🚪 ログアウト</button>
-                <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px;">
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;">
                     <button onclick="downloadMyData()"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
-                        <span style="font-size:22px;">📥</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">データ保存</span>
+                        <span style="font-size:20px;">📥</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">保存</span>
                     </button>
-                    <button onclick="window.openWhatsNew({ markSeen: false }); window.toggleMenu();"
-                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s; position:relative; z-index:100;">
-                        <span style="font-size:22px;">🆕</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新内容</span>
+                    <button onclick="if(window.openWhatsNew) { window.openWhatsNew({ markSeen: false }); window.toggleMenu(); }"
+                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:20px;">🆕</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">更新</span>
+                    </button>
+                    <button onclick="if(window.showTutorial) { window.showTutorial(); window.toggleMenu(); }"
+                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:20px;">📖</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">使い方</span>
+                    </button>
+                    <button onclick="if(window.openFeedback) { window.openFeedback(); }"
+                        style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
+                        <span style="font-size:20px;">📮</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">意見</span>
                     </button>
                     <button onclick="openInstallApp()" id="installAppBtn"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
-                        <span style="font-size:22px;">📲</span>
-                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">ダウンロード</span>
+                        <span style="font-size:20px;">📲</span>
+                        <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">DL</span>
                     </button>
                     <button onclick="window.open('https://no-name0926.github.io/Anulis/', '_blank')"
                         style="background:#f8fbff; border:1.5px solid #e4eaff; border-radius:14px; padding:12px 6px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.2s;">
-                        <span style="font-size:22px;">🐦‍⬛</span>
+                        <span style="font-size:20px;">🐦‍⬛</span>
                         <span style="font-size:10px; font-weight:900; color:#555; line-height:1.3;">Anulis</span>
                     </button>
                 </div>
@@ -3638,7 +3648,7 @@
                             });
                             if (earned - activelyUsed > 0) {
                                 pendingFreezes.push(key);
-                                streak++;
+streak++;
                             } else { break; }
                         } else {
                             break;
@@ -3698,71 +3708,6 @@
                 });
             }
 
-            window.toggleYearModal = () => { const modal = document.getElementById('yearModal'), isOpening = modal.style.display !== 'flex'; modal.style.display = isOpening ? 'flex' : 'none'; if (isOpening) { updateYearModal(); closeMemoArea(); } };
-            function updateYearModal() {
-                document.getElementById('modalYearTitle').innerText = `${viewY}年 レポート`; const list = document.getElementById('modalYearList'); list.innerHTML = ''; const yearTotal = {}; let yearTotalStars = 0; VALID.forEach(v => yearTotal[v] = 0);
-                for (let m = 1; m <= 12; m++) {
-                    const c = {}; VALID.forEach(v => c[v] = 0); Object.keys(remoteData).forEach(k => { const parts = k.split('-'); const s = getLogData(k).stamp; if (parts[1] == viewY && parts[2] == m && VALID.includes(s)) { c[s]++; yearTotal[s]++; } });
-                    const row = document.createElement('div'); row.style = "display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #f0f0f0; font-size:14px; font-weight:800; color:#555;";
-                    // 🌟カウント
-                    let starCount = 0;
-                    Object.keys(remoteData).forEach(k => { const parts = k.split('-'); if (parts[1] == viewY && parts[2] == m && getLogData(k).star) { starCount++; yearTotalStars++; } });
-                    row.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><span style="width:35px;">${m}月</span><button class="month-memo-btn" onclick="showMonthMemos(${m})">📝</button></div><div style="display:flex; gap:10px; align-items:center;">${VALID.map(v => `<div style="display:flex; align-items:center; gap:3px; min-width:28px;"><span>${v}</span><span style="color:#222;">${c[v]}</span></div>`).join('')}<div style="display:flex; align-items:center; gap:3px; min-width:32px; margin-left:4px;"><span>🌟</span><span style="color:#b8860b; font-weight:900;">${starCount}</span></div></div>`; list.appendChild(row);
-                }
-                document.getElementById('modalYearTotal').innerHTML = VALID.map(v => `<div style="display:flex; align-items:center; gap:5px;"><span>${v}</span><span style="font-size:18px; color:var(--primary-color);">${yearTotal[v]}</span></div>`).join('') + `<div style="display:flex; align-items:center; gap:5px;"><span>🌟</span><span style="font-size:18px; color:#b8860b;">${yearTotalStars}</span></div>`;
-            }
-
-            window.showMonthMemos = (m) => {
-                const area = document.getElementById('monthMemoArea'), list = document.getElementById('memoAreaList'), title = document.getElementById('memoAreaTitle'); list.innerHTML = ''; title.innerText = `${viewY}年${m}月のメモ`; let found = false; const daysInMonth = new Date(viewY, m, 0).getDate();
-                for (let d = 1; d <= daysInMonth; d++) { const data = getLogData(`log-${viewY}-${m}-${d}`); if (data.memo && data.memo.trim() !== "") { const item = document.createElement('div'); item.className = 'memo-list-item'; item.innerHTML = `<span class="memo-list-date">${m}/${d}</span> ${data.memo}`; list.appendChild(item); found = true; } }
-                if (!found) list.innerHTML = `<div style="padding:20px; text-align:center; color:#ccc; font-size:12px;">この月のメモはありません</div>`; area.style.display = 'block'; area.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            };
-            window.closeMemoArea = () => { document.getElementById('monthMemoArea').style.display = 'none'; };
-            let _titlePage = 0;
-            const _titlePages = [
-                { key: 'crown', label: '👑 称号ロードマップ' },
-                { key: 'star', label: '🌟 目標達成称号' },
-                { key: 'collection', label: '🎖️ コレクション称号' },
-                { key: 'streak', label: '🔥 連続記録称号' }
-            ];
-
-            function _renderTitlePage() {
-                let crowns = 0, stars = 0;
-                Object.keys(remoteData).forEach(k => {
-                    if (getLogData(k).stamp === '👑') crowns++;
-                    if (getLogData(k).star) stars++;
-                });
-                const colCounts = _getCollectionCounts();
-                const bestStreak = window._bestStreak || 0;
-                const savedTitle = window._currentUser ? (localStorage.getItem(`lsc-title-${window._currentUser.uid}`) || '') : '';
-                const page = _titlePages[_titlePage];
-                document.getElementById('titleModalHeading').innerText = page.label;
-                document.getElementById('titlePageLabel').innerText = `${_titlePage + 1} / ${_titlePages.length}`;
-                document.getElementById('titlePagePrev').disabled = _titlePage === 0;
-                document.getElementById('titlePageNext').disabled = _titlePage === _titlePages.length - 1;
-                const list = document.getElementById('titleRoadmapList'); list.innerHTML = '';
-                let arr, checkFn, reqLabelFn;
-                if (page.key === 'crown') {
-                    arr = TITLES; checkFn = t => crowns >= t.req; reqLabelFn = t => `👑累計 ${t.req}個で解放`;
-                } else if (page.key === 'star') {
-                    arr = STAR_TITLES; checkFn = t => stars >= t.req; reqLabelFn = t => `🌟累計 ${t.req}個で解放`;
-                } else if (page.key === 'collection') {
-                    arr = COLLECTION_TITLES; checkFn = t => _isCollectionUnlocked(t);
-                    reqLabelFn = t => { const m = { 'totalMedals': '全スタンプ', '🍎': '🍎', '🥉': '🥉', '🥈': '🥈', '🥇': '🥇' }; return `${m[t.check] || t.check} 累計${t.req}個で解放`; };
-                } else {
-                    arr = STREAK_TITLES; checkFn = t => bestStreak >= t.req; reqLabelFn = t => `🔥連続 ${t.req}日で解放`;
-                }
-                arr.forEach(t => {
-                    const isGot = checkFn(t);
-                    const isSelected = savedTitle === t.name;
-                    const item = document.createElement('div');
-                    item.style = `padding:12px 14px; margin-bottom:8px; border-radius:14px; background:${isGot ? '#f0f7ff' : '#f9f9f9'}; border:2px solid ${isSelected ? 'var(--primary-color)' : isGot ? '#c8dcf8' : '#eee'}; display:flex; justify-content:space-between; align-items:center; opacity:${isGot ? 1 : 0.5};`;
-                    item.innerHTML = `<div><div style="font-weight:900; font-size:14px;">${t.name}${isSelected ? ' ✓' : ''}</div><div style="font-size:11px;color:#999;margin-top:2px;">${reqLabelFn(t)}</div></div><div style="display:flex;align-items:center;gap:8px;">${isGot ? `<button onclick="selectTitle('${t.name}')" style="background:${isSelected ? 'var(--primary-color)' : '#f0f0f0'};color:${isSelected ? 'white' : '#666'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:900;cursor:pointer;">${isSelected ? '使用中' : '使う'}</button>` : '🔒'}</div>`;
-                    list.appendChild(item);
-                });
-            }
-
-            window.titlePageChange = function (dir) {
                 _titlePage = Math.max(0, Math.min(_titlePages.length - 1, _titlePage + dir));
                 _renderTitlePage();
             };
@@ -3797,7 +3742,6 @@
                 if (!logsRef) return;
                 const memo = document.getElementById('dayMemo').value.trim();
                 const before = getLogData(selectedDateKey).stamp;
-
                 set(child(logsRef, selectedDateKey), {
                     stamp: selectedStamp,
                     memo: memo,
@@ -3807,6 +3751,7 @@
                     closeDayModal();
                 });
             };
+
             window.moveMonth = (n) => {
                 const cal = document.getElementById('calWrap');
                 const dir = n > 0 ? -1 : 1;
@@ -3830,7 +3775,6 @@
                 setTimeout(() => updateGoalBanner(), 300);
             };
 
-            // スワイプ検出
             (function () {
                 let startX = 0, startY = 0, moved = false;
                 const cal = document.getElementById('calWrap');
@@ -3845,6 +3789,7 @@
                     }
                 }, { passive: true });
             })();
+
             window.cycleEvent = () => { currentEventIndex++; updateCountdown(); };
             window.deleteEvent = (id) => { if (eventsRef) remove(child(eventsRef, id)); };
             function updateCountdown() {
@@ -3852,7 +3797,200 @@
                 if (events.length === 0) slider.innerHTML = '🎯 目標を登録しましょう';
                 else { const ev = events[currentEventIndex % events.length], diff = Math.ceil((new Date(ev.date) - new Date().setHours(0, 0, 0, 0)) / 86400000); slider.innerHTML = `🎯 ${ev.title} あと<span class="countdown-days">${diff}</span>日`; events.forEach(e => { const item = document.createElement('div'); item.style = "display:flex; justify-content:space-between; margin-bottom:10px; font-size:13px; background:#fff; padding:12px; border-radius:12px; box-shadow: 0 3px 8px rgba(0,0,0,0.04);"; item.innerHTML = `<span>${e.title}</span><span style="color:#ff5e57; font-weight:900; cursor:pointer;" onclick="deleteEvent('${e.id}')">削除</span>`; listDiv.appendChild(item); }); }
             }
-            document.getElementById('saveEventBtn').onclick = () => { if (!eventsRef) return; const title = document.getElementById('eventTitle').value.trim(), date = document.getElementById('eventDate').value; if (title && date) { const id = `ev-${Date.now()}`; set(child(eventsRef, id), { id, title, date }); } };
+            if(document.getElementById('saveEventBtn')) {
+                document.getElementById('saveEventBtn').onclick = () => { if (!eventsRef) return; const title = document.getElementById('eventTitle').value.trim(), date = document.getElementById('eventDate').value; if (title && date) { const id = `ev-${Date.now()}`; set(child(eventsRef, id), { id, title, date }); } };
+            }
+
+            let _currentGoal = null;
+            function _goalKey() { return `${viewY}-${viewM}`; }
+            async function updateGoalBanner() {
+                if (!goalRef) return;
+                const snap = await get(child(goalRef, _goalKey()));
+                _currentGoal = snap.val() || null;
+                const text = document.getElementById('goalText');
+                const countEl = document.getElementById('goalStarCount');
+                if (_currentGoal) {
+                    if(text) text.innerText = _currentGoal;
+                    let cnt = 0;
+                    Object.keys(remoteData).forEach(k => {
+                        const parts = k.split('-');
+                        if (parts[1] == viewY && parts[2] == viewM && getLogData(k).star) cnt++;
+                    });
+                    if(countEl) countEl.innerText = `🌟 ${cnt}日達成`;
+                } else { if(text) text.innerText = 'タップして目標を設定'; if(countEl) countEl.innerText = ''; }
+            }
+            window.updateGoalBanner = updateGoalBanner;
+            window.openGoalModal = async function () {
+                if (!goalRef) return;
+                const snap = await get(child(goalRef, _goalKey()));
+                const goal = snap.val();
+                const sub = document.getElementById('goalModalSub');
+                const setArea = document.getElementById('goalSetArea');
+                const viewArea = document.getElementById('goalViewArea');
+                const viewText = document.getElementById('goalViewText');
+                if(sub) sub.innerText = `${viewY}年${viewM}月`;
+                if (goal) { if(setArea) setArea.style.display = 'none'; if(viewArea) viewArea.style.display = 'block'; if(viewText) viewText.innerText = goal; }
+                else { if(setArea) setArea.style.display = 'block'; if(viewArea) viewArea.style.display = 'none'; if(document.getElementById('goalInput')) document.getElementById('goalInput').value = ''; }
+                document.getElementById('goalModal').style.display = 'flex';
+            };
+            window.closeGoalModal = function () { document.getElementById('goalModal').style.display = 'none'; };
+            window.saveGoal = async function () {
+                if (!goalRef) return;
+                const val = document.getElementById('goalInput').value.trim();
+                if (!val) { alert('目標を入力してください'); return; }
+                await set(child(goalRef, _goalKey()), val);
+                _currentGoal = val;
+                closeGoalModal();
+                updateGoalBanner();
+            };
+            window.toggleStar = function () { _selectedStar = !_selectedStar; _updateStarToggle(); };
+            function _updateStarToggle() {
+                const wrap = document.getElementById('starToggleWrap');
+                const icon = document.getElementById('starToggleIcon');
+                const preview = document.getElementById('starGoalPreview');
+                if (!wrap) return;
+                const modalDate = document.getElementById('dayModalDate').innerText;
+                const isCurrentViewMonth = modalDate.includes(`${viewY}年${viewM}月`);
+                if (_currentGoal && isCurrentViewMonth) { wrap.style.display = 'flex'; if(preview) preview.innerText = _currentGoal; }
+                else { wrap.style.display = 'none'; }
+                if(icon) icon.innerText = _selectedStar ? '🌟' : '☆';
+                wrap.style.background = _selectedStar ? '#fffbe6' : '#f9f9f9';
+            }
+            window._updateStarToggle = _updateStarToggle;
+
+            window.fetchQuote = async function () {
+                const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+                if(!qE || !aE) return;
+                qE.style.opacity = 0; aE.style.opacity = 0;
+                try {
+                    const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
+                    if (!res.ok) throw new Error();
+                    const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
+                } catch (e) {
+                    const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
+                    qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
+                }
+                setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
+            }
+
+            const randomToggle = document.getElementById('randomThemeToggle');
+            if(randomToggle) {
+                randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
+                randomToggle.onchange = (e) => localStorage.setItem('study-random-theme', e.target.checked);
+            }
+
+            let initialTheme = localStorage.getItem('study-calendar-theme') || 'blue';
+            if (localStorage.getItem('study-random-theme') === 'true') {
+                const favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
+                const pool = favs.length > 0 ? favs : Object.keys(THEMES);
+                initialTheme = pool[Math.floor(Math.random() * pool.length)];
+            }
+            setTheme(initialTheme);
+            _applyFavUI();
+            fetchQuote();
+
+            function _applyFavUI() {
+                const favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
+                const current = localStorage.getItem('study-calendar-theme') || 'blue';
+                document.querySelectorAll('.color-dot').forEach(dot => {
+                    const m = (dot.getAttribute('onclick') || '').match(/setTheme\('([^']+)'\)/);
+                    if (!m) return;
+                    if (favs.includes(m[1])) dot.classList.add('fav'); else dot.classList.remove('fav');
+                });
+                const btn = document.getElementById('favStarBtn');
+                if (!btn) return;
+                if (favs.includes(current)) {
+                    btn.style.background = 'linear-gradient(135deg,#ff6b8a,#ff9eb5)'; btn.style.color = 'white'; btn.style.borderColor = '#ff6b8a'; btn.style.boxShadow = '0 3px 12px rgba(255,107,138,0.4)'; btn.textContent = '★';
+                } else {
+                    btn.style.background = 'transparent'; btn.style.color = '#ff85a2'; btn.style.borderColor = '#ff85a2'; btn.style.boxShadow = 'none'; btn.textContent = '☆';
+                }
+            }
+            window.toggleFavCurrent = function () {
+                const current = localStorage.getItem('study-calendar-theme') || 'blue';
+                let favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
+                const idx = favs.indexOf(current);
+                if (idx >= 0) favs.splice(idx, 1); else favs.push(current);
+                localStorage.setItem('study-fav-themes', JSON.stringify(favs));
+                _applyFavUI();
+            };
+
+            let _themePage = 0;
+            const _themePageCount = 6;
+            window.themePageChange = function (dir) {
+                _themePage = Math.max(0, Math.min(_themePageCount - 1, _themePage + dir));
+                for (let i = 0; i < _themePageCount; i++) { if(document.getElementById('themePage' + i)) document.getElementById('themePage' + i).style.display = i === _themePage ? 'grid' : 'none'; }
+                if(document.getElementById('themePageLabel')) document.getElementById('themePageLabel').textContent = (_themePage + 1) + ' / ' + _themePageCount;
+                if(document.getElementById('themePrevBtn')) document.getElementById('themePrevBtn').disabled = _themePage === 0;
+                if(document.getElementById('themeNextBtn')) document.getElementById('themeNextBtn').disabled = _themePage === _themePageCount - 1;
+            };
+
+            window.searchMemos = (query) => {
+                const resultsDiv = document.getElementById('memoSearchResults');
+                if (!resultsDiv) return;
+                if (!query.trim()) { resultsDiv.style.display = 'none'; return; }
+                const results = Object.entries(remoteData).filter(([key, data]) => {
+                    const memo = (typeof data === 'string') ? '' : (data.memo || '');
+                    return memo.toLowerCase().includes(query.toLowerCase());
+                }).map(([key, data]) => {
+                    const p = key.split('-'); return { key, y: p[1], m: p[2], d: p[3], memo: (typeof data === 'string' ? '' : data.memo) };
+                });
+                if (results.length === 0) { resultsDiv.innerHTML = '<div style="padding:15px; font-size:12px; color:#999; text-align:center;">見つかりませんでした</div>'; }
+                else { resultsDiv.innerHTML = results.map(r => `<div class="memo-list-item" onclick="jumpToDate(${r.y}, ${r.m}, ${r.d})" style="cursor:pointer; border-bottom:1px solid #f0f4ff; padding:10px;"><div style="font-weight:900; font-size:10px; color:var(--primary-color);">${r.y}/${r.m}/${r.d}</div><div style="font-size:12px; color:#444; margin-top:2px;">${r.memo}</div></div>`).join(''); }
+                resultsDiv.style.display = 'block';
+            };
+
+            window.jumpToDate = (y, m, d) => { viewY = parseInt(y); viewM = parseInt(m); render(); openDayModal(y, m, d); if (document.getElementById('sideMenu').classList.contains('open')) toggleMenu(); };
+
+            window.showRandomReflection = () => {
+                const memos = Object.entries(remoteData).filter(([k, d]) => d && d.memo && d.memo.trim());
+                if (memos.length === 0) { alert('まだ振り返るメモがありません。'); return; }
+                const [key, data] = memos[Math.floor(Math.random() * memos.length)];
+                const p = key.split('-'); jumpToDate(p[1], p[2], p[3]);
+            };
+
+            let _shareCanvas = null;
+            window.generateShareCard = async () => {
+                const btn = document.getElementById('shareCardBtn');
+                if(!btn) return;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⌛ 生成中...'; btn.disabled = true;
+                try {
+                    const streak = window._bestStreak || 0;
+                    const cc = _getCollectionCounts();
+                    const wrap = document.createElement('div');
+                    wrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:480px;background:var(--bg-gradient);padding:24px;z-index:-1;box-sizing:border-box;';
+                    const inner = document.createElement('div');
+                    inner.style.cssText = 'position:relative;z-index:1;background:white;border-radius:22px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.15);';
+                    wrap.appendChild(inner);
+                    const calClone = document.getElementById('calWrap').cloneNode(true);
+                    inner.appendChild(calClone);
+                    const statsBar = document.createElement('div');
+                    statsBar.style.cssText = 'padding:16px 18px;background:#f8faff;display:flex;justify-content:space-around;';
+                    statsBar.innerHTML = `<div>🔥${streak}日</div><div>🍎${cc.apples}</div><div>🥉${cc.bronze}</div><div>🥈${cc.silver}</div><div>🥇${cc.gold}</div><div>👑${cc.crowns}</div>`;
+                    inner.appendChild(statsBar);
+                    document.body.appendChild(wrap);
+                    _shareCanvas = await html2canvas(wrap, { scale: 2, logging: false, useCORS: true });
+                    wrap.remove();
+                    const preview = document.getElementById('sharePreviewImg');
+                    if(preview) {
+                        preview.innerHTML = '';
+                        const img = new Image(); img.src = _shareCanvas.toDataURL('image/png'); img.style.cssText = 'width:100%;border-radius:12px;';
+                        preview.appendChild(img);
+                    }
+                    if(document.getElementById('nativeShareBtn')) document.getElementById('nativeShareBtn').style.display = navigator.share ? '' : 'none';
+                    if(document.getElementById('sharePreviewModal')) document.getElementById('sharePreviewModal').style.display = 'flex';
+                } catch (e) { console.error(e); alert('画像の生成に失敗しました。'); }
+                finally { btn.innerHTML = originalText; btn.disabled = false; }
+            };
+            window.closeSharePreview = () => { if(document.getElementById('sharePreviewModal')) document.getElementById('sharePreviewModal').style.display = 'none'; };
+            window.saveShareImage = () => { if (!_shareCanvas) return; const link = document.createElement('a'); link.download = `Anulis-Record.png`; link.href = _shareCanvas.toDataURL('image/png'); link.click(); };
+            window.nativeShareImage = async () => {
+                if (!_shareCanvas || !navigator.share) return;
+                _shareCanvas.toBlob(async blob => {
+                    const file = new File([blob], 'Anulis-Record.png', { type: 'image/png' });
+                    await navigator.share({ files: [file], title: 'Anulis 学習記録' });
+                }, 'image/png');
+            };
 
             const backupQuotes = [
                 { t: "小さいことを積み重ねるのが、とんでもないところへ行くただひとつの道。", a: "イチロー" },
@@ -3995,348 +4133,33 @@
                 { t: "遠回りでも、続ける人が一番強い。", a: "工藤新一" },
                 { t: "勝てる日まで、挑み続ければいい。", a: "桜木花道（SLAM DUNK）" },
                 { t: "努力の量は、いずれ自信の量になる。", a: "流川楓（SLAM DUNK）" },
-                { t: "昨日より上手くなる、それが最短距離だ。", a: "宮城リョータ（SLAM DUNK）" },
-                { t: "実力は、反復の先にしかない。", a: "赤木剛憲（SLAM DUNK）" },
-                { t: "小さな達成を、毎日ひとつ増やせ。", a: "アシタカ（もののけ姫）" },
-                { t: "準備した者だけが、風を味方にできる。", a: "キキ（魔女の宅急便）" },
-                { t: "挑戦は怖くて当たり前、でもやる。", a: "千尋（千と千尋の神隠し）" },
-                { t: "自分のペースでいい、止まらなければ。", a: "トトロ（となりのトトロ）" },
-                { t: "積み重ねは、静かに人生を変える。", a: "ハウル（ハウルの動く城）" },
-                { t: "希望は、行動した人の前に現れる。", a: "ルパン三世" },
-                { t: "一度の失敗で、物語は終わらない。", a: "次元大介" },
-                { t: "自分で決めた道なら、最後まで貫け。", a: "石川五ェ門" },
-                { t: "本気の継続は、才能を超えていく。", a: "峰不二子" },
-                { t: "続けた時間は、必ず君を裏切らない。", a: "ドラえもん" },
-                { t: "できることから始めれば、景色は変わる。", a: "のび太" },
-                { t: "勇気は、最初の一歩に宿る。", a: "しずかちゃん" },
-                { t: "努力のメモは、未来の自信になる。", a: "ジャイアン" },
-                { t: "今日の反省は、明日の武器になる。", a: "スネ夫" },
-                { t: "焦らず磨けば、必ず光る。", a: "ジェダイ（スター・ウォーズ）" },
-                { t: "訓練は裏切らない、感情は変えられる。", a: "ダース・ベイダー" },
-                { t: "逆境は、主人公を強くする装置だ。", a: "アイアンマン（MCU）" },
-                { t: "挑戦し続ける人に、チャンスは集まる。", a: "キャプテン・アメリカ" },
-                { t: "迷っても、仲間と進めば道は開く。", a: "スパイダーマン" },
-                { t: "準備と実行、その繰り返しが勝利を作る。", a: "ドクター・ストレンジ" },
-                { t: "物語の転機は、だいたい努力の直後に来る。", a: "ハリー・ポッター" },
-                { t: "学ぶことを止めない者が、未来を掴む。", a: "ハーマイオニー" },
-                { t: "小さな勇気が、大きな運命を変える。", a: "ロン・ウィーズリー" },
-                { t: "積み重ねた者だけが、静かな自信を持てる。", a: "アーサー・モーガン（RDR2）" },
-                { t: "結果は後からついてくる。先にやるのは自分だ。", a: "エレン・ポンペオ（俳優）" },
-                { t: "昨日より1%成長すれば、1年で別人になれる。", a: "トム・ホランド（俳優）" },
-                { t: "休む日があっても、諦める日は作らない。", a: "菅田将暉（俳優）" },
-                { t: "継続は派手じゃない。でも最強だ。", a: "長澤まさみ（俳優）" },
+                { t: "昨日より上手くなる、それが最短距離だ。", a: "宮城リョータ（SLAM DUNK）" }
             ];
 
-            // ── 月目標 & 🌟 ──────────────────────────────
-            let _currentGoal = null;
-
-            function _goalKey() {
-                return `${viewY}-${viewM}`;
-            }
-
-            async function updateGoalBanner() {
-                if (!goalRef) return;
-                const snap = await get(child(goalRef, _goalKey()));
-                _currentGoal = snap.val() || null;
-                const banner = document.getElementById('goalBanner');
-                const text = document.getElementById('goalText');
-                const countEl = document.getElementById('goalStarCount');
-                if (_currentGoal) {
-                    text.innerText = _currentGoal;
-                    // 今月の🌟数をカウント
-                    let cnt = 0;
-                    Object.keys(remoteData).forEach(k => {
-                        const parts = k.split('-');
-                        if (parts[1] == viewY && parts[2] == viewM && getLogData(k).star) cnt++;
-                    });
-                    countEl.innerText = `🌟 ${cnt}日達成`;
-                } else {
-                    text.innerText = 'タップして目標を設定';
-                    countEl.innerText = '';
-                }
-            }
-
-            window.openGoalModal = async function () {
-                if (!goalRef) return;
-                const snap = await get(child(goalRef, _goalKey()));
-                const goal = snap.val();
-                const sub = document.getElementById('goalModalSub');
-                const setArea = document.getElementById('goalSetArea');
-                const viewArea = document.getElementById('goalViewArea');
-                const viewText = document.getElementById('goalViewText');
-                sub.innerText = `${viewY}年${viewM}月`;
-                if (goal) {
-                    setArea.style.display = 'none';
-                    viewArea.style.display = 'block';
-                    viewText.innerText = goal;
-                } else {
-                    setArea.style.display = 'block';
-                    viewArea.style.display = 'none';
-                    document.getElementById('goalInput').value = '';
-                }
-                document.getElementById('goalModal').style.display = 'flex';
-            };
-
-            window.closeGoalModal = function () {
-                document.getElementById('goalModal').style.display = 'none';
-            };
-
-            window.saveGoal = async function () {
-                if (!goalRef) return;
-                const val = document.getElementById('goalInput').value.trim();
-                if (!val) { alert('目標を入力してください'); return; }
-                await set(child(goalRef, _goalKey()), val);
-                _currentGoal = val;
-                closeGoalModal();
-                updateGoalBanner();
-            };
-
-            window.toggleStar = function () {
-                _selectedStar = !_selectedStar;
-                _updateStarToggle();
-            };
-
-            function _updateStarToggle() {
-                const wrap = document.getElementById('starToggleWrap');
-                const icon = document.getElementById('starToggleIcon');
-                const preview = document.getElementById('starGoalPreview');
-                if (!wrap) return;
-                // 表示中の月の目標があるときだけ表示
-                const modalDate = document.getElementById('dayModalDate').innerText;
-                const isCurrentViewMonth = modalDate.includes(`${viewY}年${viewM}月`);
-                if (_currentGoal && isCurrentViewMonth) {
-                    wrap.style.display = 'flex';
-                    preview.innerText = _currentGoal;
-                } else {
-                    wrap.style.display = 'none';
-                }
-                icon.innerText = _selectedStar ? '🌟' : '☆';
-                wrap.style.background = _selectedStar ? '#fffbe6' : '#f9f9f9';
-            }
-            // ────────────────────────────────────────────
-
-            window.fetchQuote = async function () {
-                const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
-                qE.style.opacity = 0; aE.style.opacity = 0;
-                try {
-                    const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
-                    if (!res.ok) throw new Error();
-                    const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
-                } catch (e) {
-                    const rq = backupQuotes[Math.floor(Math.random() * backupQuotes.length)];
-                    qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
-                }
-                setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
-            }
-
-            const randomToggle = document.getElementById('randomThemeToggle');
-            randomToggle.checked = localStorage.getItem('study-random-theme') === 'true';
-            randomToggle.onchange = (e) => localStorage.setItem('study-random-theme', e.target.checked);
-
-            let initialTheme = localStorage.getItem('study-calendar-theme') || 'blue';
-            if (randomToggle.checked) {
-                const favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
-                const pool = favs.length > 0 ? favs : Object.keys(THEMES);
-                initialTheme = pool[Math.floor(Math.random() * pool.length)];
-            }
-            setTheme(initialTheme);
-            _applyFavUI();
-            fetchQuote();
-
-            // ── お気に入りテーマ ──────────────────────────
-            function _applyFavUI() {
-                const favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
-                const current = localStorage.getItem('study-calendar-theme') || 'blue';
-                // color-dotにfavクラスを付与
-                document.querySelectorAll('.color-dot').forEach(dot => {
-                    const m = (dot.getAttribute('onclick') || '').match(/setTheme\('([^']+)'\)/);
-                    if (!m) return;
-                    if (favs.includes(m[1])) dot.classList.add('fav');
-                    else dot.classList.remove('fav');
-                });
-                // ★ボタンの状態更新
-                const btn = document.getElementById('favStarBtn');
-                if (!btn) return;
-                if (favs.includes(current)) {
-                    btn.style.background = 'linear-gradient(135deg,#ff6b8a,#ff9eb5)';
-                    btn.style.color = 'white';
-                    btn.style.borderColor = '#ff6b8a';
-                    btn.style.boxShadow = '0 3px 12px rgba(255,107,138,0.4)';
-                    btn.textContent = '★';
-                } else {
-                    btn.style.background = 'transparent';
-                    btn.style.color = '#ff85a2';
-                    btn.style.borderColor = '#ff85a2';
-                    btn.style.boxShadow = 'none';
-                    btn.textContent = '☆';
-                }
-            }
-
-            window.toggleFavCurrent = function () {
-                const current = localStorage.getItem('study-calendar-theme') || 'blue';
-                let favs = JSON.parse(localStorage.getItem('study-fav-themes') || '[]');
-                const idx = favs.indexOf(current);
-                if (idx >= 0) favs.splice(idx, 1);
-                else favs.push(current);
-                localStorage.setItem('study-fav-themes', JSON.stringify(favs));
-                _applyFavUI();
-                if (navigator.vibrate) navigator.vibrate(30);
-            };
-            // ────────────────────────────────────────────
-
-            // テーマページング
-            let _themePage = 0;
-            const _themePageCount = 6;
-            window.themePageChange = function (dir) {
-                _themePage = Math.max(0, Math.min(_themePageCount - 1, _themePage + dir));
-                for (let i = 0; i < _themePageCount; i++) {
-                    document.getElementById('themePage' + i).style.display = i === _themePage ? 'grid' : 'none';
-                }
-                document.getElementById('themePageLabel').textContent = (_themePage + 1) + ' / ' + _themePageCount;
-                document.getElementById('themePrevBtn').disabled = _themePage === 0;
-                document.getElementById('themeNextBtn').disabled = _themePage === _themePageCount - 1;
-                // ボタン色更新
-                ['themePrevBtn', 'themeNextBtn'].forEach(id => {
-                    const btn = document.getElementById(id);
-                    btn.style.color = btn.disabled ? '#ccc' : '#555';
-                });
-            };
-
-
-
-            // ── 検索・振り返り・シェア ──────────────────
-            window.searchMemos = (query) => {
-                const resultsDiv = document.getElementById('memoSearchResults');
-                if (!query.trim()) { resultsDiv.style.display = 'none'; return; }
-                const results = Object.entries(remoteData)
-                    .filter(([key, data]) => {
-                        const memo = (typeof data === 'string') ? '' : (data.memo || '');
-                        return memo.toLowerCase().includes(query.toLowerCase());
-                    })
-                    .map(([key, data]) => {
-                        const p = key.split('-');
-                        return { key, y: p[1], m: p[2], d: p[3], memo: (typeof data === 'string' ? '' : data.memo) };
-                    });
-                if (results.length === 0) {
-                    resultsDiv.innerHTML = '<div style="padding:15px; font-size:12px; color:#999; text-align:center;">見つかりませんでした</div>';
-                } else {
-                    resultsDiv.innerHTML = results.map(r => `
-                <div class="memo-list-item" onclick="jumpToDate(${r.y}, ${r.m}, ${r.d})" style="cursor:pointer; border-bottom:1px solid #f0f4ff; padding:10px;">
-                    <div style="font-weight:900; font-size:10px; color:var(--primary-color);">${r.y}/${r.m}/${r.d}</div>
-                    <div style="font-size:12px; color:#444; margin-top:2px;">${r.memo}</div>
-                </div>
-            `).join('');
-                }
-                resultsDiv.style.display = 'block';
-            };
-
-            window.jumpToDate = (y, m, d) => {
-                viewY = parseInt(y);
-                viewM = parseInt(m);
-                render();
-                openDayModal(y, m, d);
-                if (document.getElementById('sideMenu').classList.contains('open')) toggleMenu();
-            };
-
-            window.showRandomReflection = () => {
-                const memos = Object.entries(remoteData).filter(([k, d]) => d && d.memo && d.memo.trim());
-                if (memos.length === 0) {
-                    alert('まだ振り返るメモがありません。学習記録を残しましょう！');
-                    return;
-                }
-                const [key, data] = memos[Math.floor(Math.random() * memos.length)];
-                const p = key.split('-');
-                jumpToDate(p[1], p[2], p[3]);
-                setTimeout(() => {
-                    const badge = document.createElement('div');
-                    badge.innerText = '✨ 過去の自分からのメッセージ';
-                    badge.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:10px 20px; border-radius:30px; font-size:12px; font-weight:900; z-index:10000; animation:fadeIn 0.5s forwards;';
-                    document.body.appendChild(badge);
-                    setTimeout(() => { badge.style.animation = 'fadeIn 0.5s reverse forwards'; setTimeout(() => badge.remove(), 500); }, 3000);
-                }, 100);
-            };
-
-            let _shareCanvas = null;
-            window.generateShareCard = async () => {
-                const btn = document.getElementById('shareCardBtn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '⌛ 生成中...';
-                btn.disabled = true;
-                try {
-                    // 統計情報を計算
-                    const streak = window._bestStreak || 0;
-                    const cc = _getCollectionCounts();
-                    // シェア用コンテナを作成
-                    const wrap = document.createElement('div');
-                    wrap.style.cssText = 'position:fixed;left:-9999px;top:0;width:480px;background:var(--bg-gradient);padding:24px;z-index:-1;box-sizing:border-box;';
-
-                    // 背景模様レイヤー（縁取りとして見せる）
-                    const patternOverlay = document.createElement('div');
-                    patternOverlay.style.cssText = 'position:absolute;inset:0;background-image:var(--pattern-image);background-size:var(--pattern-size);opacity:calc(var(--pattern-opacity) * 2.2);z-index:0;animation:var(--pattern-animation);';
-                    wrap.appendChild(patternOverlay);
-
-                    const inner = document.createElement('div');
-                    inner.style.cssText = 'position:relative;z-index:1;background:white;border-radius:22px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.8);';
-                    wrap.appendChild(inner);
-
-                    // カレンダー部分をクローン
-                    const calClone = document.getElementById('calWrap').cloneNode(true);
-                    calClone.style.boxShadow = 'none';
-                    calClone.style.margin = '0';
-                    calClone.style.borderRadius = '0';
-                    inner.appendChild(calClone);
-                    // 統計バー
-                    const statsBar = document.createElement('div');
-                    statsBar.style.cssText = 'padding:16px 18px;background:linear-gradient(135deg,#f8faff,#f0f4ff);display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:8px;border-top:1px solid #eee;';
-                    statsBar.innerHTML = `<div style="text-align:center;"><div style="font-size:22px;">🔥</div><div style="font-size:11px;font-weight:900;color:#555;">連続${streak}日</div></div><div style="text-align:center;"><div style="font-size:22px;">🍎</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.apples}</div></div><div style="text-align:center;"><div style="font-size:22px;">🥉</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.bronze}</div></div><div style="text-align:center;"><div style="font-size:22px;">🥈</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.silver}</div></div><div style="text-align:center;"><div style="font-size:22px;">🥇</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.gold}</div></div><div style="text-align:center;"><div style="font-size:22px;">👑</div><div style="font-size:11px;font-weight:900;color:#555;">${cc.crowns}</div></div>`;
-                    inner.appendChild(statsBar);
-                    document.body.appendChild(wrap);
-                    _shareCanvas = await html2canvas(wrap, { backgroundColor: null, scale: 2, logging: false, useCORS: true });
-                    wrap.remove();
-                    // プレビュー表示
-                    const preview = document.getElementById('sharePreviewImg');
-                    preview.innerHTML = '';
-                    const img = new Image();
-                    img.src = _shareCanvas.toDataURL('image/png');
-                    img.style.cssText = 'width:100%;display:block;border-radius:12px;';
-                    preview.appendChild(img);
-                    // Web Share API非対応ならシェアボタン非表示
-                    document.getElementById('nativeShareBtn').style.display = navigator.share ? '' : 'none';
-                    document.getElementById('sharePreviewModal').style.display = 'flex';
-                } catch (e) {
-                    console.error(e);
-                    alert('画像の生成に失敗しました。');
-                } finally {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            };
-            window.closeSharePreview = () => { document.getElementById('sharePreviewModal').style.display = 'none'; };
-            window.saveShareImage = () => {
-                if (!_shareCanvas) return;
-                const link = document.createElement('a');
-                link.download = `Anulis-Record-${viewY}-${viewM}.png`;
-                link.href = _shareCanvas.toDataURL('image/png');
-                link.click();
-                const t = document.createElement('div'); t.innerText = '💾 保存しました！'; t.style = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--primary-color);color:white;padding:12px 24px;border-radius:30px;font-weight:900;z-index:10000;box-shadow:0 10px 30px rgba(0,0,0,0.2);'; document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
-            };
-            window.nativeShareImage = async () => {
-                if (!_shareCanvas || !navigator.share) return;
-                try {
-                    _shareCanvas.toBlob(async blob => {
-                        const file = new File([blob], `Anulis-Record-${viewY}-${viewM}.png`, { type: 'image/png' });
-                        await navigator.share({ files: [file], title: 'Anulis 学習記録', text: `🔥連続${window._bestStreak || 0}日の学習記録！` });
-                    }, 'image/png');
-                } catch (e) { if (e.name !== 'AbortError') console.error(e); }
-            };
+            (function () {
+                const quotes = [...backupQuotes];
+                window.fetchQuote = async function () {
+                    const qE = document.getElementById('quoteText'), aE = document.getElementById('quoteAuthor');
+                    if (!qE || !aE) return;
+                    qE.style.opacity = 0; aE.style.opacity = 0;
+                    try {
+                        const res = await fetch(`https://meigen.fyi/api/v1/quotes/random?t=${Date.now()}`);
+                        if (!res.ok) throw new Error();
+                        const data = await res.json(); qE.innerText = `"${data.text}"`; aE.innerText = `― ${data.author || '賢者'}`;
+                    } catch (e) {
+                        const rq = quotes[Math.floor(Math.random() * quotes.length)];
+                        qE.innerText = `"${rq.t}"`; aE.innerText = `― ${rq.a}`;
+                    }
+                    setTimeout(() => { qE.style.opacity = 1; aE.style.opacity = 1; }, 100);
+                };
+            })();
         </script>
-    <!-- フィードバックパネル -->
+
     <div id="feedbackPanel"
         style="position:fixed; top:0; left:-300px; width:280px; height:100%; background:white; z-index:3600; transition:transform 0.4s cubic-bezier(0.19,1,0.22,1); box-shadow:8px 0 40px rgba(0,0,0,0.25); box-sizing:border-box; overflow-y:auto; backdrop-filter:blur(20px); display:flex; flex-direction:column;">
-        <!-- ヘッダー帯：テーマ色に追従 -->
         <div id="feedbackHeader" style="background:var(--header-gradient); padding:16px 20px; flex-shrink:0;">
             <div style="display:flex; align-items:center; gap:10px;">
-                <button onclick="closeFeedback()"
+                <button onclick="window.closeFeedback()"
                     style="background:rgba(255,255,255,0.2); border:none; border-radius:10px; width:32px; height:32px; font-size:18px; cursor:pointer; color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0;">&#8249;</button>
                 <div>
                     <div style="font-size:17px; font-weight:900; color:white;">📮 フィードバック</div>
@@ -4344,7 +4167,6 @@
                 </div>
             </div>
         </div>
-        <!-- 本文エリア -->
         <div style="padding:20px; flex:1; display:flex; flex-direction:column; gap:12px;">
             <div
                 style="background:#f0f7ff; border-radius:14px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
@@ -4357,63 +4179,24 @@
                 placeholder="例：〇〇の機能がほしい&#10;〇〇が使いにくい　など" onfocus="this.style.borderColor='#0070bc'"
                 onblur="this.style.borderColor='#e8f0fe'"></textarea>
             <div id="feedbackStatus" style="font-size:12px; text-align:center; min-height:18px; font-weight:800;"></div>
-            <button id="sendFeedbackBtn" onclick="sendFeedback()"
+            <button id="sendFeedbackBtn" onclick="window.sendFeedback()"
                 style="width:100%; padding:15px; background:var(--primary-color); color:white; border:none; border-radius:16px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.2); letter-spacing:0.3px;">送信する
                 🚀</button>
         </div>
     </div>
 
     <script>
-        // ── 更新内容（リリースノート） ─────────────────────
         const RELEASE_NOTES = [
-            {
-                id: '2026-04-27-freeze-feature',
-                date: '2026-04-27',
-                title: '🧊 フリーズ（連続記録維持）機能を追加',
-                body: [
-                    '🧊 フリーズ機能が追加されました！',
-                    '勉強できなかった日にフリーズが自動的に使用され、連続記録を守ります',
-                    '初期ストック1個＋レベルアップごとに1個＋連続10日ごとに1個獲得',
-                    'つけ忘れの場合、後からスタンプを付ければフリーズが返却されます',
-                    'カレンダーでフリーズ使用日は🧊アイコンで表示されます'
-                ]
-            },
-            {
-                id: '2026-04-05-whatsnew-tutorial-fix',
-                date: '2026-04-05',
-                title: 'チュートリアルと更新内容表示を改善',
-                body: [
-                    'りんごメダル🍎の追加',
-                    '更新記録（リリースノート）の追加',
-                    '初回ログイン時にチュートリアルが表示されない問題を修正',
-                    '設定の「使い方」ボタンからチュートリアルが開けない問題を修正',
-                    '設定の「アプリをダウンロード」からのダウンロード機能追加',
-                    '更新が追加されたとき、各ユーザーの端末で初回起動時に更新内容を自動表示'
-                ]
-            },
-            {
-                id: '2026-03-15-whatsnew-tutorial-fix',
-                date: '2026-03-15',
-                title: '「学習集計カレンダー」サービス開始',
-                body: [
-                    'ユーザーの学習をお手伝いするアプリが誕生🍰',
-                ]
-            }
+            { id: '2026-04-27-freeze-feature', date: '2026-04-27', title: '🧊 フリーズ（連続記録維持）機能を追加', body: ['🧊 フリーズ機能が追加されました！', '勉強できなかった日にフリーズが自動的に使用され、連続記録を守ります', '初期ストック1個＋レベルアップごとに1個＋連続10日ごとに1個獲得', 'つけ忘れの場合、後からスタンプを付ければフリーズが返却されます', 'カレンダーでフリーズ使用日は🧊アイコンで表示されます'] },
+            { id: '2026-04-05-whatsnew-tutorial-fix', date: '2026-04-05', title: 'チュートリアルと更新内容表示を改善', body: ['りんごメダル🍎の追加', '更新記録（リリースノート）の追加', '初回ログイン時にチュートリアルが表示されない問題を修正', '設定の「使い方」ボタンからチュートリアルが開けない問題を修正', '設定の「アプリをダウンロード」からのダウンロード機能追加', '更新が追加されたとき、各ユーザーの端末で初回起動時に更新内容を自動表示'] },
+            { id: '2026-03-15-whatsnew-tutorial-fix', date: '2026-03-15', title: '「学習集計カレンダー」サービス開始', body: ['ユーザーの学習をお手伝いするアプリが誕生🍰'] }
         ];
         const RELEASE_SEEN_KEY = 'lsc-whatsnew-seen-id';
         let _whatsNewIndex = 0;
         let _didAutoShowWhatsNew = false;
-
-        function _formatReleaseDate(isoDate) {
-            const d = new Date(`${isoDate}T00:00:00`);
-            if (Number.isNaN(d.getTime())) return isoDate;
-            const week = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
-            return `${d.getMonth() + 1}月${d.getDate()}日（${week}）`;
-        }
-
+        function _formatReleaseDate(isoDate) { const d = new Date(`${isoDate}T00:00:00`); if (Number.isNaN(d.getTime())) return isoDate; const week = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()]; return `${d.getMonth() + 1}月${d.getDate()}日（${week}）`; }
         function _renderWhatsNew() {
-            const note = RELEASE_NOTES[_whatsNewIndex];
-            if (!note) return;
+            const note = RELEASE_NOTES[_whatsNewIndex]; if (!note) return;
             document.getElementById('whatsNewDate').textContent = `＜${_formatReleaseDate(note.date)}＞`;
             document.getElementById('whatsNewTitle').textContent = note.title;
             document.getElementById('whatsNewPage').textContent = `${_whatsNewIndex + 1} / ${RELEASE_NOTES.length}`;
@@ -4421,349 +4204,138 @@
             document.getElementById('whatsNewPrev').disabled = _whatsNewIndex === 0;
             document.getElementById('whatsNewNext').disabled = _whatsNewIndex === RELEASE_NOTES.length - 1;
         }
-
-        function shiftWhatsNew(dir) {
-            _whatsNewIndex = Math.max(0, Math.min(RELEASE_NOTES.length - 1, _whatsNewIndex + dir));
-            _renderWhatsNew();
-        }
-
-        function closeWhatsNew() {
-            document.getElementById('whatsNewModal').style.display = 'none';
-        }
-
+        function shiftWhatsNew(dir) { _whatsNewIndex = Math.max(0, Math.min(RELEASE_NOTES.length - 1, _whatsNewIndex + dir)); _renderWhatsNew(); }
+        function closeWhatsNew() { document.getElementById('whatsNewModal').style.display = 'none'; }
         function openWhatsNew(options = {}) {
-            if (!RELEASE_NOTES.length) {
-                alert('表示できる更新内容がありません');
-                return;
-            }
-            const { markSeen = true } = options;
-            _whatsNewIndex = 0;
-            _renderWhatsNew();
+            if (!RELEASE_NOTES.length) { alert('表示できる更新内容がありません'); return; }
+            const { markSeen = true } = options; _whatsNewIndex = 0; _renderWhatsNew();
             document.getElementById('whatsNewModal').style.display = 'flex';
-            if (markSeen) {
-                localStorage.setItem(RELEASE_SEEN_KEY, RELEASE_NOTES[0].id);
-            }
+            if (markSeen) { localStorage.setItem(RELEASE_SEEN_KEY, RELEASE_NOTES[0].id); }
         }
-
         function maybeShowWhatsNewOnLaunch() {
             if (_didAutoShowWhatsNew || !RELEASE_NOTES.length) return;
             const latestId = RELEASE_NOTES[0].id;
             if (localStorage.getItem(RELEASE_SEEN_KEY) === latestId) return;
             const tutorial = document.getElementById('tutorialOverlay');
-            if (tutorial && tutorial.style.display === 'flex') {
-                setTimeout(maybeShowWhatsNewOnLaunch, 500);
-                return;
-            }
-            _didAutoShowWhatsNew = true;
-            openWhatsNew({ markSeen: true });
+            if (tutorial && tutorial.style.display === 'flex') { setTimeout(maybeShowWhatsNewOnLaunch, 500); return; }
+            _didAutoShowWhatsNew = true; openWhatsNew({ markSeen: true });
         }
+        window.openWhatsNew = openWhatsNew; window.closeWhatsNew = closeWhatsNew; window.shiftWhatsNew = shiftWhatsNew; window.maybeShowWhatsNewOnLaunch = maybeShowWhatsNewOnLaunch;
+        if (window.__pendingWhatsNewCheck) { window.__pendingWhatsNewCheck = false; maybeShowWhatsNewOnLaunch(); }
 
-        window.openWhatsNew = openWhatsNew;
-        window.closeWhatsNew = closeWhatsNew;
-        window.shiftWhatsNew = shiftWhatsNew;
-        window.maybeShowWhatsNewOnLaunch = maybeShowWhatsNewOnLaunch;
-        if (window.__pendingWhatsNewCheck) {
-            window.__pendingWhatsNewCheck = false;
-            maybeShowWhatsNewOnLaunch();
-        }
-        // ────────────────────────────────────────────────
-
-        // ── チュートリアル ──────────────────────────────
         const TUT_STEPS = [
-            {
-                color: '#f0f7ff',
-                accent: '#0070bc',
-                icon: '📅',
-                title: 'カレンダーに記録しよう',
-                body: '日付をタップするとその日の記録画面が開きます。学習時間に合ったメダルを選んでスタンプ！メモも一緒に残せます📝',
-                tip: '⚪ 0h～　🍎 1h〜　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜'
-            },
-            {
-                color: '#fff8f0',
-                accent: '#e85d04',
-                icon: '📊',
-                title: 'グラフ・記録を振り返る',
-                body: 'カレンダーの下にメダル集計・7日間グラフ・学習分析が自動で表示されます。右上の「記録 📊」では年間の記録をまとめて確認できます！',
-                tip: '月ごとのメモ一覧も「記録 📊」から読み返せます'
-            },
-            {
-                color: '#f0fff6',
-                accent: '#16a34a',
-                icon: '⭐',
-                title: 'レベルアップ・称号を集めよう',
-                body: 'スタンプを貯めるとEXPが溜まりレベルアップ🎉　👑スタンプを積み重ねると特別な称号が解放されます！',
-                tip: '画面上部の称号バッジをタップ → ロードマップで全称号を確認できます'
-            },
-            {
-                color: '#f0f8ff',
-                accent: '#06b6d4',
-                icon: '🧊',
-                title: 'フリーズで連続記録を守ろう',
-                body: '勉強できなかった日はフリーズが自動で使われ、連続記録が途切れません！初期1個＋レベルアップごとに1個＋連続10日達成ごとに1個獲得できます。',
-                tip: '💡 記録をつけ忘れただけなら、後からスタンプを付ければフリーズが戻ります'
-            },
-            {
-                color: '#f0fff8',
-                accent: '#0891b2',
-                icon: '🎯',
-                title: 'カウントダウンで目標管理',
-                body: '設定（左上 ☰）→「目標カウントダウン追加」から試験名と日付を登録すると、画面上部に「あと○日」と表示されます！',
-                tip: '目標を2つ以上登録したら、カウントダウンをタップすると次の目標に切り替わります'
-            },
-            {
-                color: '#fdf4ff',
-                accent: '#7c3aed',
-                icon: '🏆',
-                title: 'ランキングに参加しよう',
-                body: '設定（左上 ☰）→ アカウント欄で表示名を入力し「ランキングに表示する」をONにして保存！レベルで全ユーザーと競えます。',
-                tip: '画面一番下のランキングをチェック👀　デフォルトはOFFなので自分で参加設定が必要です'
-            },
-            {
-                color: '#fffbf0',
-                accent: '#ca8a04',
-                icon: '🎨',
-                title: 'テーマを着せ替えよう',
-                body: '設定（左上 ☰）→「テーマカラー & テクスチャ」から好みのデザインに変えられます。全5ページ・40種類以上！',
-                tip: '★を押してお気に入り登録できます。「お気に入りランダム」をONにするとお気に入りの中からランダムで選ばれます 🎲'
-            },
-            {
-                color: '#f0f8ff',
-                accent: '#0070bc',
-                icon: '🚀',
-                title: '準備完了！',
-                body: 'さあ、今日の学習記録をつけてみましょう。小さな積み重ねが、大きな結果を連れてきます。',
-                tip: 'ご意見・要望は設定の「📮 フィードバック」からいつでもどうぞ！'
-            }
+            { color: '#f0f7ff', accent: '#0070bc', icon: '📅', title: 'カレンダーに記録しよう', body: '日付をタップするとその日の記録画面が開きます。学習時間に合ったメダルを選んでスタンプ！メモも一緒に残せます📝', tip: '⚪ 0h～　🍎 1h〜　🥉 3h〜　🥈 5h〜　🥇 7h〜　👑 10h〜' },
+            { color: '#fff8f0', accent: '#e85d04', icon: '📊', title: 'グラフ・記録を振り返る', body: 'カレンダーの下にメダル集計・7日間グラフ・学習分析が自動で表示されます。右上の「記録 📊」では年間の記録をまとめて確認できます！', tip: '月ごとのメモ一覧も「記録 📊」から読み返せます' },
+            { color: '#f0fff6', accent: '#16a34a', icon: '⭐', title: 'レベルアップ・称号を集めよう', body: 'スタンプを貯めるとEXPが溜まりレベルアップ🎉　👑スタンプを積み重ねると特別な称号が解放されます！', tip: '画面上部の称号バッジをタップ → ロードマップで全称号を確認できます' },
+            { color: '#f0f8ff', accent: '#06b6d4', icon: '🧊', title: 'フリーズで連続記録を守ろう', body: '勉強できなかった日はフリーズが自動で使われ、連続記録が途切れません！初期1個＋レベルアップごとに1個＋連続10日達成ごとに1個獲得できます。', tip: '💡 記録をつけ忘れただけなら、後からスタンプを付ければフリーズが戻ります' },
+            { color: '#f0fff8', accent: '#0891b2', icon: '🎯', title: 'カウントダウンで目標管理', body: '設定（左上 ☰）→「目標カウントダウン追加」から試験名と日付を登録すると、画面上部に「あと○日」と表示されます！', tip: '目標を2つ以上登録したら、カウントダウンをタップすると次の目標に切り替わります' },
+            { color: '#fdf4ff', accent: '#7c3aed', icon: '🏆', title: 'ランキングに参加しよう', body: '設定（左上 ☰）→ アカウント欄で表示名を入力し「ランキングに表示する」をONにして保存！レベルで全ユーザーと競えます。', tip: '画面一番下のランキングをチェック👀　デフォルトはOFFなので自分で参加設定が必要です' },
+            { color: '#fffbf0', accent: '#ca8a04', icon: '🎨', title: 'テーマを着せ替えよう', body: '設定（左上 ☰）→「テーマカラー & テクスチャ」から好みのデザインに変えられます。全5ページ・40種類以上！', tip: '★を押してお気に入り登録できます。「お気に入りランダム」をONにするとお気に入りの中からランダムで選ばれます 🎲' },
+            { color: '#f0f8ff', accent: '#0070bc', icon: '🚀', title: '準備完了！', body: 'さあ、今日の学習記録をつけてみましょう。小さな積み重ねが、大きな結果を連れてきます。', tip: 'ご意見・要望は設定の「📮 フィードバック」からいつでもどうぞ！' }
         ];
-
         let _tutStep = 0;
-
         function _tutBuild() {
-            const wrap = document.getElementById('tutSlideWrap');
-            wrap.innerHTML = '';
+            const wrap = document.getElementById('tutSlideWrap'); wrap.innerHTML = '';
             TUT_STEPS.forEach((s, i) => {
-                const div = document.createElement('div');
-                div.id = 'tutSlide' + i;
-                div.style.cssText = `display:${i === 0 ? 'block' : 'none'}; padding:28px 22px 4px;`;
-                div.innerHTML = `
-            <div style="text-align:center; margin-bottom:18px;">
-                <div style="width:64px; height:64px; border-radius:20px; background:${s.color}; border:2px solid ${s.accent}22; display:inline-flex; align-items:center; justify-content:center; font-size:32px;">${s.icon}</div>
-            </div>
-            <div style="font-size:17px; font-weight:900; color:#222; text-align:center; margin-bottom:12px;">${s.title}</div>
-            <div style="font-size:13px; line-height:1.8; color:#555; font-weight:600; text-align:center; margin-bottom:14px;">${s.body}</div>
-            <div style="background:${s.color}; border-left:3px solid ${s.accent}; border-radius:0 12px 12px 0; padding:10px 14px; font-size:12px; color:#444; font-weight:700; line-height:1.8; white-space:pre-wrap;">${s.tip}</div>
-        `;
+                const div = document.createElement('div'); div.id = 'tutSlide' + i; div.style.cssText = `display:${i === 0 ? 'block' : 'none'}; padding:28px 22px 4px;`;
+                div.innerHTML = `<div style="text-align:center; margin-bottom:18px;"><div style="width:64px; height:64px; border-radius:20px; background:${s.color}; border:2px solid ${s.accent}22; display:inline-flex; align-items:center; justify-content:center; font-size:32px;">${s.icon}</div></div><div style="font-size:17px; font-weight:900; color:#222; text-align:center; margin-bottom:12px;">${s.title}</div><div style="font-size:13px; line-height:1.8; color:#555; font-weight:600; text-align:center; margin-bottom:14px;">${s.body}</div><div style="background:${s.color}; border-left:3px solid ${s.accent}; border-radius:0 12px 12px 0; padding:10px 14px; font-size:12px; color:#444; font-weight:700; line-height:1.8; white-space:pre-wrap;">${s.tip}</div>`;
                 wrap.appendChild(div);
             });
             _tutUpdateDots();
         }
-
         function _tutUpdateDots() {
-            const dots = document.getElementById('tutDots');
-            dots.innerHTML = '';
-            TUT_STEPS.forEach((_, i) => {
-                const d = document.createElement('div');
-                d.style.cssText = `width:7px; height:7px; border-radius:50%; background:${i === _tutStep ? 'var(--primary-color)' : '#ddd'}; transition:0.3s;`;
-                dots.appendChild(d);
-            });
-            const btn = document.getElementById('tutBtn');
-            btn.textContent = _tutStep === TUT_STEPS.length - 1 ? 'はじめる 🚀' : '次へ →';
+            const dots = document.getElementById('tutDots'); dots.innerHTML = '';
+            TUT_STEPS.forEach((_, i) => { const d = document.createElement('div'); d.style.cssText = `width:7px; height:7px; border-radius:50%; background:${i === _tutStep ? 'var(--primary-color)' : '#ddd'}; transition:0.3s;`; dots.appendChild(d); });
+            const btn = document.getElementById('tutBtn'); btn.textContent = _tutStep === TUT_STEPS.length - 1 ? 'はじめる 🚀' : '次へ →';
         }
-
         function tutNext() {
-            document.getElementById('tutSlide' + _tutStep).style.display = 'none';
-            _tutStep++;
-            if (_tutStep >= TUT_STEPS.length) {
-                document.getElementById('tutorialOverlay').style.display = 'none';
-                localStorage.setItem('lsc-tutorial-done', '1');
-                return;
-            }
-            document.getElementById('tutSlide' + _tutStep).style.display = 'block';
-            _tutUpdateDots();
+            document.getElementById('tutSlide' + _tutStep).style.display = 'none'; _tutStep++;
+            if (_tutStep >= TUT_STEPS.length) { document.getElementById('tutorialOverlay').style.display = 'none'; localStorage.setItem('lsc-tutorial-done', '1'); return; }
+            document.getElementById('tutSlide' + _tutStep).style.display = 'block'; _tutUpdateDots();
         };
-
-        function showTutorial() {
-            _tutStep = 0;
-            _tutBuild();
-            document.getElementById('tutorialOverlay').style.display = 'flex';
-        };
-
-        function checkTutorial() {
-            if (localStorage.getItem('lsc-tutorial-done')) return;
-            if (!document.getElementById('tutorialOverlay')) {
-                setTimeout(checkTutorial, 200);
-                return;
-            }
-            setTimeout(showTutorial, 800);
-        }
-
-        window.tutNext = tutNext;
-        window.showTutorial = showTutorial;
-        window.checkTutorial = checkTutorial;
-        if (window.__pendingTutorialCheck) {
-            window.__pendingTutorialCheck = false;
-            checkTutorial();
-        }
-        // ────────────────────────────────────────────────
+        function showTutorial() { _tutStep = 0; _tutBuild(); document.getElementById('tutorialOverlay').style.display = 'flex'; };
+        function checkTutorial() { if (localStorage.getItem('lsc-tutorial-done')) return; if (!document.getElementById('tutorialOverlay')) { setTimeout(checkTutorial, 200); return; } setTimeout(showTutorial, 800); }
+        window.tutNext = tutNext; window.showTutorial = showTutorial; window.checkTutorial = checkTutorial;
+        if (window.__pendingTutorialCheck) { window.__pendingTutorialCheck = false; checkTutorial(); }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-        // EmailJS初期化（スクリプト直後に即実行）
         (function initEmailJS() {
-            if (typeof emailjs !== 'undefined') {
-                emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" });
-                console.log('EmailJS initialized OK');
-            } else {
-                // まだ読み込まれていなければonloadで再試行
-                window.addEventListener('load', function () {
-                    if (typeof emailjs !== 'undefined') {
-                        emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" });
-                        console.log('EmailJS initialized on load');
-                    } else {
-                        console.error('EmailJS failed to load');
-                    }
-                });
-            }
+            if (typeof emailjs !== 'undefined') { emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" }); }
+            else { window.addEventListener('load', function () { if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: "Hjjtku1eW6c4n4Czr" }); }); }
         })();
-
         window.openFeedback = function () {
             window.toggleMenu();
             setTimeout(() => {
                 document.getElementById('feedbackPanel').style.transform = 'translateX(300px)';
                 document.getElementById('feedbackMessage').value = '';
                 document.getElementById('feedbackStatus').textContent = '';
-                const btn = document.getElementById('sendFeedbackBtn');
-                btn.disabled = false;
-                btn.textContent = '送信する 🚀';
+                const btn = document.getElementById('sendFeedbackBtn'); btn.disabled = false; btn.textContent = '送信する 🚀';
             }, 360);
         };
-
-        window.closeFeedback = function () {
-            document.getElementById('feedbackPanel').style.transform = 'translateX(0)';
-        };
-
+        window.closeFeedback = function () { document.getElementById('feedbackPanel').style.transform = 'translateX(0)'; };
         window.sendFeedback = async function () {
             const message = document.getElementById('feedbackMessage').value.trim();
             const statusEl = document.getElementById('feedbackStatus');
             const btn = document.getElementById('sendFeedbackBtn');
-            if (!message) {
-                statusEl.style.color = '#e74c3c';
-                statusEl.textContent = '⚠️ メッセージを入力してください';
-                return;
-            }
-            // 連投防止：5分間クールダウン
+            if (!message) { statusEl.style.color = '#e74c3c'; statusEl.textContent = '⚠️ メッセージを入力してください'; return; }
             const lastSent = parseInt(localStorage.getItem('lsc-fb-last') || '0');
             const waitSec = Math.ceil((300000 - (Date.now() - lastSent)) / 1000);
-            if (waitSec > 0) {
-                statusEl.style.color = '#e74c3c';
-                statusEl.textContent = `⏳ あと${waitSec}秒後に送信できます`;
-                return;
-            }
-            btn.disabled = true;
-            btn.textContent = '送信中...';
-            statusEl.style.color = '#999';
-            statusEl.textContent = '';
+            if (waitSec > 0) { statusEl.style.color = '#e74c3c'; statusEl.textContent = `⏳ あと${waitSec}秒後に送信できます`; return; }
+            btn.disabled = true; btn.textContent = '送信中...'; statusEl.textContent = '';
             const user = window._currentUser || null;
             const userName = user ? (user.displayName || user.email || '不明') : '未ログイン';
             const userEmail = user ? (user.email || '-') : '-';
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
             try {
-                const result = await emailjs.send("service_f1phsus", "template_ifp0q9y", {
-                    subject: dateStr + ' フィードバック',
-                    message: message,
-                    user_name: userName,
-                    user_email: userEmail,
-                    sent_at: now.toLocaleString('ja-JP')
-                });
-                console.log('EmailJS success:', result);
-                statusEl.style.color = '#27ae60';
-                statusEl.textContent = '✅ 送信しました！ありがとうございます 🙏';
-                btn.textContent = '送信済み ✓';
-                // 5分間クールダウン
-                localStorage.setItem('lsc-fb-last', Date.now());
-                setTimeout(() => window.closeFeedback(), 2000);
-            } catch (err) {
-                console.error('EmailJS ERR:', JSON.stringify(err), err);
-                const code = err.status || err.code || '?';
-                const msg = err.text || err.message || 'unknown';
-                statusEl.style.color = '#e74c3c';
-                statusEl.textContent = `❌ 失敗(${code}): ${msg}`;
-                btn.disabled = false;
-                btn.textContent = '送信する 🚀';
-            }
+                await emailjs.send("service_f1phsus", "template_ifp0q9y", { subject: 'フィードバック', message: message, user_name: userName, user_email: userEmail, sent_at: new Date().toLocaleString('ja-JP') });
+                statusEl.style.color = '#27ae60'; statusEl.textContent = '✅ 送信しました！ありがとうございます 🙏';
+                localStorage.setItem('lsc-fb-last', Date.now()); setTimeout(() => window.closeFeedback(), 2000);
+            } catch (err) { statusEl.style.color = '#e74c3c'; statusEl.textContent = `❌ 失敗`; btn.disabled = false; btn.textContent = '送信する 🚀'; }
         };
     </script>
 
-    <!-- 更新内容モーダル -->
-    <div id="whatsNewModal" class="modal" style="z-index:8800;" onclick="closeWhatsNew()">
+    <div id="whatsNewModal" class="modal" style="z-index:8800;" onclick="window.closeWhatsNew()">
         <div class="modal-content" style="max-width:430px;" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">🆕 更新内容</h2>
-                <button onclick="closeWhatsNew()"
-                    style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
+                <button onclick="window.closeWhatsNew()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
             </div>
-            <div id="whatsNewDate"
-                style="font-size:12px; font-weight:900; color:var(--primary-color); margin-bottom:8px;">＜-＞</div>
+            <div id="whatsNewDate" style="font-size:12px; font-weight:900; color:var(--primary-color); margin-bottom:8px;">＜-＞</div>
             <div id="whatsNewTitle" style="font-size:16px; font-weight:900; color:#333; margin-bottom:10px;">-</div>
-            <ul id="whatsNewBody"
-                style="margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:#555; font-weight:700;"></ul>
-
+            <ul id="whatsNewBody" style="margin:0; padding-left:18px; font-size:13px; line-height:1.8; color:#555; font-weight:700;"></ul>
             <div style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
-                <button id="whatsNewPrev" onclick="shiftWhatsNew(-1)"
-                    style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">◀
-                    前へ</button>
+                <button id="whatsNewPrev" onclick="window.shiftWhatsNew(-1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">◀ 前へ</button>
                 <div id="whatsNewPage" style="font-size:12px; color:#999; font-weight:800;">1 / 1</div>
-                <button id="whatsNewNext" onclick="shiftWhatsNew(1)"
-                    style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">次へ
-                    ▶</button>
+                <button id="whatsNewNext" onclick="window.shiftWhatsNew(1)" style="border:none; background:#f3f4f6; border-radius:10px; padding:8px 12px; font-weight:900; color:#555; cursor:pointer;">次へ ▶</button>
             </div>
-            <button class="save-btn" style="margin-top:14px;" onclick="closeWhatsNew()">閉じる</button>
+            <button class="save-btn" style="margin-top:14px;" onclick="window.closeWhatsNew()">閉じる</button>
         </div>
     </div>
 
-    <!-- チュートリアルモーダル -->
-    <div id="tutorialOverlay"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9000; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
-        <div
-            style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
-
-            <!-- スライドコンテナ -->
-            <div id="tutSlideWrap" style="overflow:hidden; position:relative;">
-                <!-- スライドはJSで生成 -->
-            </div>
-
-            <!-- フッター -->
+    <div id="tutorialOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:9000; justify-content:center; align-items:center; backdrop-filter:blur(6px); padding:20px; box-sizing:border-box;">
+        <div style="background:white; width:100%; max-width:360px; border-radius:28px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.45); position:relative;">
+            <div id="tutSlideWrap" style="overflow:hidden; position:relative;"></div>
             <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 22px 20px;">
-                <!-- ドット -->
                 <div id="tutDots" style="display:flex; gap:6px; align-items:center;"></div>
-                <button id="tutBtn" onclick="tutNext()"
-                    style="border:none; background:var(--primary-color); color:white; font-weight:900; font-size:13px; border-radius:999px; padding:10px 16px; cursor:pointer;">
-                    次へ →
-                </button>
+                <button id="tutBtn" onclick="window.tutNext()" style="border:none; background:var(--primary-color); color:white; font-weight:900; font-size:13px; border-radius:999px; padding:10px 16px; cursor:pointer;">次へ →</button>
             </div>
         </div>
     </div>
 
-    <!-- アプリインストール案内 -->
-    <div id="installGuideModal" class="modal" style="z-index:8900;" onclick="closeInstallGuide()">
+    <div id="installGuideModal" class="modal" style="z-index:8900;" onclick="window.closeInstallGuide()">
         <div class="modal-content" onclick="event.stopPropagation()" style="max-width:420px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h2 style="margin:0; font-size:19px; font-weight:900; color:#222;">📲 アプリをダウンロード</h2>
-                <button onclick="closeInstallGuide()"
-                    style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
+                <button onclick="window.closeInstallGuide()" style="border:none; background:#f3f4f6; border-radius:10px; width:34px; height:34px; font-size:18px; cursor:pointer;">×</button>
             </div>
             <div style="font-size:13px; color:#555; line-height:1.8; font-weight:700;">
                 <p style="margin:0 0 8px;">以下の手順で追加してください。</p>
                 <p style="margin:0 0 6px;"><b>📱 iPhone (Safari)</b><br>共有ボタン（□↑）→「ホーム画面に追加」</p>
                 <p style="margin:0;"><b>🤖 Android (Chrome)</b><br>メニュー（⋮）→「ホーム画面に追加」または「アプリをインストール」</p>
             </div>
-            <button class="save-btn" style="margin-top:14px;" onclick="closeInstallGuide()">閉じる</button>
+            <button class="save-btn" style="margin-top:14px;" onclick="window.closeInstallGuide()">閉じる</button>
         </div>
     </div>
-
-
 </body>
-
 </html>
