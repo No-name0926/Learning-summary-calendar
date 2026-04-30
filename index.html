@@ -3864,17 +3864,18 @@ lsc.app.support@gmail.com
                     if (cur > bestStreak) bestStreak = cur;
                 }
 
-                // 現在の連続ストリークを計算（フリーズ自動適用は今日・昨日のみ）
+                // 現在の連続ストリークを計算（在庫があれば過去日にもフリーズ自動適用）
                 let streak = 0;
                 const todayMs = new Date(); todayMs.setHours(0, 0, 0, 0);
-                const yesterdayMs = new Date(todayMs); yesterdayMs.setDate(todayMs.getDate() - 1);
                 let chk = new Date(todayMs);
                 // 今日にスタンプもフリーズもなければ昨日から
                 if (!VALID.includes(getS(chk)) && !freezeUsedData[dk(chk)]) {
                     chk.setDate(chk.getDate() - 1);
                 }
                 let pendingFreezes = [];
-                while (true) {
+                let guard = 0; // 念のための無限ループ防止
+                while (guard < 5000) {
+                    guard++;
                     const s = getS(chk);
                     const key = dk(chk);
                     if (VALID.includes(s)) {
@@ -3884,18 +3885,13 @@ lsc.app.support@gmail.com
                         // フリーズ使用済み（スタンプなし）：連続カウント
                         streak++;
                     } else {
-                        // 未記録：今日か昨日のみ新規フリーズ自動適用
-                        const isRecentDay = chk.getTime() === todayMs.getTime() || chk.getTime() === yesterdayMs.getTime();
-                        if (isRecentDay) {
-                            const tempBest = Math.max(bestStreak, streak);
-                            const projectedStock = calcFreezeStock(calcLevel, tempBest, pendingFreezes);
-                            if (projectedStock > 0 && !freezeUsedData[key] && !pendingFreezes.includes(key)) {
-                                pendingFreezes.push(key);
-                                streak++;
-                            } else { break; }
-                        } else {
-                            break;
-                        }
+                        // 未記録：在庫がある限り、連続維持に必要な日に自動フリーズ適用
+                        const tempBest = Math.max(bestStreak, streak);
+                        const projectedStock = calcFreezeStock(calcLevel, tempBest, pendingFreezes);
+                        if (projectedStock > 0 && !freezeUsedData[key] && !pendingFreezes.includes(key)) {
+                            pendingFreezes.push(key);
+                            streak++;
+                        } else { break; }
                     }
                     chk.setDate(chk.getDate() - 1);
                 }
