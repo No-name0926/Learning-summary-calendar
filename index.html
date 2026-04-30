@@ -3908,8 +3908,11 @@ lsc.app.support@gmail.com
                     const key = dk(chk);
                     if (VALID.includes(s)) {
                         streak++;
+                        // 自動フリーズで橋渡しした先の既存記録に到達したら、そこで現在ストリーク計算を終了
+                        if (pendingFreezes.length > 0) break;
                     } else if (freezeUsedData[key]) {
                         streak++;
+                        if (pendingFreezes.length > 0) break;
                     } else {
                         const tempBest = Math.max(bestStreak, streak);
                         const projectedStock = calcFreezeStock(calcLevel, tempBest, pendingFreezes);
