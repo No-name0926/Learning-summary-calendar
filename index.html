@@ -3901,6 +3901,7 @@ lsc.app.support@gmail.com
                 if (!VALID.includes(getS(chk)) && !freezeUsedData[dk(chk)]) chk.setDate(chk.getDate() - 1);
                 
                 let pendingFreezes = [];
+                const freezesInCurrentStreak = new Set();
                 let guard = 0; // 念のための無限ループ防止
                 while (guard < 5000) {
                     guard++;
@@ -3912,6 +3913,7 @@ lsc.app.support@gmail.com
                         if (pendingFreezes.length > 0) break;
                     } else if (freezeUsedData[key]) {
                         streak++;
+                        freezesInCurrentStreak.add(key);
                         if (pendingFreezes.length > 0) break;
                     } else {
                         const tempBest = Math.max(bestStreak, streak);
@@ -3930,17 +3932,33 @@ lsc.app.support@gmail.com
                         if (needCount <= 0 || projectedStock < needCount) break;
 
                         pendingFreezes.push(key);
+                        freezesInCurrentStreak.add(key);
                         streak++;
                     }
                     chk.setDate(chk.getDate() - 1);
                 }
 
-                // ペンディングフリーズをFirebaseに保存
-                if (pendingFreezes.length > 0 && freezeRef) {
+
+                // 現在ストリーク橋渡しに不要な過去フリーズは自動返却（尾を引くのを防止）
+                const obsoleteFreezeKeys = [];
+                Object.keys(freezeUsedData).forEach(key => {
+                    const p = key.split('-');
+                    if (p.length !== 3) return;
+                    const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
+                    if (VALID.includes(getLogData(logKey).stamp)) return;
+                    if (!freezesInCurrentStreak.has(key)) obsoleteFreezeKeys.push(key);
+                });
+
+                // フリーズの追加・返却をFirebaseに保存
+                if ((pendingFreezes.length > 0 || obsoleteFreezeKeys.length > 0) && freezeRef) {
                     const updates = {};
                     pendingFreezes.forEach(key => {
                         freezeUsedData[key] = true;
                         updates[key] = true;
+                    });
+                    obsoleteFreezeKeys.forEach(key => {
+                        delete freezeUsedData[key];
+                        updates[key] = null;
                     });
                     update(freezeRef, updates);
                 }
