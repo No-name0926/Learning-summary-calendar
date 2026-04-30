@@ -3350,14 +3350,23 @@ lsc.app.support@gmail.com
 
             // フリーズストック計算（上限FREEZE_MAX）
             // スタンプがついた日のフリーズは「返却済み」とみなし使用カウントから除外
-            function calcFreezeStock(level, bestStreak) {
-                const earned = 1 + (level - 1) + Math.floor(bestStreak / 10);
-                let activelyUsed = 0;
-                Object.keys(freezeUsedData).forEach(k => {
-                    const p = k.split('-');
+            function getActivelyUsedFreezeCount(extraPendingKeys = []) {
+                const activeKeys = new Set();
+                const addIfActive = (key) => {
+                    if (!key) return;
+                    const p = key.split('-');
+                    if (p.length !== 3) return;
                     const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
-                    if (!VALID.includes(getLogData(logKey).stamp)) activelyUsed++;
-                });
+                    if (!VALID.includes(getLogData(logKey).stamp)) activeKeys.add(`${p[0]}-${p[1]}-${p[2]}`);
+                };
+                Object.keys(freezeUsedData).forEach(addIfActive);
+                extraPendingKeys.forEach(addIfActive);
+                return activeKeys.size;
+            }
+
+            function calcFreezeStock(level, bestStreak, extraPendingKeys = []) {
+                const earned = 1 + (level - 1) + Math.floor(bestStreak / 10);
+                const activelyUsed = getActivelyUsedFreezeCount(extraPendingKeys);
                 return Math.min(FREEZE_MAX, Math.max(0, earned - activelyUsed));
             }
 
@@ -3879,16 +3888,10 @@ lsc.app.support@gmail.com
                         const isRecentDay = chk.getTime() === todayMs.getTime() || chk.getTime() === yesterdayMs.getTime();
                         if (isRecentDay) {
                             const tempBest = Math.max(bestStreak, streak);
-                            const earned = Math.min(FREEZE_MAX, 1 + (calcLevel - 1) + Math.floor(tempBest / 10));
-                            let activelyUsed = pendingFreezes.length;
-                            Object.keys(freezeUsedData).forEach(k => {
-                                const p = k.split('-');
-                                const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
-                                if (!VALID.includes(getLogData(logKey).stamp)) activelyUsed++;
-                            });
-                            if (earned - activelyUsed > 0) {
+                            const projectedStock = calcFreezeStock(calcLevel, tempBest, pendingFreezes);
+                            if (projectedStock > 0 && !freezeUsedData[key] && !pendingFreezes.includes(key)) {
                                 pendingFreezes.push(key);
-streak++;
+                                streak++;
                             } else { break; }
                         } else {
                             break;
