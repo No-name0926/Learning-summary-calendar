@@ -3939,26 +3939,13 @@ lsc.app.support@gmail.com
                 }
 
 
-                // 現在ストリーク橋渡しに不要な過去フリーズは自動返却（尾を引くのを防止）
-                const obsoleteFreezeKeys = [];
-                Object.keys(freezeUsedData).forEach(key => {
-                    const p = key.split('-');
-                    if (p.length !== 3) return;
-                    const logKey = `log-${p[0]}-${p[1]}-${p[2]}`;
-                    if (VALID.includes(getLogData(logKey).stamp)) return;
-                    if (!freezesInCurrentStreak.has(key)) obsoleteFreezeKeys.push(key);
-                });
-
-                // フリーズの追加・返却をFirebaseに保存
-                if ((pendingFreezes.length > 0 || obsoleteFreezeKeys.length > 0) && freezeRef) {
+                // フリーズの追加をFirebaseに保存
+                // ※返却は「その日に後からスタンプが付いたとき」にのみ行う（在庫の自然増殖を防ぐ）
+                if (pendingFreezes.length > 0 && freezeRef) {
                     const updates = {};
                     pendingFreezes.forEach(key => {
                         freezeUsedData[key] = true;
                         updates[key] = true;
-                    });
-                    obsoleteFreezeKeys.forEach(key => {
-                        delete freezeUsedData[key];
-                        updates[key] = null;
                     });
                     update(freezeRef, updates);
                 }
