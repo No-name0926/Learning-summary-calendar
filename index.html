@@ -3916,8 +3916,9 @@ lsc.app.support@gmail.com
                         freezesInCurrentStreak.add(key);
                         if (pendingFreezes.length > 0) break;
                     } else {
-                        const tempBest = Math.max(bestStreak, streak);
-                        const projectedStock = calcFreezeStock(calcLevel, tempBest, pendingFreezes);
+                        // 連続ボーナス（10日ごと）は、この自動補完ループ中に前借りしない
+                        // （補完で bestStreak が閾値を跨いでも、その場で新規フリーズを増やさない）
+                        const projectedStock = calcFreezeStock(calcLevel, bestStreak, pendingFreezes);
                         if (projectedStock <= 0 || freezeUsedData[key] || pendingFreezes.includes(key)) break;
 
                         // 「現在の記録から伸ばせるだけ」ではなく、過去の既存記録に繋がる場合のみ自動適用
@@ -3937,7 +3938,6 @@ lsc.app.support@gmail.com
                     }
                     chk.setDate(chk.getDate() - 1);
                 }
-
 
                 // 現在ストリークの維持に不要な過去フリーズを返却
                 // （その日にスタンプ済み、または現在ストリークに含まれない未スタンプ日）
